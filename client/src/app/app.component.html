@@ -1,0 +1,6 @@
+<ul *ngIf="users && users.length">
+  <li *ngFor="let user of users">{{ user }}</li>
+</ul>
+<p *ngIf="users && users.length === 0">Không có dữ liệu</p>
+
+hello
