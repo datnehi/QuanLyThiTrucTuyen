@@ -1,16 +1,29 @@
 package com.nhom6.server.Controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.nhom6.server.Model.LoginRequest;
+import com.nhom6.server.Model.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UsersController {
-    @GetMapping
-    public List<String> getUsers() {
-        return List.of("User 1", "User 2", "User 3");
+    // API xử lý đăng nhập
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+
+        // Dummy check for admin credentials
+        if ("admin".equals(request.getUsername()) && "123456".equals(request.getPassword())) {
+            User user = new User(request.getUsername(), request.getPassword(), "ADMIN");
+            return ResponseEntity.ok(user);
+        }
+
+        // Trả về lỗi nếu thông tin không đúng
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid credentials");
     }
 }
