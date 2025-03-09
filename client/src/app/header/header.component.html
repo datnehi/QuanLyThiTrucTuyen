@@ -1,0 +1,16 @@
+<div style="width: 100%;" class="d-flex justify-content-end">
+  <div class="dropdown" dropdown style="padding-right: 20px;">
+    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+      <i class="bi bi-person-circle"></i>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end">
+      <img src="{{user.avatar || 'img/user.png'}}" class="rounded mx-auto d-block" style="height: 50px; width: 50px;" >
+      <p style="text-align: center; padding-top: 0.5rem;">{{user.hoten}}</p>
+      <li class="dropdown-divider"></li>
+      <li>
+        <a class="dropdown-item" routerLink=""><i class="bi bi-gear p-1"></i>Tài khoản</a>
+      </li>
+      <li><a class="dropdown-item" (click)="logout()"><i class="bi bi-box-arrow-left p-1"></i>Đăng xuất</a></li>
+    </ul>
+  </div>
+</div>

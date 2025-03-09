@@ -1,23 +1,22 @@
 package com.nhom6.server.Model;
 
 public class LoginRequest {
-    private String username;
-    private String password;
+    private String id;
+    private String matkhau;
 
-    // Getters and setters
-    public String getUsername() {
-        return username;
+    public String getId() {
+        return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getPassword() {
-        return password;
+    public String getMatkhau() {
+        return matkhau;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setMatkhau(String matkhau) {
+        this.matkhau = matkhau;
     }
 }

@@ -1,0 +1,8 @@
+.dropdown-toggle, .dropdown-item {
+  cursor: pointer;
+}
+.dropdown-item {
+  margin-bottom: 0.25rem;
+  border-radius: 0.375rem;
+}
+

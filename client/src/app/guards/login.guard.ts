@@ -1,13 +1,12 @@
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
-import { AccountService } from '../services/account.service';
-import { map } from 'rxjs';
+import { CanActivateFn, Router } from '@angular/router';
 
 export const loginGuard: CanActivateFn = (route, state) => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    if (localStorage.getItem('isLoggedIn')) {
-      return false; // Đã đăng nhập, không cho vào trang login
+  const router = inject(Router); // Inject service vào đây
+    if (sessionStorage.getItem('userToken')) {
+      router.navigate(['/dashboard']);
+      return false;
+    } else {
+      return true;
     }
-  }
-  return true; // Chưa đăng nhập, cho phép truy cập
 };

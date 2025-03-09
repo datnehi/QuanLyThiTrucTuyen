@@ -19,7 +19,7 @@ export class LoginComponent {
   login() {
     this.accountService.login(this.model).subscribe({
       next: response => {
-        this.router.navigateByUrl('/dashboard');
+        this.router.navigate(['/dashboard']);
       }
     })
   }

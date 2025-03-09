@@ -1,19 +1,22 @@
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { map } from 'rxjs/operators';
 import { AccountService } from '../services/account.service';
+import { map, take } from 'rxjs';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const accountService = inject(AccountService); // Inject service vào đây
+  const router = inject(Router);
+  const accountService = inject(AccountService);
 
-  return accountService.currentUser$.pipe(
-    map(user => {
-      if (user) {
+  return accountService.userToken$.pipe(
+    take(1),
+    map(token => {
+      if (token) {
         return true;
       } else {
-        alert("You shall not pass!");
+        router.navigate(['']);
         return false;
       }
     })
   );
 }
+

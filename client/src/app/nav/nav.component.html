@@ -1,21 +1,53 @@
-<div class="container">
-  <header class="header">
-      <h1>Header</h1>
-  </header>
-
-  <nav class="sidebar">
-      <ul>
-          <li><a href="#">Tổng quan</a></li>
-          <li><a href="#">Nhóm học phần</a></li>
-          <li><a href="#">Câu hỏi</a></li>
-          <li><a href="#">Người dùng</a></li>
-          <li><a href="#">Môn học</a></li>
-          <li><a href="#">Phân công</a></li>
-      </ul>
-  </nav>
-
-  <main class="content">
-      <h2>Chào mừng bạn đến với SGU Test!</h2>
-      <p>Đây là phần nội dung chính. Bạn có thể thêm bất kỳ nội dung nào ở đây.</p>
-  </main>
+<div class="sidebar p-0">
+  <div style="background-color: #055bbb; height: 4.25rem; align-content: center; padding-left: 1.125rem;">
+    <h2 style="margin: 0;">Nhóm 6</h2>
+  </div>
+  <div class="content-side">
+    <div class="nav-link">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-name">
+        <i class="nav-link-icon fa fa-rocket"></i> Tổng quan
+      </a>
+    </div>
+    <div *appHasRole='["admin"]'>
+      <h1 class="heading">Quản lý</h1>
+      <div class="nav-link">
+        <a routerLink="/questions" routerLinkActive="active" class="nav-link-name">
+          <i class="nav-link-icon fa fa-circle-question"></i> Câu hỏi
+        </a>
+      </div>
+      <div class="nav-link">
+        <a routerLink="/users" routerLinkActive="active" class="nav-link-name">
+          <i class="nav-link-icon fa fa-user-friends"></i> Người dùng
+        </a>
+      </div>
+      <div class="nav-link">
+        <a routerLink="/subjects" routerLinkActive="active" class="nav-link-name">
+          <i class="nav-link-icon fa fa-folder"></i> Môn học
+        </a>
+      </div>
+      <div class="nav-link">
+        <a routerLink="/exams" routerLinkActive="active" class="nav-link-name">
+          <i class="nav-link-icon fa fa-file"></i> Đề kiểm tra
+        </a>
+      </div>
+      <div class="nav-link">
+        <a routerLink="/notifications" routerLinkActive="active" class="nav-link-name">
+          <i class="nav-link-icon fa fa-comment"></i> Thông báo
+        </a>
+      </div>
+    </div>
+    <div *appHasRole='["sinhvien"]'>
+      <h1 class="heading">Sinh viên</h1>
+      <div class="nav-link">
+        <a routerLink="/courses" routerLinkActive="active" class="nav-link-name">
+          <i class="nav-link-icon fa fa-users-line"></i> Học phần
+        </a>
+      </div>
+      <div class="nav-link">
+        <a routerLink="/student-exams" routerLinkActive="active" class="nav-link-name">
+          <i class="nav-link-icon fa fa-graduation-cap"></i> Đề thi
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
