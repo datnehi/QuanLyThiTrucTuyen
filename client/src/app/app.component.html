@@ -1,19 +1,15 @@
-<div class="d-flex vh-100">
-  <!-- Sidebar -->
+<div class="d-flex vh-100" >
   <div *ngIf="userToken" class="sidebar">
     <app-nav></app-nav>
   </div>
-
-  <!-- Main content -->
   <div class="d-flex flex-column flex-grow-1">
-    <!-- Header -->
-    <div class="header bg-white p-2" *ngIf="userToken">
-      <app-header></app-header>
-    </div>
-
-    <!-- Router outlet for content -->
-    <div class="content flex-grow-1 p-5 bg-light">
+    <header *ngIf="userToken">
+      <div class="content-header p-2" style="height: 4.25rem; align-content: center;">
+        <app-header></app-header>
+      </div>
+    </header>
+    <main class="content bg-secondary-subtle flex-grow-1">
       <router-outlet></router-outlet>
-    </div>
+    </main>
   </div>
 </div>

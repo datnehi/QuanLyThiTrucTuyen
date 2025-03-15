@@ -11,9 +11,6 @@
   display: block;
   pointer-events: auto;
 }
-.sidebar a:hover {
-  background: #0056b3;
-}
 .heading {
   padding-top: 1.5rem;
   padding-bottom: 0.2rem;
@@ -51,6 +48,7 @@
 .nav-link:hover, .nav-link.active {
   color: #000;
   background-color: #e1effe;
+  font-weight: bold;
 }
 
 .nav-link .nav-link-icon {
@@ -64,5 +62,4 @@
 }
 .active {
   font-weight: bold;
-  color: blue;
 }
