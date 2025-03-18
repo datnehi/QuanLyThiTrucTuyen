@@ -25,14 +25,18 @@
     <div class="d-md-flex justify-content-md-between align-items-md-center">
       <div class="p-1 p-md-4">
         <h3 class="h4 fw-bold mb-3">
-          <a href="./test/detail/21" class="text-dark text-decoration-none">{{ exam.tenKiThi }}</a>
+          <a [routerLink]="['./detail', exam.maKiThi]" class="text-dark text-decoration-none">{{ exam.tenKiThi }}</a>
         </h3>
         <p class="fs-sm text-muted mb-2">
-          <i class="fa fa-layer-group me-1"></i> Giao cho học phần <strong>{{ exam.maMonHoc }}</strong>
+          <i class="fa fa-layer-group me-1"></i> Giao cho học phần <strong>{{ exam.tenMonHoc }}</strong>
         </p>
         <p class="fs-sm text-muted mb-0">
           <i class="fa fa-clock me-1"></i> Diễn ra từ <span>{{ exam.thoiGianBatDau }}</span> đến
           <span>{{ exam.thoiGianKetThuc }}</span>
+        </p>
+        <p class="fs-sm text-muted mb-0">
+          <i class="fa fa-clock me-1"></i> Thời gian làm <span>{{ exam.thoiGianThi }}</span> phút cho
+          <span>{{ exam.soCau }}</span> câu
         </p>
       </div>
       <div class="p-1 p-md-3">
@@ -43,7 +47,7 @@
           }" disabled="">
           {{ getExamStatus(exam) }}
         </button>
-        <a class="btn btn-sm btn-success rounded-pill px-3 me-1 my-1" href="./test/detail/21">
+        <a class="btn btn-sm btn-success rounded-pill px-3 me-1 my-1" [routerLink]="['./detail', exam.maKiThi]">
           <i class="fa fa-eye opacity-50 me-1"></i> Xem chi tiết
         </a>
         <a class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show" [routerLink]="['./update', exam.maKiThi]">
