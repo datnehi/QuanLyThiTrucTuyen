@@ -22,6 +22,10 @@ export class ExamService {
     return this.http.get<Exam>(`${this.baseUrl}/${maKiThi}`);
   }
 
+  getExamsByName(maMonHoc: string): Observable<Exam[]> {
+    return this.http.get<Exam[]>(`${this.baseUrl}/search/${maMonHoc}`);
+  }
+
   createExam(exam: Exam): Observable<Exam> {
     return this.http.post<Exam>(this.baseUrl, exam);
   }

@@ -20,11 +20,11 @@ public class ExamService {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Exam.class));
     }
 
-    // Lấy kỳ thi theo tên
-//    public List<Exam> getExamsByName(String tenKiThi) {
-//        String sql = "SELECT * FROM exam WHERE tenKiThi LIKE ?";
-//        return jdbcTemplate.query(sql, new Object[]{"%" + tenKiThi + "%"}, new BeanPropertyRowMapper<>(Exam.class));
-//    }
+    // Lấy kỳ thi theo maMonHoc
+    public List<Exam> getExamsByName(String maMonHoc) {
+        String sql = "SELECT * FROM kithi WHERE maMonHoc = ?";
+        return jdbcTemplate.query(sql, new Object[]{maMonHoc}, new BeanPropertyRowMapper<>(Exam.class));
+    }
 
     // Tạo mã kỳ thi tiếp theo
     private String generateNextMaKiThi() {

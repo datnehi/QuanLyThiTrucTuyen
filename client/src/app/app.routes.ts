@@ -7,6 +7,9 @@ import { ExamsComponent } from './exam/exams/exams.component';
 import { CreateExamComponent } from './exam/create-exam/create-exam.component';
 import { UpdateExamComponent } from './exam/update-exam/update-exam.component';
 import { DetailExamComponent } from './exam/detail-exam/detail-exam.component';
+import { HocphanComponent } from './hocphan/hocphan.component';
+import { StudentExamsComponent } from './student-exams/student-exams.component';
+import { ExamStartComponent } from './exam-start/exam-start.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -23,5 +26,8 @@ export const routes: Routes = [
       { path: 'detail/:maKiThi', component: DetailExamComponent, },
     ]
   },
+  { path: 'courses', component: HocphanComponent, canActivate: [authGuard],},
+  { path: 'student-exams', component: StudentExamsComponent, canActivate: [authGuard],},
+  { path: 'student-exams/start/:maKetQua', component: ExamStartComponent, canActivate: [authGuard],},
   { path: '**', redirectTo: 'login' }
 ];

@@ -27,6 +27,5 @@ public class ResultController {
     public ResponseEntity<List<Result>> getExamById(@PathVariable String maKiThi) {
             List<Result> result = resultService.getResultById(maKiThi);
             return ResponseEntity.ok(result);
-
     }
 }
