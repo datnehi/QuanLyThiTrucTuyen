@@ -1,0 +1,150 @@
+<form>
+  <div class="row mb-4">
+    <div class="col-6 flex-grow-1">
+      <div class="input-group">
+        <input type="text" class="form-control" name="searchtext" [(ngModel)]="searchText"
+          placeholder="Tìm kiếm học phần...">
+      </div>
+    </div>
+    <div class="col-6 d-flex align-items-center justify-content-end gap-3">
+      <button type="button" class="btn btn-hero btn-primary" (click)="openAdd()">
+        <i class="fa fa-fw fa-plus me-1"></i> Tham gia nhóm
+      </button>
+    </div>
+  </div>
+</form>
+<div class="row">
+  <div *ngFor="let monhoc of filteredMonHoc" class="col-md-6 col-xl-4 mb-4">
+    <div class="bg-white rounded-3 mb-0">
+      <div class="block-header">
+        <div class="flex-grow-1 text-muted fs-sm fw-semibold">
+          <img class="img-avatar me-2" src="{{ user.avatar || 'img/user.png' }}">
+          <span>{{user.hoten}}</span>
+        </div>
+        <!-- <div style="flex: 0 0 auto; padding-left: 1.25rem;">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-light bg-secondary-subtle" id="dropdownMenu" ngbDropdownToggle>
+              <i class="bi bi-gear"></i>
+            </button>
+            <div ngbDropdownMenu class="dropdown-menu custom-dropdown">
+              <button class="dropdown-item btn-delete-group" data-id="2">
+                <i class="bi bi-box-arrow-left me-2 fa-fw icon-dropdown-item"></i>
+                Thoát nhóm
+              </button>
+            </div>
+          </div>
+        </div> -->
+      </div>
+      <div class="block-content bg-body-tertiary text-center">
+        <h3 class="mb-3">
+          <a class="fs-5" style="text-decoration: none;">{{monhoc.tenMonHoc}}</a>
+        </h3>
+        <h5 class="text-muted mb-3" style="font-size:13px">Giảng viên: {{monhoc.giangVien}}</h5>
+        <h5 class="text-muted mb-3" style="font-size:13px">Số tín chỉ: {{monhoc.soTinChi}}</h5>
+        <h5 class="text-muted mb-3" style="font-size:13px">Ghi chú: {{monhoc.ghiChu || "Không có"}}</h5>
+      </div>
+      <div class="block-content" style="padding-bottom: 1.25rem;">
+        <div class="row">
+          <div class="col-12">
+            <button class="btn btn-light w-100 bg-secondary-subtle" (click)="openOffcanvas(monhoc)">
+              <i class="fa fa-eye me-1 opacity-50"></i> Xem nhóm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg custom-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="examDetailModalLabel">Tham gia học phần</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="" class="form-label">Mã học phần</label>
+          <input type="text" class="form-control bg-secondary-subtle" name="mamoi" id="mamoi" [(ngModel)]="mamoi"
+            placeholder="Nhập mã học phần">
+        </div>
+        <p class="form-text text-muted">Đề nghị giảng viên của bạn cung cấp mã học phần rồi
+          nhập mã đó vào đây.</p>
+      </div>
+      <div class="modal-body bg-secondary-subtle text-end">
+        <button type="button" class="btn btn-sm" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-sm btn-primary" (click)="addHocPhan(user.id, this.mamoi)">Tham gia
+          nhóm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" *ngIf="showOffcanvas" (click)="closeOffcanvas()"></div>
+
+<div class="offcanvas offcanvas-end bg-body-tertiary" style="width: 40rem;" tabindex="-1" id="offcanvasGroup"
+  aria-labelledby="offcanvasGroupLabel" [class.show]="showOffcanvas" [attr.aria-modal]="showOffcanvas ? 'true' : null"
+  [attr.role]="showOffcanvas ? 'dialog' : null" *ngIf="showOffcanvas">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">{{selectedMonHoc?.maMonHoc}} - {{selectedMonHoc?.tenMonHoc}}</h5>
+    <button type="button" class="btn-close text-reset" (click)="closeOffcanvas()" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="nav nav-tabs nav-justified">
+      <li class="nav-item">
+        <button class="nav-link" [ngClass]="{'active': activeTab === 'so-settings'}"
+          (click)="setActiveTab('so-settings')">
+          <i class="bi bi-gear-fill"></i>
+          Đề kiểm tra
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" [ngClass]="{'active': activeTab === 'so-profile'}"
+          (click)="setActiveTab('so-profile')">
+          <i class="bi bi-bell-fill"></i>
+          Thông báo
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" [ngClass]="{'active': activeTab === 'so-people'}" (click)="setActiveTab('so-people')">
+          <i class="bi bi-person-circle"></i>
+          Bạn bè
+        </button>
+      </li>
+    </ul>
+    <div class="block-content">
+      <div class="tab-pane fade active show" *ngIf="activeTab === 'so-settings'">
+        <div class="px-2">
+          <div *ngFor="let exam of exams"
+            class="block block-content mb-2 bg-white border-start border-2 border-danger rounded">
+            <div class="d-md-flex justify-content-md-between align-items-md-center mb-2">
+              <div class="p-1 p-md-2">
+                <h3 class="h4 fw-bold mb-3">
+                  <a [routerLink]="['/student-exams/start', exam.maKiThi]" routerLinkActive="router-link-active"  class="text-dark link-fx" style="text-decoration: none; cursor: pointer;">{{ exam.tenKiThi }}</a>
+                </h3>
+                <p class="fs-sm text-muted mb-0">
+                  <i class="fa fa-clock me-1"></i> Diễn ra từ <span>{{ exam.thoiGianBatDau }}</span> đến <span>{{
+                    exam.thoiGianKetThuc }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" *ngIf="activeTab === 'so-profile'">
+        <!-- <div *ngFor="let announcement of announcements">
+          <p>thong bao</p>
+        </div> -->
+      </div>
+      <div class="tab-pane fade" *ngIf="activeTab === 'so-people'">
+        <!-- <ul>
+          <li *ngFor="let member of groupMembers">
+            <img src="{{ user.avatar || 'img/user.png' }}" alt="" width="30">name
+          </li>
+        </ul> -->
+      </div>
+    </div>
+  </div>
+</div>

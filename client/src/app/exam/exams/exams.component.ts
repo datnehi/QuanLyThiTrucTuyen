@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { ExamService } from '../services/exam.service';
+import { ExamService } from '../../services/exam.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Exam } from '../models/exam';
+import { Exam } from '../../models/exam';
 
 @Component({
   selector: 'app-exams',
@@ -16,14 +16,14 @@ import { Exam } from '../models/exam';
   styleUrl: './exams.component.css'
 })
 export class ExamsComponent {
-  exams: Exam[] = [];
+  exams: any[] = [];
   searchText: string = '';
   selectedStatus: string = 'Tất cả';
 
   constructor(private examService: ExamService) {}
 
   ngOnInit(): void {
-    this.examService.getExams().subscribe((data) => {
+    this.examService.getExamsWithCourses().subscribe((data) => {
       this.exams = data;
     });
   }

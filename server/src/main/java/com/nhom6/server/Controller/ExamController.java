@@ -33,12 +33,12 @@ public class ExamController {
         }
     }
 
-    // Tìm kiếm kỳ thi theo tên
-//    @GetMapping("/search")
-//    public ResponseEntity<List<Exam>> getExamByName(@RequestParam String tenKiThi) {
-//        List<Exam> exams = examService.getExamsByName(tenKiThi);
-//        return ResponseEntity.ok(exams);
-//    }
+    // Tìm kiếm kỳ thi theo maMonHoc
+    @GetMapping("/search/{maMonHoc}")
+    public ResponseEntity<List<Exam>> getExamByName(@PathVariable String maMonHoc) {
+        List<Exam> exams = examService.getExamsByName(maMonHoc);
+        return ResponseEntity.ok(exams);
+    }
 
     // Tạo kỳ thi mới
     @PostMapping

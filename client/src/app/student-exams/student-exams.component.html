@@ -1,0 +1,51 @@
+<div class="row mb-4">
+  <div class="col-6 flex-grow-1">
+    <div class="input-group">
+      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        {{ selectedStatus }}
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" (click)="selectStatus('Chưa mở')">Chưa mở</a></li>
+        <li><a class="dropdown-item" (click)="selectStatus('Đang mở')">Đang mở</a></li>
+        <li><a class="dropdown-item" (click)="selectStatus('Đã đóng')">Đã đóng</a></li>
+        <li><a class="dropdown-item" (click)="selectStatus('Tất cả')">Tất cả</a></li>
+      </ul>
+      <input type="text" style="max-width: 40%;" class="form-control px-1" [(ngModel)]="searchText" placeholder="Tìm kiếm kì thi..." />
+    </div>
+  </div>
+</div>
+
+<div *ngFor="let exam of filteredExams" class="mb-2 bg-white rounded-3">
+  <div class="border-start border-3 border-danger rounded-start">
+    <div class="d-md-flex justify-content-md-between align-items-md-center">
+      <div class="p-1 p-md-4">
+        <h3 class="h4 fw-bold mb-3">
+          <a [routerLink]="['./start', exam.maKiThi]" class="text-dark text-decoration-none">{{ exam.tenKiThi }}</a>
+        </h3>
+        <p class="fs-sm text-muted mb-2">
+          <i class="fa fa-layer-group me-1"></i> Giao cho học phần <strong>{{ exam.tenMonHoc }}</strong>
+        </p>
+        <p class="fs-sm text-muted mb-0">
+          <i class="fa fa-clock me-1"></i> Diễn ra từ <span>{{ exam.thoiGianBatDau }}</span> đến
+          <span>{{ exam.thoiGianKetThuc }}</span>
+        </p>
+        <p class="fs-sm text-muted mb-0">
+          <i class="fa fa-clock me-1"></i> Thời gian làm <span>{{ exam.thoiGianThi }}</span> phút cho
+          <span>{{ exam.soCau }}</span> câu
+        </p>
+      </div>
+      <div class="p-1 p-md-3">
+        <button class="btn btn-sm rounded-pill px-3 me-1 my-1" [ngClass]="{
+            'btn-danger': getExamStatus(exam) === 'Đã đóng',
+            'btn-success': getExamStatus(exam) === 'Đang mở',
+            'btn-warning': getExamStatus(exam) === 'Chưa mở'
+          }" disabled="">
+          {{ getExamStatus(exam) }}
+        </button>
+        <a class="btn btn-sm btn-success rounded-pill px-3 me-1 my-1" [routerLink]="['./start', exam.maKiThi]">
+          <i class="fa fa-eye opacity-50 me-1"></i> Xem chi tiết
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -17,6 +17,6 @@ export class CourseService {
   }
 
   getCoursebyId(maMonHoc: string): Observable<Course> {
-      return this.http.get<Course>(`${this.baseUrl}/${maMonHoc}`);
-    }
+    return this.http.get<Course>(`${this.baseUrl}/${maMonHoc}`);
+  }
 }
