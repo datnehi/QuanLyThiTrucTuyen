@@ -1,6 +1,7 @@
 .dropdown-item {
   margin-bottom: 0.25rem;
   border-radius: 0.375rem;
+  cursor: pointer;
 }
 
 .btn:hover {

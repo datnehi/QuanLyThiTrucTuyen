@@ -2,9 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { LoginComponent } from './login/login.component';
 import { NavComponent } from './nav/nav.component';
-import { HasRoleDirective } from './directives/has-role.directive';
 import { HeaderComponent } from "./header/header.component";
 import { AccountService } from './services/account.service';
 
@@ -15,9 +13,7 @@ import { AccountService } from './services/account.service';
     RouterOutlet,
     HttpClientModule,
     CommonModule,
-    LoginComponent,
     NavComponent,
-    HasRoleDirective,
     HeaderComponent,
   ],
   templateUrl: './app.component.html',

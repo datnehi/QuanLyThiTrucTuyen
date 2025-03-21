@@ -1,0 +1,219 @@
+<div class="row g-0 flex-md-grow-1 bg-white">
+  <ul class="nav nav-tabs align-items-center">
+    <li role="presentation">
+      <a class="nav-link" id="bang-diem-tab" [class.active]="selectedTab === 'bang-diem'"
+        (click)="selectTab('bang-diem')">
+        Bảng điểm
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="thong-ke-tab" [class.active]="selectedTab === 'thong-ke'"
+        (click)="selectTab('thong-ke')">
+        Thống kê
+      </button>
+    </li>
+    <li class="nav-item ms-auto">
+      <div class="ps-3 pe-2">
+        <button type="button" class="btn-block-option" (click)="openOffcanvas()">
+          <i class="bi bi-info-circle"></i>
+        </button>
+        <a class="btn-block-option" [routerLink]="['/exams/update', maKiThi]">
+          <i class="bi bi-pencil"></i>
+        </a>
+      </div>
+    </li>
+  </ul>
+  <div *ngIf="selectedTab === 'bang-diem'" class="tab">
+    <div class="row mb-4">
+      <div class="col-md-6 d-flex gap-3">
+        <button class="btn btn-light dropdown-toggle bg-secondary-subtle" type="button" data-bs-toggle="dropdown"
+          aria-expanded="false">{{ selectedStatus }}</button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" (click)="selectStatus('Đã nộp bài')">Đã nộp bài</a></li>
+          <li><a class="dropdown-item" (click)="selectStatus('Vắng thi')">Vắng thi</a></li>
+          <li><a class="dropdown-item" (click)="selectStatus('Chưa nộp bài')">Chưa nộp bài</a></li>
+          <li><a class="dropdown-item" (click)="selectStatus('Tất cả')">Tất cả</a></li>
+        </ul>
+        <input type="text" [(ngModel)]="searchText" class="form-control bg-secondary-subtle"
+          placeholder="Tìm kiếm sinh viên...">
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-vcenter">
+        <thead>
+          <tr>
+            <th class="text-center">MSSV</th>
+            <th>Họ tên</th>
+            <th class="text-center">Điểm</th>
+            <th class="text-center">Thời gian vào thi</th>
+            <th class="text-center">Thời gian thi</th>
+            <th class="text-center">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let result of filteredResults">
+            <td class="text-center">{{ result.id }}</td>
+            <td>
+              <!-- <img class="img-avatar img-avatar48 me-3" [src]="student.avatar" [alt]="student.name"> -->
+              <strong class="text-primary">{{ result.hoten }}</strong>
+            </td>
+            <td class="text-center">{{ result.diem }}</td>
+            <td class="text-center">{{ result.thoiGianVaoThi }}</td>
+            <td class="text-center">{{ result.thoiGianLamBai }}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-alt-secondary" [disabled]="!result.diem" (click)="openExamDetail(result)">
+                <i class="fa fa-fw fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="selectedTab === 'thong-ke'" class="tab">
+    <div class="row">
+      <div class="col-md-6 col-xl-3">
+        <div class="block">
+          <div class="block-content d-flex align-items-center justify-content-between">
+            <div class="me-3">
+              <p class="fs-lg fw-semibold mb-0" id="da_nop">{{this.daNop}}</p>
+              <p class="text-muted mb-0">Thí sinh đã nộp</p>
+            </div>
+            <div class="item item-circle bg-body-light">
+              <i class="fa fa-user-check text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="block">
+          <div class="block-content d-flex align-items-center justify-content-between">
+            <div class="me-3">
+              <p class="fs-lg fw-semibold mb-0" id="chua_nop">{{this.chuaNop}}</p>
+              <p class="text-muted mb-0">Thí sinh chưa nộp</p>
+            </div>
+            <div class="item item-circle bg-body-light">
+              <i class="fa fa-user-pen text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="block">
+          <div class="block-content d-flex align-items-center justify-content-between">
+            <div class="me-3">
+              <p class="fs-lg fw-semibold mb-0" id="khong_thi">{{this.khongThi}}</p>
+              <p class="text-muted mb-0">Thí sinh không thi</p>
+            </div>
+            <div class="item item-circle bg-body-light">
+              <i class="fa fa-user-xmark text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="block">
+          <div class="block-content d-flex align-items-center justify-content-between">
+            <div class="me-3">
+              <p class="fs-lg fw-semibold mb-0" id="diem_trung_binh">{{this.diemTrungBinh}}</p>
+              <p class="text-muted mb-0">Điểm trung bình</p>
+            </div>
+            <div class="item item-circle bg-body-light">
+              <i class="fa fa-gauge text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="block">
+          <div class="block-content d-flex align-items-center justify-content-between">
+            <div class="me-3">
+              <p class="fs-lg fw-semibold mb-0" id="diem_cao_nhat">{{this.diemCaoNhat}}</p>
+              <p class="text-muted mb-0">Điểm cao nhất</p>
+            </div>
+            <div class="item item-circle bg-body-light">
+              <i class="fa fa-users text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-container mt-4" style="position: relative; height:40vh">
+      <canvas #myChartCanvas></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" *ngIf="showOffcanvas" (click)="closeOffcanvas()"></div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSetting"
+  aria-labelledby="offcanvasExampleLabel"
+  [class.show]="showOffcanvas"
+  [attr.aria-modal]="showOffcanvas ? 'true' : null"
+  [attr.role]="showOffcanvas ? 'dialog' : null"
+  *ngIf="showOffcanvas">
+
+  <div class="offcanvas-header">
+    <h4 class="offcanvas-title" id="offcanvasExampleLabel">{{exam?.tenKiThi}}</h4>
+    <button type="button" class="btn-close text-reset" (click)="closeOffcanvas()" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body content-side">
+    <h5 class="mb-3">THÔNG TIN KÌ THI</h5>
+    <ul class="list-unstyled text-dark fs-sm">
+      <li class="mb-1 fs-base">
+        <i class="text-primary fa fa-file-signature me-2"></i>
+        <span>Tên đề: {{exam?.tenKiThi}}</span>
+      </li>
+      <li class="mb-1 fs-base">
+        <i class="text-primary fa fa-clock me-2"></i>
+        <span>Thời gian tạo: {{exam?.thoiGianTao}}</span>
+      </li>
+      <li class="mb-1 fs-base">
+        <i class="text-primary fa fa-clock me-1"></i> Diễn ra từ <span>{{ exam?.thoiGianBatDau }}</span> đến
+        <span>{{ exam?.thoiGianKetThuc }}</span>
+      </li>
+      <li class="mb-1 fs-base">
+        <i class="text-primary fa fa-clock me-1"></i> Thời gian làm <span>{{ exam?.thoiGianThi }}</span> phút cho
+        <span>{{ exam?.soCau }}</span> câu
+      </li>
+    </ul>
+    <h5 class="mb-3">Môn THI</h5>
+    <ul class="list-unstyled text-dark fs-sm">
+      <li class="mb-1 fs-base">
+        <span>{{ course?.maMonHoc }} - {{ course?.tenMonHoc }}</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="modal fade" id="examDetailModal" tabindex="-1" aria-labelledby="examDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg custom-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="examDetailModalLabel">Thông tin bài thi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>MSSV:</strong> {{ selectedStudent?.id }}</p>
+        <p><strong>Họ tên:</strong> {{ selectedStudent?.hoten }}</p>
+        <p><strong>Điểm:</strong> {{ selectedStudent?.diem }}</p>
+        <p><strong>Thời gian vào thi:</strong> {{ selectedStudent?.thoiGianVaoThi }}</p>
+        <p><strong>Thời gian làm bài:</strong> {{ selectedStudent?.thoiGianLamBai }}</p>
+      </div>
+      <div class="modal-body">
+        <div *ngFor="let item of selectedExamDetail">
+          <p><strong>Câu {{ item.thuTu }}:</strong> {{ item.noiDungCauHoi }}</p>
+          <ul>
+            <li *ngFor="let dapan of item.dapAnList"
+                [ngClass]="{'text-success': dapan.daAnDung, 'text-primary': dapan.dapAnChon}">
+              {{ dapan.noiDungDapAn }}
+              <span *ngIf="dapan.daAnDung">✅</span>
+              <span *ngIf="dapan.dapAnChon">🟢</span>
+            </li>
+          </ul>
+          <hr />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

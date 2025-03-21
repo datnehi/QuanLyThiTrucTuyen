@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import flatpickr from 'flatpickr';
-import { CourseService } from '../services/course.service';
+import { CourseService } from '../../services/course.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Course } from '../models/course';
-import { ExamService } from '../services/exam.service';
-import { Exam } from '../models/exam';
+import { Course } from '../../models/course';
+import { ExamService } from '../../services/exam.service';
+import { Exam } from '../../models/exam';
 import { format } from 'date-fns';
 import { Router } from '@angular/router';
 
