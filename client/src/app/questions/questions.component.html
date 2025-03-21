@@ -1,0 +1,395 @@
+<main id="main-container" data-select2-id="main-container">
+    <!-- Page Content -->
+    <div class="content" data-select2-id="48">
+        <div class="block block-rounded" data-select2-id="47">
+            <div class="block-header block-header-default d-flex justify-content-between align-items-center">
+                <h3 class="block-title">Tất cả câu hỏi</h3>
+                <div class="block-options">
+                    <button type="button" class="btn btn-primary btn-lg custom-btn" (click)="openModal()">
+                        <i class="fa-regular fa-plus me-2"></i> Thêm câu hỏi mới
+                    </button>
+                </div>
+            </div>
+            <div class="block-content" data-select2-id="46">
+                <form action="#" method="POST" id="search-form" onsubmit="return false;" data-select2-id="search-form">
+                    <div class="row mb-3" data-select2-id="45">
+                        <div class="col-xl-4 d-flex gap-2 align-items-center" data-select2-id="44">
+                            <div>
+                                <select name="monHoc" class="form-select ng-pristine ng-valid ng-touched"
+                                    style="width: 100%;" ng-reflect-name="monHoc" ng-reflect-model="">
+                                    <option value="" disabled="" selected="" ng-reflect-value="">Chọn môn học
+                                    </option>
+                                    <option value="84104" ng-reflect-value="84104"> 84104 - Lập trình hướng đối tượng
+                                    </option>
+                                    <option value="84105" ng-reflect-value="84105"> 84105 - Lập trình Java </option>
+                                    <option value="84106" ng-reflect-value="84106"> 84106 - Lập trình ứng dụng mạng
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-alt" id="search-input"
+                                name="search-input" placeholder="Nội dung câu hỏi...">
+                            <button class="input-group-text bg-body border-0 btn-search">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 100px;">ID</th>
+                                <th style="width: 700px;">Nội dung câu hỏi</th>
+                                <th class="d-none d-sm-table-cell">Môn học</th>
+                                <th class="text-center col-header-action" style="display: table-cell;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listQuestion">
+                            <!-- Các dòng câu hỏi -->
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>1</strong>
+                                    </a>
+                                </td>
+                                <td>OOP là viết tắt của:</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="1">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="1">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>2</strong>
+                                    </a>
+                                </td>
+                                <td>Đặc điểm cơ bản của lập trình hướng đối tượng thể hiện ở:</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="2">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="2">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>3</strong>
+                                    </a>
+                                </td>
+                                <td>Lập trình hướng đối tượng là:</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="3">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="3">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>4</strong>
+                                    </a>
+                                </td>
+                                <td>Thế nào được gọi là hiện tượng nạp chồng?</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="4">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="4">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>5</strong>
+                                    </a>
+                                </td>
+                                <td>Trong java, khi khai báo một thuộc tính hoặc một hàm của một lớp mà không có từ khóa quyền truy cập thì mặc định quyền truy cập là gì?</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="5">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="5">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>6</strong>
+                                    </a>
+                                </td>
+                                <td>Đối với quyền truy cập nào thì cho phép truy cập các lớp con trong cùng gói với lớp cha?</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="6">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="6">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>7</strong>
+                                    </a>
+                                </td>
+                                <td>Khi xây dựng phương thức khởi tạo (constructor), việc thường làm là:</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="7">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="7">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>8</strong>
+                                    </a>
+                                </td>
+                                <td>Phương thức khởi tạo (constructor) là phương thức được thực thi:</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="8">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="8">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>9</strong>
+                                    </a>
+                                </td>
+                                <td>Tên của phương thức khởi tạo:</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="9">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="9">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <a class="fw-semibold" href="#">
+                                        <strong>10</strong>
+                                    </a>
+                                </td>
+                                <td>Đối tượng sống từ khi:</td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                </td>
+                                <td class="text-center col-action">
+                                    <a data-role="cauhoi" data-action="update"
+                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
+                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
+                                        data-bs-original-title="Chỉnh sửa" data-id="10">
+                                        <i class="fa fa-fw fa-pencil"></i>
+                                    </a>
+                                    <a data-role="cauhoi" data-action="delete"
+                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
+                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
+                                        data-id="10">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- phân trang -->
+            <nav class="pagination-container">
+                <ul class="pagination justify-content-end mt-2">
+                    <li class="page-item">
+                        <a class="page-link first-page disabled" href="javascript:void(0)" tabindex="-1" aria-label="First" data-page="1">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link prev-page disabled" href="javascript:void(0)" tabindex="-1" aria-label="Previous">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    <div class="d-flex list-page"><li class="page-item active">
+                      <a class="page-link" href="javascript:void(0)" style="border-radius:0;" data-page="1">1</a>
+                  </li><li class="page-item ">
+                      <a class="page-link" href="javascript:void(0)" data-page="2">2</a>
+                  </li><li class="page-item ">
+                      <a class="page-link" href="javascript:void(0)" data-page="3">3</a>
+                  </li><li class="page-item ">
+                      <a class="page-link" href="javascript:void(0)" data-page="4">4</a>
+                  </li><li class="page-item ">
+                      <a class="page-link" href="javascript:void(0)" data-page="5">5</a>
+                  </li><li class="page-item ">
+                      <a class="page-link" href="javascript:void(0)" data-page="6">6</a>
+                  </li><li class="page-item ">
+                      <a class="page-link" href="javascript:void(0)" style="border-radius:0;" data-page="7">7</a>
+                  </li></div>
+                    <li class="page-item">
+                        <a class="page-link next-page" href="javascript:void(0)" tabindex="-1" aria-label="Next">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link last-page" href="javascript:void(0)" tabindex="-1" aria-label="Last">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <!-- Modal để thêm câu hỏi mới -->
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel"
+        aria-hidden="true" #addQuestionModal>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addQuestionModalLabel">Thêm câu hỏi mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addQuestionForm">
+                        <div class="mb-3">
+                            <label for="questionContent" class="form-label">Nội dung câu hỏi</label>
+                            <textarea class="form-control" id="questionContent" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="questionSubject" class="form-label">Môn học</label>
+                            <select class="form-select" id="questionSubject" required>
+                                <option value="">Chọn môn học</option>
+                                <option value="Lập trình hướng đối tượng">Lập trình hướng đối tượng</option>
+                                <option value="Lập trình ứng dụng mạng">Lập trình ứng dụng mạng</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="questionAnswers" class="form-label">Danh sách đáp án</label>
+                            <div id="questionAnswers">
+                                <div class="input-group mb-2" id="answer-1">
+                                    <input type="text" class="form-control" placeholder="Đáp án" required>
+                                    <div class="input-group-text">
+                                        <input type="radio" class="form-check-input" name="correctAnswer">
+                                    </div>
+                                    <button type="button" class="btn btn-danger"
+                                        (click)="removeAnswer('answer-1')">Xóa</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" (click)="addAnswer()">Thêm đáp án</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeModal()">Đóng</button>
+                    <button type="button" class="btn btn-primary" (click)="saveQuestion()">Lưu câu hỏi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
