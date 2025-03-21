@@ -4,9 +4,15 @@ import { authGuard } from './guards/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { loginGuard } from './guards/login.guard';
 
+
 import { QuestionsComponent } from './questions/questions.component';
 import { UsersComponent } from './users/users.component';
 
+
+import { NotificationsComponent } from './Notification/notifications/notifications.component';
+import { CreatenotificationsComponent } from './Notification/createnotifications/createnotifications.component';
+import { UpdateNotificationComponent } from './Notification/update-notification/update-notification.component';
+import { UserComponent } from './user/user.component';
 
 import { ExamsComponent } from './exam/exams/exams.component';
 import { CreateExamComponent } from './exam/create-exam/create-exam.component';
@@ -33,11 +39,34 @@ export const routes: Routes = [
       { path: 'detail/:maKiThi', component: DetailExamComponent, },
     ]
   },
+
+  {
+    path: 'notifications',
+    runGuardsAndResolvers: 'always',
+    canActivate: [authGuard],
+    children: [
+      { path: '', component: NotificationsComponent, },
+      { path: 'create-notifi', component: CreatenotificationsComponent},
+      { path: 'update/:mathongbao', component: UpdateNotificationComponent, }
+
+    ]
+  },
+  {
+    path: 'users',
+    runGuardsAndResolvers: 'always',
+    canActivate: [authGuard],
+    children: [
+      { path: '', component: UserComponent, },
+    ]
+  },
+
   { path: 'courses', component: HocphanComponent, canActivate: [authGuard],},
   { path: 'student-exams', component: StudentExamsComponent, canActivate: [authGuard],},
   { path: 'student-exams/start/:maKetQua', component: ExamStartComponent, canActivate: [authGuard],},
 
+
   { path: 'questions', component: QuestionsComponent, canActivate: [authGuard]},
   { path: 'users', component: UsersComponent, canActivate: [authGuard]},
+
   { path: '**', redirectTo: 'login' }
 ];
