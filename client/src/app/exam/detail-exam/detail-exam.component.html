@@ -26,14 +26,24 @@
   <div *ngIf="selectedTab === 'bang-diem'" class="tab">
     <div class="row mb-4">
       <div class="col-md-6 d-flex gap-3">
-        <button class="btn btn-light dropdown-toggle bg-secondary-subtle" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false">{{ selectedStatus }}</button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" (click)="selectStatus('Đã nộp bài')">Đã nộp bài</a></li>
-          <li><a class="dropdown-item" (click)="selectStatus('Vắng thi')">Vắng thi</a></li>
-          <li><a class="dropdown-item" (click)="selectStatus('Chưa nộp bài')">Chưa nộp bài</a></li>
-          <li><a class="dropdown-item" (click)="selectStatus('Tất cả')">Tất cả</a></li>
-        </ul>
+        <div ngbDropdown class="d-inline-block">
+          <button class="btn bg-secondary-subtle dropdown-toggle" ngbDropdownToggle>
+            <i
+              [ngClass]="{
+                'bi bi-check-circle': selectedStatus === 'Đã nộp bài',
+                'bi bi-x-circle': selectedStatus === 'Vắng thi',
+                'bi bi-clock': selectedStatus === 'Chưa nộp bài',
+                'bi bi-list': selectedStatus === 'Tất cả'
+              }">
+            </i> {{ selectedStatus }}
+          </button>
+          <ul ngbDropdownMenu class="dropdown-menu-end">
+            <li><a class="dropdown-item" (click)="selectStatus('Đã nộp bài')"><i class="bi bi-check-circle p-1"></i> Đã nộp bài</a></li>
+            <li><a class="dropdown-item" (click)="selectStatus('Vắng thi')"><i class="bi bi-x-circle p-1"></i> Vắng thi</a></li>
+            <li><a class="dropdown-item" (click)="selectStatus('Chưa nộp bài')"><i class="bi bi-clock p-1"></i> Chưa nộp bài</a></li>
+            <li><a class="dropdown-item" (click)="selectStatus('Tất cả')"><i class="bi bi-list p-1"></i> Tất cả</a></li>
+          </ul>
+        </div>
         <input type="text" [(ngModel)]="searchText" class="form-control bg-secondary-subtle"
           placeholder="Tìm kiếm sinh viên...">
       </div>
@@ -203,15 +213,19 @@
       <div class="modal-body">
         <div *ngFor="let item of selectedExamDetail">
           <p><strong>Câu {{ item.thuTu }}:</strong> {{ item.noiDungCauHoi }}</p>
-          <ul>
-            <li *ngFor="let dapan of item.dapAnList"
-                [ngClass]="{'text-success': dapan.daAnDung, 'text-primary': dapan.dapAnChon}">
-              {{ dapan.noiDungDapAn }}
-              <span *ngIf="dapan.daAnDung">✅</span>
-              <span *ngIf="dapan.dapAnChon">🟢</span>
-            </li>
-          </ul>
-          <hr />
+    <ul>
+      <li *ngFor="let dapan of item.dapAnList"
+          [ngClass]="{
+            'text-success': dapan.dapAnChon && dapan.daAnDung,
+            'text-danger': dapan.dapAnChon && !dapan.daAnDung,
+            'text-primary': dapan.daAnDung
+          }">
+        {{ dapan.noiDungDapAn }}
+        <span *ngIf="dapan.daAnDung">✅</span>
+        <span *ngIf="dapan.dapAnChon && !dapan.daAnDung">❌</span>
+      </li>
+    </ul>
+    <hr />
         </div>
       </div>
     </div>

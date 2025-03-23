@@ -18,12 +18,12 @@ export class ExamService {
     return this.http.get<Exam[]>(this.baseUrl);
   }
 
-  getExambyId(maKiThi: string): Observable<Exam> {
+  getExambyMa(maKiThi: string): Observable<Exam> {
     return this.http.get<Exam>(`${this.baseUrl}/${maKiThi}`);
   }
 
   getExamsByName(maMonHoc: string): Observable<Exam[]> {
-    return this.http.get<Exam[]>(`${this.baseUrl}/search/${maMonHoc}`);
+    return this.http.get<Exam[]>(`${this.baseUrl}/mamonhoc/${maMonHoc}`);
   }
 
   createExam(exam: Exam): Observable<Exam> {
@@ -41,6 +41,24 @@ export class ExamService {
   getExamsWithCourses(): Observable<Exam[]> {
     return forkJoin({
       exams: this.http.get<Exam[]>(this.baseUrl),
+      courses: this.http.get<Course[]>(this.courseUrl)
+    }).pipe(
+      map(({ exams, courses }) => {
+        // Chuyển danh sách subjects thành object để tra cứu nhanh
+        const courseMap = new Map(courses.map(s => [s.maMonHoc, s.tenMonHoc]));
+
+        // Thêm `tenMonHoc` vào mỗi exam
+        return exams.map(exam => ({
+          ...exam,
+          tenMonHoc: courseMap.get(exam.maMonHoc) || 'Không xác định'
+        }));
+      })
+    );
+  }
+
+  getExamsWithCoursesById(id: string): Observable<Exam[]> {
+    return forkJoin({
+      exams: this.http.get<Exam[]>(`${this.baseUrl}/id/${id}`),
       courses: this.http.get<Course[]>(this.courseUrl)
     }).pipe(
       map(({ exams, courses }) => {

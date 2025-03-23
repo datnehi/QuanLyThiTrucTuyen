@@ -1,0 +1,57 @@
+<div class="row justify-content-center align-items-center">
+  <div class="col-lg-6 col-md-12 bg-white p-4 rounded">
+    <h4 class="text-center">{{exam?.tenKiThi}}</h4>
+    <div class="mb-3">
+      <div class="row mb-3">
+        <div class="col-6">
+          <span class="text-primary"><i class="far fa-clock me-2"></i></span><span> Thời gian làm bài</span>
+        </div>
+        <div class="col-6 text-end">
+          <span>{{exam?.thoiGianThi}} phút</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">
+          <span class="text-primary"><i class="far fa-calendar-days me-2"></i></span><span> Thời gian mở
+            đề</span>
+        </div>
+        <div class="col-6 text-end">
+          <span>{{exam?.thoiGianBatDau}}</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">
+          <span class="text-primary"><i class="far fa-calendar-xmark me-2"></i></span><span> Thời gian kết
+            thúc</span>
+        </div>
+        <div class="col-6 text-end">
+          <span>{{exam?.thoiGianKetThuc}}</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">
+          <span class="text-primary"><i class="far fa-circle-question me-2"></i></span><span> Số lượng câu
+            hỏi</span>
+        </div>
+        <div class="col-6 text-end">
+          <span>{{exam?.soCau}}</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">
+          <span class="text-primary"><i class="far fa-file-lines me-2"></i></span><span> Môn học</span>
+        </div>
+        <div class="col-6 text-end">
+          <span>{{monHoc?.tenMonHoc}}</span>
+        </div>
+      </div>
+    </div>
+    <button class="btn w-100" [ngClass]="{
+      'btn-danger': getExamStatus(exam) === 'Đã quá thời gian làm bài',
+      'btn-success': getExamStatus(exam) === 'Bắt đầu thi' || getExamStatus(exam) === 'Tiếp tục làm bài thi' || getExamStatus(exam) === 'Bài thi đã hoàn thành',
+      'btn-warning': getExamStatus(exam) === 'Chưa đến thời gian làm bài'
+    }" [disabled]="getExamStatus(exam) !== 'Bắt đầu thi' && getExamStatus(exam) !== 'Tiếp tục làm bài thi'" (click)="startExam()">
+    {{ getExamStatus(exam) }}</button>
+  </div>
+</div>
+<app-student-exam-result *ngIf="result?.diem != null" style="margin: 10rem;"></app-student-exam-result>

@@ -16,6 +16,13 @@ public class ChiTietBaiThi {
         this.thuTu = thuTu;
     }
 
+    public ChiTietBaiThi(String maCauHoi, String noiDungCauHoi, List<DapAn> dapAnList, int thuTu) {
+        this.maCauHoi = maCauHoi;
+        this.noiDungCauHoi = noiDungCauHoi;
+        this.dapAnList = dapAnList;
+        this.thuTu = thuTu;
+    }
+
     public void addDapAn(DapAn dapan) {
         this.dapAnList.add(dapan);
     }

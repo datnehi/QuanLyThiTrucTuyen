@@ -1,16 +1,27 @@
 <div class="row mb-4">
   <div class="col-6 flex-grow-1">
     <div class="input-group">
-      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        {{ selectedStatus }}
-      </button>
-      <ul class="dropdown-menu">
-        <li><a class="dropdown-item" (click)="selectStatus('Chưa mở')">Chưa mở</a></li>
-        <li><a class="dropdown-item" (click)="selectStatus('Đang mở')">Đang mở</a></li>
-        <li><a class="dropdown-item" (click)="selectStatus('Đã đóng')">Đã đóng</a></li>
-        <li><a class="dropdown-item" (click)="selectStatus('Tất cả')">Tất cả</a></li>
-      </ul>
-      <input type="text" style="max-width: 40%;" class="form-control px-1" [(ngModel)]="searchText" placeholder="Tìm kiếm kì thi..." />
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-primary dropdown-toggle" ngbDropdownToggle>
+          <i [ngClass]="{
+        'bi bi-clock': selectedStatus === 'Chưa mở',
+        'bi bi-play-circle': selectedStatus === 'Đang mở',
+        'bi bi-lock': selectedStatus === 'Đã đóng',
+        'bi bi-list': selectedStatus === 'Tất cả'
+      }">
+          </i> {{ selectedStatus }}
+        </button>
+        <ul ngbDropdownMenu class="dropdown-menu-end">
+          <li><a class="dropdown-item" (click)="selectStatus('Chưa mở')"><i class="bi bi-clock p-1"></i> Chưa mở</a>
+          </li>
+          <li><a class="dropdown-item" (click)="selectStatus('Đang mở')"><i class="bi bi-play-circle p-1"></i> Đang
+              mở</a></li>
+          <li><a class="dropdown-item" (click)="selectStatus('Đã đóng')"><i class="bi bi-lock p-1"></i> Đã đóng</a></li>
+          <li><a class="dropdown-item" (click)="selectStatus('Tất cả')"><i class="bi bi-list p-1"></i> Tất cả</a></li>
+        </ul>
+      </div>
+      <input type="text" style="max-width: 40%;" class="form-control px-1" [(ngModel)]="searchText"
+        placeholder="Tìm kiếm kì thi..." />
     </div>
   </div>
 </div>
@@ -20,7 +31,7 @@
     <div class="d-md-flex justify-content-md-between align-items-md-center">
       <div class="p-1 p-md-4">
         <h3 class="h4 fw-bold mb-3">
-          <a [routerLink]="['./start', exam.maKiThi]" class="text-dark text-decoration-none">{{ exam.tenKiThi }}</a>
+          <a [routerLink]="['./detail', exam.maKiThi]" class="text-dark text-decoration-none">{{ exam.tenKiThi }}</a>
         </h3>
         <p class="fs-sm text-muted mb-2">
           <i class="fa fa-layer-group me-1"></i> Giao cho học phần <strong>{{ exam.tenMonHoc }}</strong>
@@ -42,7 +53,7 @@
           }" disabled="">
           {{ getExamStatus(exam) }}
         </button>
-        <a class="btn btn-sm btn-success rounded-pill px-3 me-1 my-1" [routerLink]="['./start', exam.maKiThi]">
+        <a class="btn btn-sm btn-success rounded-pill px-3 me-1 my-1" [routerLink]="['./detail', exam.maKiThi]">
           <i class="fa fa-eye opacity-50 me-1"></i> Xem chi tiết
         </a>
       </div>

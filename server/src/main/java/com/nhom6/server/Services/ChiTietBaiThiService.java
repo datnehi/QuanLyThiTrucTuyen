@@ -2,7 +2,9 @@ package com.nhom6.server.Services;
 
 import com.nhom6.server.Model.ChiTietBaiThi;
 import com.nhom6.server.Model.DapAn;
+import com.nhom6.server.Model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -55,5 +57,46 @@ public class ChiTietBaiThiService {
         }
 
         return new ArrayList<>(cauHoiMap.values());
+    }
+
+    // 3. Kiểm tra xem đã có câu hỏi của đề thi trong chitietde chưa
+    public List<String> checkCauHoi(String maKetQua) {
+        String sql = "SELECT maCauHoi FROM chitietde WHERE maKetQua = ?";
+        return jdbcTemplate.queryForList(sql, String.class, maKetQua);
+    }
+
+    // tạo câu hỏi ngẫu nhiên
+    public List<Map<String, Object>> randomCauHoi(String maKetQua, String maMonHoc, int soCau) {
+        String sql = "SELECT TOP (?) * FROM cauhoi WHERE maMonHoc = ? ORDER BY NEWID()";
+        List<Map<String, Object>> cauHoiList = jdbcTemplate.queryForList(sql, soCau, maMonHoc);
+
+        // Lưu vào bảng chitietde
+        String insertSql = "INSERT INTO chitietde (maKetQua, maCauHoi, thuTu) VALUES (?, ?, ?)";
+        int index = 1;
+        for (Map<String, Object> cauHoi : cauHoiList) {
+            jdbcTemplate.update(insertSql, maKetQua, cauHoi.get("maCauHoi"), index++);
+        }
+        return cauHoiList;
+    }
+
+    //  Lấy danh sách câu hỏi
+    public List<ChiTietBaiThi> getCauHoi(List<Map<String, Object>> cauHoiList) {
+        List<ChiTietBaiThi> danhSachCauHoi = new ArrayList<>();
+        for (Map<String, Object> cauHoi : cauHoiList) {
+            String maCauHoi = (String) cauHoi.get("macauhoi");
+            String noiDungCauHoi = (String) cauHoi.get("noidung");
+
+            // Lấy đáp án
+            String sqlDapAn = "SELECT * FROM cautraloi WHERE maCauHoi = ?";
+            List<DapAn> dapAns = jdbcTemplate.query(sqlDapAn, (rs, rowNum) -> new DapAn(
+                    rs.getString("maCauTraLoi"),
+                    rs.getString("noiDung"),
+                    rs.getBoolean("laDapAn"),
+                    false
+            ), maCauHoi);
+
+            danhSachCauHoi.add(new ChiTietBaiThi(maCauHoi, noiDungCauHoi, dapAns, 0));
+        }
+        return new ArrayList<>(danhSachCauHoi);
     }
 }

@@ -20,10 +20,25 @@ public class ExamService {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Exam.class));
     }
 
+    // Lấy kỳ thi theo maKiThi
+    public Exam getExamByMa(String maKiThi) {
+        String sql = "SELECT * FROM kithi WHERE maKiThi = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{maKiThi}, new BeanPropertyRowMapper<>(Exam.class));
+    }
+
     // Lấy kỳ thi theo maMonHoc
     public List<Exam> getExamsByName(String maMonHoc) {
         String sql = "SELECT * FROM kithi WHERE maMonHoc = ?";
         return jdbcTemplate.query(sql, new Object[]{maMonHoc}, new BeanPropertyRowMapper<>(Exam.class));
+    }
+
+    // Lấy kỳ thi theo id (sinh viên)
+    public List<Exam> getExamsById(String id) {
+        String sql = "SELECT * FROM kithi " +
+                "JOIN phanmon ON kithi.mamonhoc = phanmon.mamonhoc " +
+                "JOIN monhoc ON kithi.mamonhoc = monhoc.mamonhoc " +
+                "WHERE phanmon.id = ?";
+        return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Exam.class));
     }
 
     // Tạo mã kỳ thi tiếp theo
@@ -92,7 +107,7 @@ public class ExamService {
             throw new RuntimeException("Không tìm thấy kỳ thi!");
         }
 
-        return getExamById(maKiThi);
+        return getExamByMa(maKiThi);
     }
 
     // Xóa kỳ thi
@@ -101,9 +116,4 @@ public class ExamService {
         jdbcTemplate.update(sql, maKiThi);
     }
 
-    // Lấy kỳ thi theo mã
-    public Exam getExamById(String maKiThi) {
-        String sql = "SELECT * FROM kithi WHERE maKiThi = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{maKiThi}, new BeanPropertyRowMapper<>(Exam.class));
-    }
 }

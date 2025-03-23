@@ -1,33 +1,38 @@
 import { Component } from '@angular/core';
 import { ExamService } from '../../services/exam.service';
+import { Exam } from '../../models/exam';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { Exam } from '../../models/exam';
+import { AccountService } from '../../services/account.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-exams',
+  selector: 'app-student-exams',
   imports: [
+    RouterModule,
     CommonModule,
     FormsModule,
-    RouterModule,
-    NgbModule
+    NgbModule,
   ],
-  templateUrl: './exams.component.html',
-  styleUrl: './exams.component.css'
+  templateUrl: './student-exams.component.html',
+  styleUrl: './student-exams.component.css'
 })
-export class ExamsComponent {
+export class StudentExamsComponent {
   exams: any[] = [];
+  user: any;
   searchText: string = '';
   selectedStatus: string = 'Tất cả';
 
-  constructor(private examService: ExamService) {}
+  constructor(private examService: ExamService, private accountService: AccountService) { }
 
-  ngOnInit(): void {
-    this.examService.getExamsWithCourses().subscribe((data) => {
-      this.exams = data;
-    });
+  ngOnInit() {
+    this.accountService.userInfo$.subscribe(user => {
+      this.user = user;
+      this.examService.getExamsWithCoursesById(user.id).subscribe((data) => {
+        this.exams = data;
+      });
+    })
   }
 
   get filteredExams() {
@@ -39,11 +44,11 @@ export class ExamsComponent {
     });
   }
 
-  selectStatus(status: string): void {
+  selectStatus(status: string) {
     this.selectedStatus = status;
   }
 
-  getExamStatus(exam: Exam): string {
+  getExamStatus(exam: Exam) {
     const now = new Date();
     const start = new Date(exam.thoiGianBatDau);
     const end = new Date(exam.thoiGianKetThuc);
@@ -55,11 +60,5 @@ export class ExamsComponent {
     } else {
       return 'Đã đóng';
     }
-  }
-
-  delete(maKiThi: string){
-    this.examService.deleteExam(maKiThi).subscribe(() => {
-      this.ngOnInit();
-    });
   }
 }

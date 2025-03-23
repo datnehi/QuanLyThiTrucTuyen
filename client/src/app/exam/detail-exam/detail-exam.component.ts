@@ -11,6 +11,7 @@ import { Chart, registerables } from 'chart.js';
 import * as bootstrap from 'bootstrap';
 import { ChiTietBaiThi } from '../../models/chitietbaithi';
 import { ChitietbaithiService } from '../../services/chitietbaithi.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-detail-exam',
@@ -18,6 +19,7 @@ import { ChitietbaithiService } from '../../services/chitietbaithi.service';
     CommonModule,
     FormsModule,
     RouterModule,
+    NgbModule
   ],
   templateUrl: './detail-exam.component.html',
   styleUrl: './detail-exam.component.css'
@@ -50,11 +52,11 @@ export class DetailExamComponent{
 
   ngOnInit() {
     this.maKiThi = this.route.snapshot.paramMap.get('maKiThi') || '';
-    this.resultService.getResultsWithCourses(this.maKiThi).subscribe((data) => {
+    this.resultService.getResultsWithUser(this.maKiThi).subscribe((data) => {
       this.results = data;
       this.tinhThongKe();
     });
-    this.examService.getExambyId(this.maKiThi).subscribe((data) => {
+    this.examService.getExambyMa(this.maKiThi).subscribe((data) => {
       this.exam = data;
       if (this.exam && this.exam.maMonHoc) {
         this.courseService.getCoursebyId(this.exam.maMonHoc).subscribe((data) => {
@@ -183,7 +185,7 @@ export class DetailExamComponent{
 
   openExamDetail(student: any) {
     this.selectedStudent = student;
-    this.chiTietBaiThi.getChiTietBaiThi(this.selectedStudent.maKetQua).subscribe(data => {
+    this.chiTietBaiThi.getChiTietBaiLam(this.selectedStudent.maKetQua).subscribe(data => {
       this.selectedExamDetail = data;
       const modal = new bootstrap.Modal(document.getElementById('examDetailModal')!);
       modal.show();

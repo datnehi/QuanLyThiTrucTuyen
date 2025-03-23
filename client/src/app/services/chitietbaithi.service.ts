@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ChiTietBaiThi } from '../models/chitietbaithi';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -12,7 +12,11 @@ export class ChitietbaithiService {
 
   constructor(private http: HttpClient) { }
 
-  getChiTietBaiThi(maKetQua: string): Observable<ChiTietBaiThi[]> {
+  getChiTietBaiLam(maKetQua: string): Observable<ChiTietBaiThi[]> {
     return this.http.get<ChiTietBaiThi[]>(`${this.baseUrl}/${maKetQua}`);
+  }
+
+  getChiTietBaiThi(listCauHoi: any[]): Observable<ChiTietBaiThi[]> {
+    return this.http.post<ChiTietBaiThi[]>(this.baseUrl, listCauHoi);
   }
 }

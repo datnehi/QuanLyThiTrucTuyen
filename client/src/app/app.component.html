@@ -1,9 +1,9 @@
 <div class="d-flex vh-100" >
-  <div *ngIf="userToken" class="sidebar">
+  <div *ngIf="userToken && !isExamPage" class="sidebar">
     <app-nav></app-nav>
   </div>
   <div class="d-flex flex-column flex-grow-1">
-    <header *ngIf="userToken">
+    <header *ngIf="userToken && !isExamPage">
       <div class="content-header p-2" style="height: 4.25rem; align-content: center;">
         <app-header></app-header>
       </div>

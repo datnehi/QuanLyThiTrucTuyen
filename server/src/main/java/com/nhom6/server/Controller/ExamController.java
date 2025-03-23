@@ -3,10 +3,13 @@ package com.nhom6.server.Controller;
 import com.nhom6.server.Model.Exam;
 import com.nhom6.server.Services.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/exams")
@@ -24,9 +27,9 @@ public class ExamController {
 
     // Lấy kỳ thi theo mã
     @GetMapping("/{maKiThi}")
-    public ResponseEntity<Exam> getExamById(@PathVariable String maKiThi) {
+    public ResponseEntity<Exam> getExamByMa(@PathVariable String maKiThi) {
         try {
-            Exam exam = examService.getExamById(maKiThi);
+            Exam exam = examService.getExamByMa(maKiThi);
             return ResponseEntity.ok(exam);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -34,7 +37,7 @@ public class ExamController {
     }
 
     // Tìm kiếm kỳ thi theo maMonHoc
-    @GetMapping("/search/{maMonHoc}")
+    @GetMapping("/mamonhoc/{maMonHoc}")
     public ResponseEntity<List<Exam>> getExamByName(@PathVariable String maMonHoc) {
         List<Exam> exams = examService.getExamsByName(maMonHoc);
         return ResponseEntity.ok(exams);
@@ -63,5 +66,12 @@ public class ExamController {
     public ResponseEntity<Void> deleteExam(@PathVariable String maKiThi) {
         examService.deleteExam(maKiThi);
         return ResponseEntity.noContent().build();
+    }
+
+    // Tìm kì thi theo id (sinh viên)
+    @GetMapping("/id/{id}")
+    public ResponseEntity<List<Exam>> getExamById(@PathVariable String id) {
+        List<Exam> exams = examService.getExamsById(id);
+        return ResponseEntity.ok(exams);
     }
 }

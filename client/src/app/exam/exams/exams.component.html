@@ -1,15 +1,25 @@
 <div class="row mb-4">
   <div class="col-6 flex-grow-1">
     <div class="input-group">
-      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        {{ selectedStatus }}
-      </button>
-      <ul class="dropdown-menu">
-        <li><a class="dropdown-item" (click)="selectStatus('Chưa mở')">Chưa mở</a></li>
-        <li><a class="dropdown-item" (click)="selectStatus('Đang mở')">Đang mở</a></li>
-        <li><a class="dropdown-item" (click)="selectStatus('Đã đóng')">Đã đóng</a></li>
-        <li><a class="dropdown-item" (click)="selectStatus('Tất cả')">Tất cả</a></li>
-      </ul>
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-primary dropdown-toggle" ngbDropdownToggle>
+          <i [ngClass]="{
+        'bi bi-clock': selectedStatus === 'Chưa mở',
+        'bi bi-play-circle': selectedStatus === 'Đang mở',
+        'bi bi-lock': selectedStatus === 'Đã đóng',
+        'bi bi-list': selectedStatus === 'Tất cả'
+      }">
+          </i> {{ selectedStatus }}
+        </button>
+        <ul ngbDropdownMenu class="dropdown-menu-end">
+          <li><a class="dropdown-item" (click)="selectStatus('Chưa mở')"><i class="bi bi-clock p-1"></i> Chưa mở</a>
+          </li>
+          <li><a class="dropdown-item" (click)="selectStatus('Đang mở')"><i class="bi bi-play-circle p-1"></i> Đang
+              mở</a></li>
+          <li><a class="dropdown-item" (click)="selectStatus('Đã đóng')"><i class="bi bi-lock p-1"></i> Đã đóng</a></li>
+          <li><a class="dropdown-item" (click)="selectStatus('Tất cả')"><i class="bi bi-list p-1"></i> Tất cả</a></li>
+        </ul>
+      </div>
       <input type="text" class="form-control px-1" [(ngModel)]="searchText" placeholder="Tìm kiếm kì thi..." />
     </div>
   </div>

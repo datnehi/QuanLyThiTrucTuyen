@@ -31,7 +31,7 @@ export class UpdateExamComponent {
 
   ngOnInit() {
     this.maKiThi = this.route.snapshot.paramMap.get('maKiThi') || '';
-    this.examService.getExambyId(this.maKiThi).subscribe((data) => {
+    this.examService.getExambyMa(this.maKiThi).subscribe((data) => {
       this.exam = data;
       if (this.exam && this.exam.maMonHoc) {
         this.courseService.getCoursebyId(this.exam.maMonHoc).subscribe((data) => {

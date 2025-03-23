@@ -1,0 +1,34 @@
+<div class="exam-container">
+  <!-- 🏷 Header của bài thi -->
+  <div class="exam-header d-flex justify-content-between align-items-center px-3 py-2 shadow-sm">
+    <button class="btn btn-danger" (click)="submitExam()">
+      <i class="bi bi-power"></i> THOÁT
+    </button>
+    <h5 class="m-0">Thí sinh: {{ user.hoten }}</h5>
+    <div class="d-flex align-items-center">
+      <i class="bi bi-clock text-primary"></i>
+      <span class="ms-1">{{ formatTime(time) }}</span>
+      <button class="btn btn-primary ms-3" (click)="submitExam()">📄 NỘP BÀI</button>
+    </div>
+  </div>
+
+  <!-- 📝 Nội dung bài thi -->
+  <div class="exam-body p-3">
+    <div class="question-container">
+      <div class="card p-3 mb-3" *ngFor="let question of questions; let i = index">
+        <h5>Câu {{ i + 1 }}: <span>{{ question.noiDungCauHoi }}</span></h5>
+
+        <!-- Lặp qua danh sách đáp án -->
+        <div class="form-check" *ngFor="let answer of question.dapAnList">
+          <input class="form-check-input"
+                 type="radio"
+                 [name]="'q' + i"
+                 [value]="answer.maCauTraLoi"
+                 [checked]="selectedAnswers[question.maCauHoi] === answer.maCauTraLoi"
+                 (change)="selectAnswer(question.maCauHoi, answer.maCauTraLoi)">
+          <label class="form-check-label">{{ answer.noiDungDapAn }}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
