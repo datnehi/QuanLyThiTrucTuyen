@@ -1,5 +1,6 @@
 package com.nhom6.server.Controller;
 
+import com.nhom6.server.DTO.ResultDto;
 import com.nhom6.server.DTO.SubmitExamRequest;
 import com.nhom6.server.Model.ChiTietBaiThi;
 import com.nhom6.server.Model.Result;
@@ -31,6 +32,12 @@ public class ResultController {
     public ResponseEntity<List<Result>> getExamById(@PathVariable String maKiThi) {
             List<Result> result = resultService.getResultById(maKiThi);
             return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/getall")
+    public ResponseEntity<List<ResultDto>> getResultsWithUsers(@RequestParam String maKiThi, @RequestParam String maMonHoc) {
+        List<ResultDto> result = resultService.getResultsWithUsers(maKiThi, maMonHoc);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{maKiThi}/{id}")

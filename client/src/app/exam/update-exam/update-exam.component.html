@@ -8,17 +8,17 @@
       </div>
       <div class="d-none d-md-block push">
         <h3 class="fs-5">CẤU HÌNH</h3>
+        <div class="form-check form-switch mb-2" [class.disabled]="exam.xemDapAn">
+          <input class="form-check-input" type="checkbox" id="xembailam" name="xembailam" [(ngModel)]="exam.hienThiBaiLam">
+          <label class="form-check-label" for="xembailam">Xem bài làm khi thi xong</label>
+        </div>
         <div class="form-check form-switch mb-2">
           <input class="form-check-input" type="checkbox" id="xemdiem" name="xemdiem" [(ngModel)]="exam.xemDiem">
           <label class="form-check-label" for="xemdiem">Xem điểm sau khi thi xong</label>
         </div>
         <div class="form-check form-switch mb-2">
-          <input class="form-check-input" type="checkbox" id="xemda" name="xemda" [(ngModel)]="exam.xemDapAn">
+          <input class="form-check-input" type="checkbox" id="xemda" name="xemda" [(ngModel)]="exam.xemDapAn" (click)="clickXemDA()">
           <label class="form-check-label" for="xemda">Xem đáp án khi thi xong</label>
-        </div>
-        <div class="form-check form-switch mb-2">
-          <input class="form-check-input" type="checkbox" id="xembailam" name="xembailam" [(ngModel)]="exam.hienThiBaiLam">
-          <label class="form-check-label" for="xembailam">Xem bài làm khi thi xong</label>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
         <h3>Môn học</h3>
         <div>
           <select disabled="true" class="form-select" [(ngModel)]="selectedMonHoc" name="monHoc" style="width: 100%;">
-            <option value=""selected>{{ monHoc?.maMonHoc }} - {{ monHoc?.tenMonHoc }}</option>
+            <option value=""selected>{{ monHoc.maMonHoc }} - {{ monHoc.tenMonHoc }}</option>
           </select>
         </div>
       </div>

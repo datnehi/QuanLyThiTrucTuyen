@@ -21,10 +21,10 @@ import { StudentExamResultComponent } from "../student-exam-result/student-exam-
 })
 export class StudentExamDetailComponent {
   user: any;
-  monHoc: Course | null = null;
+  monHoc!: Course;
   maKiThi: string = '';
-  exam: Exam | null = null;
-  result: Result | null = null;
+  exam!: Exam;
+  result!: Result;
 
   constructor(private courseService: CourseService, private examService: ExamService,
     private route: ActivatedRoute, private accountService: AccountService,

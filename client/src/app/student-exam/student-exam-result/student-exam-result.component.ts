@@ -36,11 +36,8 @@ export class StudentExamResultComponent {
     this.accountService.userInfo$.subscribe(user => {
       if (user) {
         this.user = user;
-
-        // Gọi API chỉ khi user đã có dữ liệu
         this.resultService.getResultByMaKiThiAndId(this.maKiThi, this.user.id).subscribe((data) => {
           this.result = data;
-          // Chỉ gọi khi `result` đã có dữ liệu
           if (this.result?.maKetQua) {
             this.chiTietBaiThi.getChiTietBaiLam(this.result.maKetQua).subscribe(data => {
               this.examDetail = data;
@@ -49,10 +46,8 @@ export class StudentExamResultComponent {
         });
       }
     });
-    // Gọi API exam và course
     this.examService.getExambyMa(this.maKiThi).subscribe((data) => {
       this.exam = data;
-      // Chỉ gọi API course nếu `maMonHoc` có dữ liệu
       if (this.exam?.maMonHoc) {
         this.courseService.getCoursebyId(this.exam.maMonHoc).subscribe((data) => {
           this.course = data;

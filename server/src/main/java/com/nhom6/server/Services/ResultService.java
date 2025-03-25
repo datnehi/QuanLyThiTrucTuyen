@@ -1,13 +1,11 @@
 package com.nhom6.server.Services;
 
+import com.nhom6.server.DTO.ResultDto;
 import com.nhom6.server.DTO.SubmitExamRequest;
 import com.nhom6.server.Model.ChiTietBaiThi;
 import com.nhom6.server.Model.Exam;
 import com.nhom6.server.Model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -33,10 +31,25 @@ public class ResultService {
         return jdbcTemplate.query(sql, new Object[]{maKiThi}, new BeanPropertyRowMapper<>(Result.class));
     }
 
-//    public Exam getExamById(String maKiThi) {
-//        String sql = "SELECT * FROM kithi WHERE maKiThi = ?";
-//        return jdbcTemplate.queryForObject(sql, new Object[]{maKiThi}, new BeanPropertyRowMapper<>(Exam.class));
-//    }
+    public List<ResultDto> getResultsWithUsers(String maKiThi, String maMonHoc) {
+        String sql = "SELECT * FROM phanmon pm " +
+                "JOIN nguoidung nd ON pm.id = nd.id " +
+                "LEFT JOIN ketqua kq ON pm.id = kq.id AND kq.maKiThi = ? " +
+                "WHERE pm.maMonHoc = ?";
+
+        return jdbcTemplate.query(sql, new Object[]{maKiThi, maMonHoc}, (rs, rowNum) -> {
+            ResultDto result = new ResultDto();
+            result.setMaKetQua(rs.getString("maketqua"));
+            result.setId(rs.getString("id"));
+            result.setHoten(rs.getString("hoten"));
+            result.setDiem(rs.getObject("diem") != null ? rs.getFloat("diem") : null);
+            result.setThoiGianVaoThi(rs.getTimestamp("thoigianvaothi") != null
+                    ? rs.getTimestamp("thoigianvaothi").toLocalDateTime()
+                    : null);
+            result.setThoiGianLamBai(rs.getObject("thoigianlambai") != null ? rs.getFloat("thoigianlambai") : null);
+            return result;
+        });
+    }
 
     private String generateNextMaKetQua() {
         String sql = "SELECT TOP 1 maketqua FROM ketqua ORDER BY maketqua DESC";

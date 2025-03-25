@@ -15,12 +15,12 @@ public class CourseService {
     private JdbcTemplate jdbcTemplate;
 
     public List<Course> getAllMonHoc() {
-        String sql = "SELECT * FROM monhoc";
+        String sql = "SELECT * FROM monhoc WHERE trangthai = 0";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Course.class));
     }
 
     public Course getMonHocById(String maMonHoc) {
-        String sql = "SELECT * FROM monhoc WHERE maMonHoc = ?";
+        String sql = "SELECT * FROM monhoc WHERE maMonHoc = ? AND trangthai = 0";
         return jdbcTemplate.queryForObject(sql, new Object[]{maMonHoc}, new BeanPropertyRowMapper<>(Course.class));
     }
 }

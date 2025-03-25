@@ -28,8 +28,7 @@
       <div class="col-md-6 d-flex gap-3">
         <div ngbDropdown class="d-inline-block">
           <button class="btn bg-secondary-subtle dropdown-toggle" ngbDropdownToggle>
-            <i
-              [ngClass]="{
+            <i [ngClass]="{
                 'bi bi-check-circle': selectedStatus === 'Đã nộp bài',
                 'bi bi-x-circle': selectedStatus === 'Vắng thi',
                 'bi bi-clock': selectedStatus === 'Chưa nộp bài',
@@ -38,9 +37,12 @@
             </i> {{ selectedStatus }}
           </button>
           <ul ngbDropdownMenu class="dropdown-menu-end">
-            <li><a class="dropdown-item" (click)="selectStatus('Đã nộp bài')"><i class="bi bi-check-circle p-1"></i> Đã nộp bài</a></li>
-            <li><a class="dropdown-item" (click)="selectStatus('Vắng thi')"><i class="bi bi-x-circle p-1"></i> Vắng thi</a></li>
-            <li><a class="dropdown-item" (click)="selectStatus('Chưa nộp bài')"><i class="bi bi-clock p-1"></i> Chưa nộp bài</a></li>
+            <li><a class="dropdown-item" (click)="selectStatus('Đã nộp bài')"><i class="bi bi-check-circle p-1"></i> Đã
+                nộp bài</a></li>
+            <li><a class="dropdown-item" (click)="selectStatus('Vắng thi')"><i class="bi bi-x-circle p-1"></i> Vắng
+                thi</a></li>
+            <li><a class="dropdown-item" (click)="selectStatus('Chưa nộp bài')"><i class="bi bi-clock p-1"></i> Chưa nộp
+                bài</a></li>
             <li><a class="dropdown-item" (click)="selectStatus('Tất cả')"><i class="bi bi-list p-1"></i> Tất cả</a></li>
           </ul>
         </div>
@@ -67,11 +69,12 @@
               <!-- <img class="img-avatar img-avatar48 me-3" [src]="student.avatar" [alt]="student.name"> -->
               <strong class="text-primary">{{ result.hoten }}</strong>
             </td>
-            <td class="text-center">{{ result.diem }}</td>
-            <td class="text-center">{{ result.thoiGianVaoThi }}</td>
-            <td class="text-center">{{ result.thoiGianLamBai }}</td>
+            <td class="text-center">{{ result.diem !== null ? result.diem : 'Chưa có điểm' }}</td>
+            <td class="text-center">{{ result.thoiGianVaoThi ? result.thoiGianVaoThi : 'Chưa thi' }}</td>
+            <td class="text-center">{{ result.thoiGianLamBai ?? 'Chưa có kết quả' }}</td>
             <td class="text-center">
-              <button class="btn btn-sm btn-alt-secondary" [disabled]="!result.diem" (click)="openExamDetail(result)">
+              <button class="btn btn-sm btn-alt-secondary" [disabled]="result.diem == null"
+                (click)="openExamDetail(result)">
                 <i class="fa fa-fw fa-eye"></i>
               </button>
             </td>
@@ -156,15 +159,12 @@
 
 <div class="overlay" *ngIf="showOffcanvas" (click)="closeOffcanvas()"></div>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSetting"
-  aria-labelledby="offcanvasExampleLabel"
-  [class.show]="showOffcanvas"
-  [attr.aria-modal]="showOffcanvas ? 'true' : null"
-  [attr.role]="showOffcanvas ? 'dialog' : null"
-  *ngIf="showOffcanvas">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSetting" aria-labelledby="offcanvasExampleLabel"
+  [class.show]="showOffcanvas" [attr.aria-modal]="showOffcanvas ? 'true' : null"
+  [attr.role]="showOffcanvas ? 'dialog' : null" *ngIf="showOffcanvas">
 
   <div class="offcanvas-header">
-    <h4 class="offcanvas-title" id="offcanvasExampleLabel">{{exam?.tenKiThi}}</h4>
+    <h4 class="offcanvas-title" id="offcanvasExampleLabel">{{exam.tenKiThi}}</h4>
     <button type="button" class="btn-close text-reset" (click)="closeOffcanvas()" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body content-side">
@@ -172,25 +172,25 @@
     <ul class="list-unstyled text-dark fs-sm">
       <li class="mb-1 fs-base">
         <i class="text-primary fa fa-file-signature me-2"></i>
-        <span>Tên đề: {{exam?.tenKiThi}}</span>
+        <span>Tên đề: {{exam.tenKiThi}}</span>
       </li>
       <li class="mb-1 fs-base">
         <i class="text-primary fa fa-clock me-2"></i>
-        <span>Thời gian tạo: {{exam?.thoiGianTao}}</span>
+        <span>Thời gian tạo: {{exam.thoiGianTao}}</span>
       </li>
       <li class="mb-1 fs-base">
-        <i class="text-primary fa fa-clock me-1"></i> Diễn ra từ <span>{{ exam?.thoiGianBatDau }}</span> đến
-        <span>{{ exam?.thoiGianKetThuc }}</span>
+        <i class="text-primary fa fa-clock me-1"></i> Diễn ra từ <span>{{ exam.thoiGianBatDau }}</span> đến
+        <span>{{ exam.thoiGianKetThuc }}</span>
       </li>
       <li class="mb-1 fs-base">
-        <i class="text-primary fa fa-clock me-1"></i> Thời gian làm <span>{{ exam?.thoiGianThi }}</span> phút cho
-        <span>{{ exam?.soCau }}</span> câu
+        <i class="text-primary fa fa-clock me-1"></i> Thời gian làm <span>{{ exam.thoiGianThi }}</span> phút cho
+        <span>{{ exam.soCau }}</span> câu
       </li>
     </ul>
     <h5 class="mb-3">Môn THI</h5>
     <ul class="list-unstyled text-dark fs-sm">
       <li class="mb-1 fs-base">
-        <span>{{ course?.maMonHoc }} - {{ course?.tenMonHoc }}</span>
+        <span>{{ course.maMonHoc }} - {{ course.tenMonHoc }}</span>
       </li>
     </ul>
   </div>
@@ -213,19 +213,19 @@
       <div class="modal-body">
         <div *ngFor="let item of selectedExamDetail">
           <p><strong>Câu {{ item.thuTu }}:</strong> {{ item.noiDungCauHoi }}</p>
-    <ul>
-      <li *ngFor="let dapan of item.dapAnList"
-          [ngClass]="{
-            'text-success': dapan.dapAnChon && dapan.daAnDung,
-            'text-danger': dapan.dapAnChon && !dapan.daAnDung,
-            'text-primary': dapan.daAnDung
-          }">
-        {{ dapan.noiDungDapAn }}
-        <span *ngIf="dapan.daAnDung">✅</span>
-        <span *ngIf="dapan.dapAnChon && !dapan.daAnDung">❌</span>
-      </li>
-    </ul>
-    <hr />
+          <ul>
+            <li *ngFor="let dapan of item.dapAnList" [ngClass]="{
+                  'text-success': dapan.dapAnChon && dapan.daAnDung,
+                  'text-danger': dapan.dapAnChon && !dapan.daAnDung,
+                  'text-primary': dapan.daAnDung,
+                  'text-info': dapan.dapAnChon
+                }">
+              {{ dapan.noiDungDapAn }}
+              <span *ngIf="dapan.daAnDung && dapan.dapAnChon">✅</span>
+              <span *ngIf="dapan.dapAnChon && !dapan.daAnDung">❌</span>
+            </li>
+          </ul>
+          <hr />
         </div>
       </div>
     </div>

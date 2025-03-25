@@ -43,7 +43,7 @@ export class StudentExamStartComponent {
 
     this.loadTime();
     // Khôi phục đáp án đã chọn từ sessionStorage
-    const savedAnswers = localStorage.getItem(`selectedAnswers_${this.maKiThi}`);
+    const savedAnswers = sessionStorage.getItem(`selectedAnswers_${this.maKiThi}`);
     if (savedAnswers) {
       this.selectedAnswers = JSON.parse(savedAnswers);
     }
@@ -59,7 +59,7 @@ export class StudentExamStartComponent {
     this.resultService.getResultByMaKiThiAndId(this.maKiThi, this.user.id).subscribe((data) => {
       this.result = data;
       // Lấy thời gian bắt đầu từ API
-      const startTime = new Date(this.result.thoiGianVaoThi).getTime() / 1000; // Chuyển sang giây
+      const startTime = new Date(this.result?.thoiGianVaoThi).getTime() / 1000; // Chuyển sang giây
       const currentTime = Math.floor(Date.now() / 1000);
       const examDuration = this.exam.thoiGianThi * 60; // Tổng thời gian thi (phút → giây)
 
@@ -97,7 +97,7 @@ export class StudentExamStartComponent {
 
   selectAnswer(questionId: string, answerId: string) {
     this.selectedAnswers[questionId] = answerId;
-    localStorage.setItem(`selectedAnswers_${this.maKiThi}`, JSON.stringify(this.selectedAnswers));
+    sessionStorage.setItem(`selectedAnswers_${this.maKiThi}`, JSON.stringify(this.selectedAnswers));
   }
 
   submitExam() {
@@ -130,7 +130,7 @@ export class StudentExamStartComponent {
 
     this.resultService.submitExam(resultData).subscribe(
       (response) => {
-        localStorage.removeItem(`selectedAnswers_${this.maKiThi}`);
+        sessionStorage.removeItem(`selectedAnswers_${this.maKiThi}`);
 
         setTimeout(() => { // Đảm bảo xóa hoàn toàn trước khi điều hướng
           this.router.navigate(['/student-exams/result', this.maKiThi]);

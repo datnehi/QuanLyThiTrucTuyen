@@ -16,19 +16,19 @@ public class ExamService {
 
     // Lấy tất cả kỳ thi
     public List<Exam> getAllExams() {
-        String sql = "SELECT * FROM kithi WHERE trangthai = 0";
+        String sql = "SELECT * FROM kithi WHERE trangthai = 0 ORDER BY thoigiantao DESC";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Exam.class));
     }
 
     // Lấy kỳ thi theo maKiThi
     public Exam getExamByMa(String maKiThi) {
-        String sql = "SELECT * FROM kithi WHERE maKiThi = ?";
+        String sql = "SELECT * FROM kithi WHERE maKiThi = ? AND trangthai = 0 ORDER BY thoigiantao DESC";
         return jdbcTemplate.queryForObject(sql, new Object[]{maKiThi}, new BeanPropertyRowMapper<>(Exam.class));
     }
 
     // Lấy kỳ thi theo maMonHoc
     public List<Exam> getExamsByName(String maMonHoc) {
-        String sql = "SELECT * FROM kithi WHERE maMonHoc = ?";
+        String sql = "SELECT * FROM kithi WHERE maMonHoc = ? AND trangthai = 0 ORDER BY thoigiantao DESC";
         return jdbcTemplate.query(sql, new Object[]{maMonHoc}, new BeanPropertyRowMapper<>(Exam.class));
     }
 
@@ -37,7 +37,7 @@ public class ExamService {
         String sql = "SELECT * FROM kithi " +
                 "JOIN phanmon ON kithi.mamonhoc = phanmon.mamonhoc " +
                 "JOIN monhoc ON kithi.mamonhoc = monhoc.mamonhoc " +
-                "WHERE phanmon.id = ?";
+                "WHERE phanmon.id = ? AND kithi.trangthai = 0 ORDER BY thoigiantao DESC";
         return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Exam.class));
     }
 

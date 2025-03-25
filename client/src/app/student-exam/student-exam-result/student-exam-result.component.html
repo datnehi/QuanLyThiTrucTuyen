@@ -1,25 +1,30 @@
 <div class="bg-white p-3 rounded">
-  <h2>Kết quả bài thi: {{ course?.tenMonHoc }}</h2>
+  <h2>Kết quả bài thi: {{ course.tenMonHoc }} (Đã hoàn thành)</h2>
   <p><strong>Thí sinh:</strong> {{ user.hoten }}</p>
-  <p><strong>Số câu đúng:</strong> {{ result?.soCauDung }} / {{ exam?.soCau }}</p>
-  <p><strong>Điểm số:</strong> {{ result?.diem }}</p>
+  <div *ngIf="exam.xemDiem">
+    <p><strong>Số câu đúng:</strong> {{ result.soCauDung }} / {{ exam.soCau }}</p>
+    <p><strong>Điểm số:</strong> {{ result.diem }}</p>
+  </div>
 
-  <h3>Chi tiết câu trả lời</h3>
-  <div *ngFor="let item of examDetail">
-    <p><strong>Câu {{ item.thuTu }}:</strong> {{ item.noiDungCauHoi }}</p>
-    <ul>
-      <li *ngFor="let dapan of item.dapAnList"
-          [ngClass]="{
-            'text-success': dapan.dapAnChon && dapan.daAnDung,
-            'text-danger': dapan.dapAnChon && !dapan.daAnDung,
-            'text-primary': dapan.daAnDung
-          }">
-        {{ dapan.noiDungDapAn }}
-        <span *ngIf="dapan.daAnDung">✅</span>
-        <span *ngIf="dapan.dapAnChon && !dapan.daAnDung">❌</span>
-      </li>
-    </ul>
-    <hr />
+  <div *ngIf="exam?.hienThiBaiLam">
+    <h3>Chi tiết câu trả lời</h3>
+    <div *ngFor="let item of examDetail">
+      <p><strong>Câu {{ item.thuTu }}:</strong> {{ item.noiDungCauHoi }}</p>
+      <ul>
+        <li *ngFor="let dapan of item.dapAnList"
+            [ngClass]="{
+              'text-success': dapan.dapAnChon && dapan.daAnDung && exam.xemDapAn,
+              'text-danger': dapan.dapAnChon && !dapan.daAnDung && exam.xemDapAn,
+              'text-primary': dapan.daAnDung && exam.xemDapAn,
+              'text-info': dapan.dapAnChon && !exam.xemDapAn
+            }">
+          {{ dapan.noiDungDapAn }}
+          <span *ngIf="dapan.daAnDung && exam.xemDapAn">✅</span>
+          <span *ngIf="dapan.dapAnChon && !dapan.daAnDung && exam.xemDapAn">❌</span>
+        </li>
+      </ul>
+      <hr />
+    </div>
   </div>
 </div>
 

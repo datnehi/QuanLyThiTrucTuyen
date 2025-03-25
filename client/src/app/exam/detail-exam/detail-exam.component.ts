@@ -31,8 +31,8 @@ export class DetailExamComponent{
   results: any[] = [];
   searchText: string = '';
   showOffcanvas = false;
-  exam: Exam | null = null;
-  course: Course | null = null;
+  exam!: Exam;
+  course!: Course;
   daNop = 0;
   chuaNop = 0;
   khongThi = 0;
@@ -52,10 +52,6 @@ export class DetailExamComponent{
 
   ngOnInit() {
     this.maKiThi = this.route.snapshot.paramMap.get('maKiThi') || '';
-    this.resultService.getResultsWithUser(this.maKiThi).subscribe((data) => {
-      this.results = data;
-      this.tinhThongKe();
-    });
     this.examService.getExambyMa(this.maKiThi).subscribe((data) => {
       this.exam = data;
       if (this.exam && this.exam.maMonHoc) {
@@ -63,6 +59,10 @@ export class DetailExamComponent{
           this.course = data;
         });
       }
+      this.resultService.getResultsWithUser(this.maKiThi, this.exam?.maMonHoc).subscribe((data) => {
+        this.results = data;
+        this.tinhThongKe();
+      });
     });
   }
 
@@ -111,10 +111,9 @@ export class DetailExamComponent{
   }
 
   tinhThongKe() {
-    this.daNop = this.results.filter(k => k.diem !== null && k.diem !== undefined).length;
-    this.chuaNop = this.results.filter(k => k.diem === null && k.thoigianvaothi !== null).length;
-    this.khongThi = this.results.filter(k => k.thoigianvaothi === null).length;
-
+    this.daNop = this.results.filter(k => k.diem != null && k.diem != undefined).length;
+    this.chuaNop = this.results.filter(k => k.diem == null && k.thoiGianVaoThi != null).length;
+    this.khongThi = this.results.filter(k => k.thoiGianVaoThi == null).length;
     let diemList = this.results.filter(k => k.diem !== null).map(k => k.diem);
     this.diemTrungBinh = diemList.length > 0 ? diemList.reduce((sum, d) => sum + d, 0) / diemList.length : 0;
     this.diemCaoNhat = diemList.length > 0 ? Math.max(...diemList) : 0;

@@ -21,10 +21,10 @@ import { format } from 'date-fns';
 export class UpdateExamComponent {
   thoiGianBatDau: string = '';
   thoiGianKetThuc: string = '';
-  monHoc: Course | null = null;
+  monHoc!: Course;
   selectedMonHoc: string = '';
   maKiThi: string = '';
-  exam: Exam | null = null;
+  exam!: Exam;
 
   constructor(private courseService: CourseService, private examService: ExamService,
     private route: ActivatedRoute, private router: Router) { }
@@ -86,6 +86,12 @@ export class UpdateExamComponent {
       }, (error) => {
         alert('Cập nhật kỳ thi thất bại! Vui lòng thử lại.');
       });
+    }
+  }
+
+  clickXemDA(){
+    if(this.exam && !this.exam.hienThiBaiLam){
+      this.exam.hienThiBaiLam = true;
     }
   }
 }

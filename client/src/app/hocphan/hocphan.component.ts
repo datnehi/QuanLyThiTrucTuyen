@@ -29,7 +29,7 @@ export class HocphanComponent {
   mamoi: string = '';
   activeTab = 'so-settings';
   showOffcanvas: boolean = false;
-  selectedMonHoc: Course | null = null;
+  selectedMonHoc!: Course;
   exams: Exam[] = []
 
   constructor(private accountService: AccountService, private courseService: CourseService,

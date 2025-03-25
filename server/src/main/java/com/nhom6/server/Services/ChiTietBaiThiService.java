@@ -2,9 +2,7 @@ package com.nhom6.server.Services;
 
 import com.nhom6.server.Model.ChiTietBaiThi;
 import com.nhom6.server.Model.DapAn;
-import com.nhom6.server.Model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +65,7 @@ public class ChiTietBaiThiService {
 
     // tạo câu hỏi ngẫu nhiên
     public List<Map<String, Object>> randomCauHoi(String maKetQua, String maMonHoc, int soCau) {
-        String sql = "SELECT TOP (?) * FROM cauhoi WHERE maMonHoc = ? ORDER BY NEWID()";
+        String sql = "SELECT TOP (?) * FROM cauhoi WHERE maMonHoc = ? AND trangthai = 0 ORDER BY NEWID()";
         List<Map<String, Object>> cauHoiList = jdbcTemplate.queryForList(sql, soCau, maMonHoc);
 
         // Lưu vào bảng chitietde
