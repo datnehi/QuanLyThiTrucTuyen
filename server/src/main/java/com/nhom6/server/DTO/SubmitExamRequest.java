@@ -6,7 +6,6 @@ public class SubmitExamRequest {
     private String maKiThi;
     private String id;
     private int timeUsed;
-    private Map<String, String> answers; // Key: maCauHoi, Value: dapAnChon
 
     @Override
     public String toString() {
@@ -14,10 +13,14 @@ public class SubmitExamRequest {
                 "maKiThi=" + maKiThi +
                 ", id=" + id +
                 ", timeUsed=" + timeUsed +
-                ", answers=" + answers +
                 '}';
     }
 
+    public SubmitExamRequest(String maKiThi, String id, int timeUsed) {
+        this.maKiThi = maKiThi;
+        this.id = id;
+        this.timeUsed = timeUsed;
+    }
 
     public String getMaKiThi() {
         return maKiThi;
@@ -43,11 +46,4 @@ public class SubmitExamRequest {
         this.timeUsed = timeUsed;
     }
 
-    public Map<String, String> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(Map<String, String> answers) {
-        this.answers = answers;
-    }
 }

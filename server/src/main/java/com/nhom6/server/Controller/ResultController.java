@@ -3,8 +3,10 @@ package com.nhom6.server.Controller;
 import com.nhom6.server.DTO.ResultDto;
 import com.nhom6.server.DTO.SubmitExamRequest;
 import com.nhom6.server.Model.ChiTietBaiThi;
+import com.nhom6.server.Model.Exam;
 import com.nhom6.server.Model.Result;
 import com.nhom6.server.Services.ChiTietBaiThiService;
+import com.nhom6.server.Services.ExamService;
 import com.nhom6.server.Services.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,10 @@ import java.util.Map;
 public class ResultController {
     @Autowired
     private ResultService resultService;
-    private ChiTietBaiThiService chiTietBaiThiService;
+
+    @Autowired
+    private ExamService examService;
+
 
     @GetMapping
     public ResponseEntity<List<Result>> getAllExams() {
@@ -50,6 +55,10 @@ public class ResultController {
     public ResponseEntity<?> startExam(@RequestParam String maKiThi, @RequestParam String id) {
         try {
             List<ChiTietBaiThi> listCauHoi = resultService.createExamResult(maKiThi, id);
+
+            Exam kiThi = examService.getExamByMa(maKiThi);
+
+            resultService.startExam(maKiThi, id, kiThi.getThoiGianThi());
 
             return ResponseEntity.ok(listCauHoi);
 

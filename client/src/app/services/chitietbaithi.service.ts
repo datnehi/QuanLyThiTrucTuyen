@@ -16,7 +16,7 @@ export class ChitietbaithiService {
     return this.http.get<ChiTietBaiThi[]>(`${this.baseUrl}/${maKetQua}`);
   }
 
-  getChiTietBaiThi(listCauHoi: any[]): Observable<ChiTietBaiThi[]> {
-    return this.http.post<ChiTietBaiThi[]>(this.baseUrl, listCauHoi);
+  saveAnswer(body: any): Observable<any>{
+    return this.http.post<any>(this.baseUrl + '/save', body);
   }
 }

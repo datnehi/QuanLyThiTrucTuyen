@@ -1,5 +1,6 @@
 package com.nhom6.server.Services;
 
+import com.nhom6.server.DTO.AnswerDto;
 import com.nhom6.server.Model.ChiTietBaiThi;
 import com.nhom6.server.Model.DapAn;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @Service
 public class ChiTietBaiThiService {
@@ -78,23 +80,47 @@ public class ChiTietBaiThiService {
     }
 
     //  Lấy danh sách câu hỏi
-    public List<ChiTietBaiThi> getCauHoi(List<Map<String, Object>> cauHoiList) {
+    public List<ChiTietBaiThi> getCauHoi(List<Map<String, Object>> cauHoiList, String maKetQua) {
         List<ChiTietBaiThi> danhSachCauHoi = new ArrayList<>();
+
+        // 🟢 Lấy toàn bộ danh sách đáp án đã chọn của bài thi trong 1 truy vấn duy nhất
+        String sqlDapAnChon = "SELECT macauhoi, dapanchon FROM chitietde WHERE maketqua = ?";
+        List<Map<String, Object>> dapAnChonList = jdbcTemplate.queryForList(sqlDapAnChon, maKetQua);
+
+        // 🔵 Đưa dữ liệu vào Map để tra cứu nhanh
+        Map<String, String> dapAnChonMap = new HashMap<>();
+        for (Map<String, Object> row : dapAnChonList) {
+            dapAnChonMap.put((String) row.get("macauhoi"), (String) row.get("dapanchon"));
+        }
+
+        // 🔥 Duyệt từng câu hỏi và lấy đáp án
         for (Map<String, Object> cauHoi : cauHoiList) {
             String maCauHoi = (String) cauHoi.get("macauhoi");
             String noiDungCauHoi = (String) cauHoi.get("noidung");
 
-            // Lấy đáp án
+            // 🟢 Lấy danh sách đáp án của câu hỏi hiện tại
             String sqlDapAn = "SELECT * FROM cautraloi WHERE maCauHoi = ?";
             List<DapAn> dapAns = jdbcTemplate.query(sqlDapAn, (rs, rowNum) -> new DapAn(
                     rs.getString("maCauTraLoi"),
                     rs.getString("noiDung"),
                     rs.getBoolean("laDapAn"),
-                    false
+                    rs.getString("maCauTraLoi").equals(dapAnChonMap.get(maCauHoi)) // ✅ Kiểm tra nếu đã chọn
             ), maCauHoi);
 
+            // 🟢 Thêm vào danh sách kết quả
             danhSachCauHoi.add(new ChiTietBaiThi(maCauHoi, noiDungCauHoi, dapAns, 0));
         }
-        return new ArrayList<>(danhSachCauHoi);
+
+        return danhSachCauHoi;
+    }
+
+    public void saveAnswer(AnswerDto answer) {
+        String sql = "UPDATE chitietde SET dapanchon = ? WHERE maketqua = ? AND macauhoi = ?";
+
+        jdbcTemplate.update(sql,
+                answer.getDapanchon(),
+                answer.getMaketqua(),
+                answer.getMacauhoi()
+        );
     }
 }

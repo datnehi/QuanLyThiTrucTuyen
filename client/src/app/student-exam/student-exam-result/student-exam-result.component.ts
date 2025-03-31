@@ -24,8 +24,8 @@ export class StudentExamResultComponent {
   maKiThi: string = "";
   user: any;
   examDetail: ChiTietBaiThi[] = [];
-  exam!: Exam;
-  course!: Course;
+  exam: Exam | null = null;
+  course: Course | null = null;
 
   constructor(private accountService: AccountService, private route: ActivatedRoute,
     private resultService: ResultService, private chiTietBaiThi: ChitietbaithiService,

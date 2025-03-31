@@ -6,11 +6,13 @@ import com.nhom6.server.Model.ChiTietBaiThi;
 import com.nhom6.server.Model.Exam;
 import com.nhom6.server.Model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 @Service
 public class ResultService {
@@ -20,6 +22,36 @@ public class ResultService {
     private ChiTietBaiThiService chiTietBaiThiService;
     @Autowired
     private  ExamService examService;
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
+    private final ConcurrentHashMap<String, ScheduledFuture<?>> runningTimers = new ConcurrentHashMap<>();
+    private String generateKey(String maKiThi, String id) {
+        return maKiThi + "_" + id;
+    }
+
+    // Bắt đầu bài thi, tạo bộ đếm ngược
+    public void startExam(String maKiThi, String id, int durationMinutes) {
+        String key = generateKey(maKiThi, id);
+        // Kiểm tra nếu đã có bộ đếm cũ thì không tạo mới
+        if (runningTimers.containsKey(key)) {
+            return;
+        }
+        Runnable autoSubmitTask = () -> autoSubmitExam(maKiThi, id, durationMinutes);
+        ScheduledFuture<?> scheduledTask = scheduler.schedule(autoSubmitTask, durationMinutes + 1 , TimeUnit.MINUTES);
+
+        if (scheduledTask != null) {
+            runningTimers.put(key, scheduledTask);
+        }
+    }
+
+    // Nếu hết thời gian mà chưa nộp thì tự động nộp bài
+    private void autoSubmitExam(String maKiThi, String id, int durationMinutes) {
+        String key = generateKey(maKiThi, id);
+        if (runningTimers.containsKey(key)) { // Kiểm tra nếu còn đếm ngược
+            runningTimers.remove(key); // Xóa bộ đếm ngược
+            submitExam(new SubmitExamRequest(maKiThi, id, durationMinutes)); // Gọi hàm nộp bài
+        }
+    }
 
     public List<Result> getAllResults() {
         String sql = "SELECT * FROM ketqua";
@@ -79,12 +111,13 @@ public class ResultService {
     public Result checkKetQua(String maKiThi, String id) {
         String sql = "SELECT * FROM ketqua WHERE maKiThi = ? AND id = ?";
         try {
-            List<Result> results = jdbcTemplate.query(sql, new Object[]{maKiThi, id}, new BeanPropertyRowMapper<>(Result.class));
-            return results.isEmpty() ? null : results.get(0);
-        } catch (Exception e) {
+            return jdbcTemplate.queryForObject(sql, new Object[]{maKiThi, id}, new BeanPropertyRowMapper<>(Result.class));
+        } catch (EmptyResultDataAccessException e) {
+            // Không có kết quả, trả về null
             return null;
         }
     }
+
 
     public List<ChiTietBaiThi> createExamResult(String maKiThi, String id) {
         // 🔍 Kiểm tra kỳ thi có tồn tại không
@@ -92,8 +125,6 @@ public class ResultService {
 
         // 🔍 Kiểm tra xem sinh viên đã có kết quả thi chưa
         Result existingKetQua = this.checkKetQua(kiThi.getMaKiThi(), id);
-
-        // Nếu chưa có, tạo mới
         String maKetQua = existingKetQua == null ? this.createResult(maKiThi, id) : existingKetQua.getMaKetQua();
         List<String> existingCauHoiIds = chiTietBaiThiService.checkCauHoi(maKetQua);
         List<Map<String, Object>> cauHoiList;
@@ -107,33 +138,33 @@ public class ResultService {
             // Nếu chưa có, lấy ngẫu nhiên theo môn học
             cauHoiList = chiTietBaiThiService.randomCauHoi(maKetQua, kiThi.getMaMonHoc(), kiThi.getSoCau());
         }
-        return chiTietBaiThiService.getCauHoi(cauHoiList);
+        return chiTietBaiThiService.getCauHoi(cauHoiList, maKetQua);
     }
 
     public void submitExam(SubmitExamRequest request) {
-        // Kiểm tra hoặc tạo kết quả mới
+        if (runningTimers.containsKey(request.getId())) {
+            runningTimers.get(request.getId()).cancel(false); // Hủy bộ đếm ngược
+            runningTimers.remove(request.getId()); // Xóa khỏi danh sách
+        }
+        // Kiểm tra
         Result result = checkKetQua(request.getMaKiThi(), request.getId());
         if (result == null) {
             throw new IllegalArgumentException("Không tìm thấy kết quả thi.");
         }
 
         Exam exam = examService.getExamByMa(request.getMaKiThi());
+
+        // Lấy danh sách đáp án đã chọn từ bảng chitietde
+        String selectQuery = "SELECT macauhoi, dapanchon FROM chitietde WHERE maketqua = ?";
+        List<Map<String, Object>> answers = jdbcTemplate.queryForList(selectQuery, result.getMaKetQua());
+
         int correctCount = 0;
 
-        for (Map.Entry<String, String> entry : request.getAnswers().entrySet()) {
-            String maCauHoi = entry.getKey();
-            String dapAnChon = entry.getValue();
+        for (Map<String, Object> answer : answers) {
+            String macauhoi = (String) answer.get("macauhoi");
+            String dapAnChon = (String) answer.get("dapanchon");
 
-            // Nếu dapAnChon null, bỏ qua (tức là không chọn câu nào)
             if (dapAnChon == null || dapAnChon.isEmpty()) continue;
-
-            // Kiểm tra xem đã có dòng nào trong chitietde chưa, nếu chưa thì INSERT trước
-            String insertQuery = "MERGE INTO chitietde AS target " +
-                    "USING (SELECT ? AS maketqua, ? AS macauhoi, ? AS dapanchon) AS source " +
-                    "ON target.maketqua = source.maketqua AND target.macauhoi = source.macauhoi " +
-                    "WHEN MATCHED THEN UPDATE SET target.dapanchon = source.dapanchon " +
-                    "WHEN NOT MATCHED THEN INSERT (maketqua, macauhoi, dapanchon) VALUES (source.maketqua, source.macauhoi, source.dapanchon);";
-            jdbcTemplate.update(insertQuery, result.getMaKetQua(), maCauHoi, dapAnChon);
 
             // Kiểm tra đáp án đúng
             String checkQuery = "SELECT COUNT(*) FROM cautraloi WHERE macautraloi = ? AND ladapan = 1";
@@ -144,9 +175,10 @@ public class ResultService {
         // Tính điểm
         float diem = (10.0f / exam.getSoCau()) * correctCount;
 
-        // Cập nhật ketqua
+        // Cập nhật bảng ketqua
         String updateKetQua = "UPDATE ketqua SET diem = ?, socaudung = ?, thoigianlambai = ? WHERE maketqua = ?";
         jdbcTemplate.update(updateKetQua, diem, correctCount, request.getTimeUsed(), result.getMaKetQua());
     }
+
 }
 
