@@ -1,6 +1,6 @@
 <div class="d-flex vh-100" >
   <div *ngIf="userToken && !isExamPage" class="sidebar">
-    <app-nav></app-nav>
+    <app-sidebar></app-sidebar>
   </div>
   <div class="d-flex flex-column flex-grow-1">
     <header *ngIf="userToken && !isExamPage">
@@ -13,3 +13,7 @@
     </main>
   </div>
 </div>
+<!--
+check số câu có trong môn học khi tạo exam
+làm thông báo, sinh viên ở trang của sinh viên
+-->

@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Result } from '../models/result';
-import { forkJoin, map, Observable } from 'rxjs';
-import { Account } from '../models/account';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,28 +18,34 @@ export class ResultService {
       .set('maKiThi', maKiThi)
       .set('maMonHoc', maMonHoc);
 
-    return this.http.get<any[]>(`${this.resultUrl}/getall`, { params }).pipe(
-      map(results =>
-        results?.map(result => ({
+    return this.http.get<any>(`${this.resultUrl}/getall`, { params }).pipe(
+      map(response => {
+        const results = response.data || [];
+        return results.map((result: any) => ({
           ...result,
           id: result.id,
           hoten: result.hoten,
           diem: result.diem ?? null,
           thoiGianVaoThi: result.thoiGianVaoThi ?? null,
           thoiGianLamBai: result.thoiGianLamBai ?? null
-        })))
+        }));
+      })
     );
   }
 
   getResultByMaKiThiAndId(maKiThi: string, id: string): Observable<Result>{
-    return this.http.get<Result>(`${this.resultUrl}/${maKiThi}/${id}`);
+    return this.http.get<{data: Result}>(`${this.resultUrl}/${maKiThi}/${id}`).pipe(
+      map(res => res.data)
+    );
   }
 
   createResult(maKiThi: string, id: string): Observable<any[]> {
     const params = new HttpParams()
       .set('maKiThi', maKiThi)
       .set('id', id);
-      return this.http.post<any[]>(`${this.resultUrl}/create-exam`, {}, { params });
+      return this.http.post<{data: any[]}>(`${this.resultUrl}/create-exam`, {}, { params }).pipe(
+        map(res => res.data)
+      );
   }
 
   submitExam(data: any): Observable<any> {

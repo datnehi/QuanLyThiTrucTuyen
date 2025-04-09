@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { NavComponent } from './nav/nav.component';
 import { HeaderComponent } from "./header/header.component";
 import { AccountService } from './services/account.service';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,7 @@ import { AccountService } from './services/account.service';
     RouterOutlet,
     HttpClientModule,
     CommonModule,
-    NavComponent,
+    SidebarComponent,
     HeaderComponent,
   ],
   templateUrl: './app.component.html',
