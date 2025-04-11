@@ -19,12 +19,13 @@ create table monhoc(
 	giangvien nvarchar(100),
 	sotinchi int,
 	ghichu nvarchar(255),
-	trangthai bit default 0,
+	trangthai bit default 0
 );
 create table thongbao(
 	mathongbao char (10) primary key,
 	noidung nvarchar(255) not null,
-	thoigiantao datetime not null
+	thoigiantao datetime not null,
+	trangthai bit default 0
 );
 create table cauhoi(
 	macauhoi char(10) primary key,
@@ -106,10 +107,10 @@ INSERT INTO monhoc (mamonhoc, tenmonhoc, giangvien, sotinchi, ghichu, trangthai)
 ('84106', N'Lập trình ứng dụng mạng',N'Nguyễn Văn C', 4, null, 0);
 
 -- Thêm dữ liệu vào bảng thongbao
-INSERT INTO thongbao (mathongbao, noidung, thoigiantao) VALUES
-('0000000001', N'Lịch thi cuối kỳ đã được cập nhật.', '2025-02-25 10:00:00'),
-('0000000002', N'Hạn chót đăng ký thi là 01/03/2025.', '2025-02-27 08:30:00'),
-('0000000003', N'Khai giảng khóa học mới.', '2025-03-01 14:00:00');
+INSERT INTO thongbao (mathongbao, noidung, thoigiantao,trangthai) VALUES
+('0000000001', N'Lịch thi cuối kỳ đã được cập nhật.', '2025-02-25 10:00:00',0),
+('0000000002', N'Hạn chót đăng ký thi là 01/03/2025.', '2025-02-27 08:30:00',0),
+('0000000003', N'Khai giảng khóa học mới.', '2025-03-01 14:00:00',0);
 
 -- Thêm dữ liệu vào bảng cauhoi
 INSERT INTO cauhoi (macauhoi, noidung, mamonhoc, trangthai) VALUES
