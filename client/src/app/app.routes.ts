@@ -23,6 +23,7 @@ import { StudentExamsComponent } from './student-exam/student-exams/student-exam
 import { StudentExamDetailComponent } from './student-exam/student-exam-detail/student-exam-detail.component';
 import { StudentExamStartComponent } from './student-exam/student-exam-start/student-exam-start.component';
 import { StudentExamResultComponent } from './student-exam/student-exam-result/student-exam-result.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 
 export const routes: Routes = [
@@ -76,5 +77,5 @@ export const routes: Routes = [
       { path: 'result/:maKiThi', component: StudentExamResultComponent},
     ]
   },
-  { path: '**', redirectTo: 'login' }
+  { path: '**', component: NotFoundComponent }
 ];

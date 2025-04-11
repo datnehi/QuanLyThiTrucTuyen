@@ -1,73 +1,96 @@
-<form class="row g-0 flex-md-grow-1 h-100" style="margin: -1.75rem -1.75rem 0px;" (ngSubmit)="create()">
+<form [formGroup]="examForm" (ngSubmit)="create()" class="row g-0 flex-md-grow-1 h-100" style="margin: -1.75rem -1.75rem 0px;">
   <div class="col-md-4 col-lg-5 col-xl-3 order-md-1 bg-white">
     <div class="px-2">
       <div class="d-md-none push">
-        <button type="button" class="btn w-100 btn-alt-primary">
-          CẤU HÌNH
-        </button>
+        <button type="button" class="btn w-100 btn-alt-primary">CẤU HÌNH</button>
       </div>
       <div class="d-none d-md-block push">
         <h3 class="fs-5">CẤU HÌNH</h3>
         <div class="form-check form-switch mb-2">
-          <input class="form-check-input" type="checkbox" id="xembailam" name="xembailam">
+          <input class="form-check-input" type="checkbox" formControlName="hienThiBaiLam" id="hienThiBaiLam" [attr.disabled]="examForm.get('xemDapAn')?.value === true ? '' : null">
           <label class="form-check-label" for="xembailam">Xem bài làm khi thi xong</label>
         </div>
         <div class="form-check form-switch mb-2">
-          <input class="form-check-input" type="checkbox" id="xemdiem" name="xemdiem">
+          <input class="form-check-input" type="checkbox" formControlName="xemDiem" id="xemDiem">
           <label class="form-check-label" for="xemdiem">Xem điểm sau khi thi xong</label>
         </div>
         <div class="form-check form-switch mb-2">
-          <input class="form-check-input" type="checkbox" id="xemda" name="xemda">
+          <input class="form-check-input" type="checkbox" formControlName="xemDapAn" id="xemDapAn" (click)="clickXemDA()">
           <label class="form-check-label" for="xemda">Xem đáp án khi thi xong</label>
         </div>
       </div>
     </div>
   </div>
+
   <div class="col-md-8 col-lg-7 col-xl-9 order-md-0" style="padding: 1.75rem 1.75rem 0px;">
     <div class="bg-white p-3">
       <h3 class="block-title">Tạo mới kì thi</h3>
+
       <div class="mb-4">
         <label class="form-label" for="name-exam">Tên kì thi</label>
-        <input type="text" class="form-control" id="name-exam" name="name-exam" placeholder="Nhập tên kì thi">
+        <input type="text" class="form-control" formControlName="tenKiThi" id="name-exam" placeholder="Nhập tên kì thi">
+        <div *ngIf="examForm.get('tenKiThi')?.touched && examForm.get('tenKiThi')?.invalid" class="text-danger">Không được để trống</div>
       </div>
+
       <div class="row mb-4">
         <label class="form-label">Thời gian bắt đầu</label>
         <div class="row">
           <div class="col-xl-6">
-            <input type="text" id="time-start" class="form-control" placeholder="Từ">
+            <input type="text" id="time-start" class="form-control" formControlName="thoiGianBatDau" placeholder="Từ">
+            <div *ngIf="examForm.get('thoiGianBatDau')?.touched && examForm.get('thoiGianBatDau')?.invalid" class="text-danger">
+              Không được để trống
+            </div>
           </div>
           <div class="col-xl-6">
-            <input type="text" id="time-end" class="form-control" placeholder="Đến">
+            <input type="text" id="time-end" class="form-control" formControlName="thoiGianKetThuc" placeholder="Đến">
+            <div *ngIf="examForm.get('thoiGianKetThuc')?.touched && examForm.get('thoiGianKetThuc')?.invalid" class="text-danger">
+              Không được để trống
+            </div>
           </div>
         </div>
+
+        <div *ngIf="examForm.errors?.['invalidTimeRange'] && (examForm.get('thoiGianBatDau')?.touched || examForm.get('thoiGianKetThuc')?.touched)" class="text-danger mt-2">
+          Thời gian kết thúc phải lớn hơn thời gian bắt đầu
+        </div>
       </div>
+
+
       <div class="mb-4">
         <div class="input-group">
           <span class="input-group-text">Thời gian làm bài</span>
-          <input type="number" class="form-control text-center" id="exam-time" name="exam-time" placeholder="00">
+          <input type="number" class="form-control text-center" formControlName="thoiGianThi" placeholder="00">
           <span class="input-group-text">phút</span>
         </div>
+        <div *ngIf="examForm.get('thoiGianThi')?.touched && examForm.get('thoiGianThi')?.invalid" class="text-danger">
+          <div *ngIf="examForm.get('thoiGianThi')?.errors?.['required']">Không được để trống</div>
+          <div *ngIf="examForm.get('thoiGianThi')?.errors?.['min']">Thời gian phải lớn hơn 0 phút</div>
+        </div>
       </div>
+
       <div class="mb-4">
         <h3>Môn học</h3>
-        <div>
-          <select class="form-select" [(ngModel)]="selectedMonHoc" name="monHoc" style="width: 100%;">
-            <option value="" disabled selected>Chọn môn học...</option>
-            <option *ngFor="let mon of monHocList" [value]="mon.maMonHoc">
-              {{ mon.maMonHoc }} - {{ mon.tenMonHoc }}
-            </option>
-          </select>
-        </div>
+        <select class="form-select" formControlName="maMonHoc" style="width: 100%;">
+          <option value="" disabled>Chọn môn học...</option>
+          <option *ngFor="let mon of monHocList" [value]="mon.maMonHoc">{{ mon.maMonHoc }} - {{ mon.tenMonHoc }}</option>
+        </select>
+        <div *ngIf="examForm.get('maMonHoc')?.touched && examForm.get('maMonHoc')?.invalid" class="text-danger">Không được để trống</div>
       </div>
-      <div class="mb-4 ">
+
+      <div class="mb-4">
         <div class="col-4">
           <label class="form-label" for="socau">Số câu</label>
-          <input type="number" class="form-control" name="socau" id="socau">
+          <input type="number" class="form-control" formControlName="soCau" id="socau">
+          <div *ngIf="examForm.get('soCau')?.touched && examForm.get('soCau')?.invalid" class="text-danger">
+            <div *ngIf="examForm.get('soCau')?.errors?.['required']">Không được để trống</div>
+            <div *ngIf="examForm.get('soCau')?.errors?.['min']">Giá trị phải lớn hơn 0</div>
+          </div>
         </div>
       </div>
+
       <div class="mb-4">
-        <button type="submit" class="btn btn-hero btn-primary" id="btn-add-test"><i class="fa fa-fw fa-plus me-1"></i>
-          Tạo kì thi</button>
+        <button type="submit" class="btn btn-hero btn-primary" id="btn-add-test">
+          <i class="fa fa-fw fa-plus me-1"></i> Tạo kì thi
+        </button>
       </div>
     </div>
   </div>

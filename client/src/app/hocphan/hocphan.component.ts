@@ -81,7 +81,7 @@ export class HocphanComponent {
     this.selectedMonHoc = monhoc; // Gán dữ liệu học phần
     this.showOffcanvas = true; // Hiển thị offcanvas
     if (this.selectedMonHoc) {
-      this.examService.getExamsByName(this.selectedMonHoc?.maMonHoc).subscribe((data) => {
+      this.examService.getExamsByMaMonHoc(this.selectedMonHoc?.maMonHoc).subscribe((data) => {
         this.exams = data;
       })
     }

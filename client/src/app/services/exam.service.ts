@@ -15,15 +15,21 @@ export class ExamService {
   constructor(private http: HttpClient) { }
 
   getExams(): Observable<Exam[]> {
-    return this.http.get<Exam[]>(this.baseUrl);
+    return this.http.get<{data: Exam[]}>(this.baseUrl).pipe(
+      map(res => res.data)
+    );
   }
 
   getExambyMa(maKiThi: string): Observable<Exam> {
-    return this.http.get<Exam>(`${this.baseUrl}/${maKiThi}`);
+    return this.http.get<{data: Exam}>(`${this.baseUrl}/${maKiThi}`).pipe(
+      map(res => res.data)
+    );
   }
 
-  getExamsByName(maMonHoc: string): Observable<Exam[]> {
-    return this.http.get<Exam[]>(`${this.baseUrl}/mamonhoc/${maMonHoc}`);
+  getExamsByMaMonHoc(maMonHoc: string): Observable<Exam[]> {
+    return this.http.get<{data: Exam[]}>(`${this.baseUrl}/mamonhoc/${maMonHoc}`).pipe(
+      map(res => res.data)
+    );
   }
 
   createExam(exam: Exam): Observable<Exam> {
@@ -35,19 +41,18 @@ export class ExamService {
   }
 
   deleteExam(maKiThi: string): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl + '/delete'}/${maKiThi}`);
+    return this.http.delete<any>(`${this.baseUrl}/${maKiThi}`);
   }
 
   getExamsWithCourses(): Observable<Exam[]> {
     return forkJoin({
-      exams: this.http.get<Exam[]>(this.baseUrl),
+      exams: this.http.get<{ data: Exam[] }>(this.baseUrl).pipe(
+        map(res => res.data)
+      ),
       courses: this.http.get<Course[]>(this.courseUrl)
     }).pipe(
       map(({ exams, courses }) => {
-        // Chuyển danh sách subjects thành object để tra cứu nhanh
         const courseMap = new Map(courses.map(s => [s.maMonHoc, s.tenMonHoc]));
-
-        // Thêm `tenMonHoc` vào mỗi exam
         return exams.map(exam => ({
           ...exam,
           tenMonHoc: courseMap.get(exam.maMonHoc) || 'Không xác định'
@@ -58,14 +63,13 @@ export class ExamService {
 
   getExamsWithCoursesById(id: string): Observable<Exam[]> {
     return forkJoin({
-      exams: this.http.get<Exam[]>(`${this.baseUrl}/id/${id}`),
+      exams: this.http.get<{ data: Exam[] }>(`${this.baseUrl}/sinhvien/${id}`).pipe(
+        map(res => res.data)
+      ),
       courses: this.http.get<Course[]>(this.courseUrl)
     }).pipe(
       map(({ exams, courses }) => {
-        // Chuyển danh sách subjects thành object để tra cứu nhanh
         const courseMap = new Map(courses.map(s => [s.maMonHoc, s.tenMonHoc]));
-
-        // Thêm `tenMonHoc` vào mỗi exam
         return exams.map(exam => ({
           ...exam,
           tenMonHoc: courseMap.get(exam.maMonHoc) || 'Không xác định'

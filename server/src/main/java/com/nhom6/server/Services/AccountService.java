@@ -6,8 +6,10 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -15,12 +17,12 @@ public class AccountService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public Map<String, Object> login(String id, String matkhau) {
+    public Optional<Map<String, Object>> login(String id, String matkhau) {
         String sql = "SELECT * FROM nguoidung WHERE id = ? AND matkhau = ? AND trangthai = 0";
         try {
-            return jdbcTemplate.queryForMap(sql, id, matkhau);
+            return Optional.of(jdbcTemplate.queryForMap(sql, id, matkhau));
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -29,7 +31,7 @@ public class AccountService {
         try {
             return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Account.class));
         } catch (Exception e) {
-            return null; // Trả về danh sách rỗng nếu có lỗi
+            return Collections.emptyList();
         }
     }
 

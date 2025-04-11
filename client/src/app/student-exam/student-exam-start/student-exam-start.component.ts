@@ -1,3 +1,4 @@
+import { response } from 'express';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { AccountService } from '../../services/account.service';
@@ -20,14 +21,13 @@ import { Result } from '../../models/result';
 export class StudentExamStartComponent {
   user: any;
   questions: any[] = []; // Danh sách câu hỏi
-  selectedAnswers: { [key: string]: string } = {}; // Lưu đáp án đã chọn
   maKiThi: string = '';
   exam!: Exam;
   time!: number;
   result!: Result;
 
   constructor(private resultService: ResultService, private accountService: AccountService, private route: ActivatedRoute,
-    private router: Router, private examService: ExamService) { }
+    private router: Router, private examService: ExamService, private chiTietBaiThi: ChitietbaithiService) { }
 
   ngOnInit() {
     this.maKiThi = this.route.snapshot.paramMap.get('maKiThi') || '';
@@ -41,12 +41,9 @@ export class StudentExamStartComponent {
 
     this.loadExamData();
 
-    this.loadTime();
-    // Khôi phục đáp án đã chọn từ sessionStorage
-    const savedAnswers = sessionStorage.getItem(`selectedAnswers_${this.maKiThi}`);
-    if (savedAnswers) {
-      this.selectedAnswers = JSON.parse(savedAnswers);
-    }
+    setTimeout(() => {
+      this.loadTime();
+    }, 100);
   }
 
   loadExamData() {
@@ -96,8 +93,12 @@ export class StudentExamStartComponent {
 
 
   selectAnswer(questionId: string, answerId: string) {
-    this.selectedAnswers[questionId] = answerId;
-    sessionStorage.setItem(`selectedAnswers_${this.maKiThi}`, JSON.stringify(this.selectedAnswers));
+    const body = {
+      maketqua: this.result.maKetQua,
+      macauhoi: questionId,
+      dapanchon: answerId,
+    };
+    this.chiTietBaiThi.saveAnswer(body).subscribe();
   }
 
   submitExam() {
@@ -125,13 +126,10 @@ export class StudentExamStartComponent {
       maKiThi: this.maKiThi,
       id: this.user.id,
       timeUsed: (this.exam.thoiGianThi * 60 - this.time) / 60, // Chuyển đổi về phút
-      answers: this.selectedAnswers
     };
 
     this.resultService.submitExam(resultData).subscribe(
       (response) => {
-        sessionStorage.removeItem(`selectedAnswers_${this.maKiThi}`);
-
         setTimeout(() => { // Đảm bảo xóa hoàn toàn trước khi điều hướng
           this.router.navigate(['/student-exams/result', this.maKiThi]);
         }, 100);

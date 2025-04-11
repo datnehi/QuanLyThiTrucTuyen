@@ -4,7 +4,7 @@ import { CourseService } from '../../services/course.service';
 import { ExamService } from '../../services/exam.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Exam } from '../../models/exam';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Course } from '../../models/course';
 import { format } from 'date-fns';
@@ -21,10 +21,10 @@ import { format } from 'date-fns';
 export class UpdateExamComponent {
   thoiGianBatDau: string = '';
   thoiGianKetThuc: string = '';
-  monHoc!: Course;
+  monHoc: Course | null = null;
   selectedMonHoc: string = '';
   maKiThi: string = '';
-  exam!: Exam;
+  exam: Exam | null = null;
 
   constructor(private courseService: CourseService, private examService: ExamService,
     private route: ActivatedRoute, private router: Router) { }
@@ -47,11 +47,6 @@ export class UpdateExamComponent {
   }
 
   initFlatpickr() {
-    if (!document.querySelector('#time-start') || !document.querySelector('#time-end')) {
-      console.warn("Không tìm thấy input thời gian.");
-      return;
-    }
-
     flatpickr('#time-start', {
       enableTime: true,
       time_24hr: true,
@@ -68,6 +63,7 @@ export class UpdateExamComponent {
       enableTime: true,
       time_24hr: true,
       dateFormat: 'Y-m-d H:i:ss',
+      minDate: this.exam?.thoiGianBatDau || '',
       defaultDate: this.exam?.thoiGianKetThuc || '',
       onChange: (selectedDates, dateStr) => {
         if (this.exam) {
@@ -77,14 +73,14 @@ export class UpdateExamComponent {
     });
   }
 
-  update() {
+  update(form: NgForm) {
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
     if (this.exam) {
-      this.exam.tenKiThi = (document.getElementById('name-exam') as HTMLInputElement).value;
-      this.exam.thoiGianKetThuc = (document.getElementById('time-end') as HTMLInputElement).value;
       this.examService.updateExam(this.maKiThi, this.exam).subscribe((res) => {
         this.router.navigate(['/exams']);
-      }, (error) => {
-        alert('Cập nhật kỳ thi thất bại! Vui lòng thử lại.');
       });
     }
   }

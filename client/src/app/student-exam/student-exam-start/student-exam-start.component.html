@@ -24,7 +24,7 @@
                  type="radio"
                  [name]="'q' + i"
                  [value]="answer.maCauTraLoi"
-                 [checked]="selectedAnswers[question.maCauHoi] === answer.maCauTraLoi"
+                 [checked]="answer.dapAnChon"
                  (change)="selectAnswer(question.maCauHoi, answer.maCauTraLoi)">
           <label class="form-check-label">{{ answer.noiDungDapAn }}</label>
         </div>
