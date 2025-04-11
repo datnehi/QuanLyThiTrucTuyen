@@ -4,13 +4,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Exam } from '../../models/exam';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-exams',
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    NgbModule
   ],
   templateUrl: './exams.component.html',
   styleUrl: './exams.component.css'

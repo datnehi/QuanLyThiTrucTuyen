@@ -1,9 +1,9 @@
 <div class="d-flex vh-100" >
-  <div *ngIf="userToken" class="sidebar">
-    <app-nav></app-nav>
+  <div *ngIf="userToken && !isExamPage" class="sidebar">
+    <app-sidebar></app-sidebar>
   </div>
   <div class="d-flex flex-column flex-grow-1">
-    <header *ngIf="userToken">
+    <header *ngIf="userToken && !isExamPage">
       <div class="content-header p-2" style="height: 4.25rem; align-content: center;">
         <app-header></app-header>
       </div>
@@ -13,3 +13,7 @@
     </main>
   </div>
 </div>
+<!--
+check số câu có trong môn học khi tạo exam
+làm thông báo, sinh viên ở trang của sinh viên
+-->

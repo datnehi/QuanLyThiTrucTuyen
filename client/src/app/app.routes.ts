@@ -14,8 +14,11 @@ import { CreateExamComponent } from './exam/create-exam/create-exam.component';
 import { UpdateExamComponent } from './exam/update-exam/update-exam.component';
 import { DetailExamComponent } from './exam/detail-exam/detail-exam.component';
 import { HocphanComponent } from './hocphan/hocphan.component';
-import { StudentExamsComponent } from './student-exams/student-exams.component';
-import { ExamStartComponent } from './exam-start/exam-start.component';
+import { StudentExamsComponent } from './student-exam/student-exams/student-exams.component';
+import { StudentExamDetailComponent } from './student-exam/student-exam-detail/student-exam-detail.component';
+import { StudentExamStartComponent } from './student-exam/student-exam-start/student-exam-start.component';
+import { StudentExamResultComponent } from './student-exam/student-exam-result/student-exam-result.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -55,11 +58,18 @@ export const routes: Routes = [
   },
 
   { path: 'courses', component: HocphanComponent, canActivate: [authGuard],},
-  { path: 'student-exams', component: StudentExamsComponent, canActivate: [authGuard],},
-  { path: 'student-exams/start/:maKetQua', component: ExamStartComponent, canActivate: [authGuard],},
-
-
   { path: 'questions', component: QuestionsComponent, canActivate: [authGuard]},
-
-  { path: '**', redirectTo: 'login' }
+  { path: 'users', component: UsersComponent, canActivate: [authGuard]},
+  {
+    path: 'student-exams',
+    runGuardsAndResolvers: 'always',
+    canActivate: [authGuard],
+    children: [
+      { path: '', component: StudentExamsComponent, },
+      { path: 'detail/:maKiThi', component: StudentExamDetailComponent, },
+      { path: 'start/:maKiThi', component: StudentExamStartComponent},
+      { path: 'result/:maKiThi', component: StudentExamResultComponent},
+    ]
+  },
+  { path: '**', component: NotFoundComponent }
 ];

@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Result } from '../models/result';
-import { forkJoin, map, Observable } from 'rxjs';
-import { Account } from '../models/account';
-import { Course } from '../models/course';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,22 +13,43 @@ export class ResultService {
 
   constructor(private http: HttpClient) { }
 
-  getResultsWithCourses(maKiThi: string): Observable<Result[]> {
-    return forkJoin({
-      results: this.http.get<Result[]>(`${this.resultUrl}/${maKiThi}`),
-      users: this.http.get<Account[]>(this.userUrl),
-    }).pipe(
-      map(({ results, users }) => {
-        if (!results || !Array.isArray(results)) {
-          return [];
-        }
-        const userMap = new Map(users.map(s => [s.id, s.hoten]));
+  getResultsWithUser(maKiThi: string, maMonHoc: string): Observable<any[]> {
+    const params = new HttpParams()
+      .set('maKiThi', maKiThi)
+      .set('maMonHoc', maMonHoc);
 
-        return results.map(results => ({
-          ...results,
-          hoten: userMap.get(results.id) || 'Không xác định',
+    return this.http.get<any>(`${this.resultUrl}/getall`, { params }).pipe(
+      map(response => {
+        const results = response.data || [];
+        return results.map((result: any) => ({
+          ...result,
+          id: result.id,
+          hoten: result.hoten,
+          diem: result.diem ?? null,
+          thoiGianVaoThi: result.thoiGianVaoThi ?? null,
+          thoiGianLamBai: result.thoiGianLamBai ?? null
         }));
       })
     );
   }
+
+  getResultByMaKiThiAndId(maKiThi: string, id: string): Observable<Result>{
+    return this.http.get<{data: Result}>(`${this.resultUrl}/${maKiThi}/${id}`).pipe(
+      map(res => res.data)
+    );
+  }
+
+  createResult(maKiThi: string, id: string): Observable<any[]> {
+    const params = new HttpParams()
+      .set('maKiThi', maKiThi)
+      .set('id', id);
+      return this.http.post<{data: any[]}>(`${this.resultUrl}/create-exam`, {}, { params }).pipe(
+        map(res => res.data)
+      );
+  }
+
+  submitExam(data: any): Observable<any> {
+    return this.http.post(`${this.resultUrl}/submit-exam`, data);
+  }
+
 }

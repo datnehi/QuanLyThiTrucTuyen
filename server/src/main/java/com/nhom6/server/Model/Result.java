@@ -8,11 +8,11 @@ public class Result {
     private String maKetQua;
     private String maKiThi;
     private String id;
-    private float diem;
+    private Float diem;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime thoiGianVaoThi;
-    private float thoiGianLamBai;
-    private int soCauDung;
+    private Float thoiGianLamBai;
+    private Integer soCauDung;
 
     public String getMaKetQua() {
         return maKetQua;
@@ -38,11 +38,11 @@ public class Result {
         this.id = id;
     }
 
-    public float getDiem() {
+    public Float getDiem() {
         return diem;
     }
 
-    public void setDiem(float diem) {
+    public void setDiem(Float diem) {
         this.diem = diem;
     }
 
@@ -54,19 +54,19 @@ public class Result {
         this.thoiGianVaoThi = thoiGianVaoThi;
     }
 
-    public float getThoiGianLamBai() {
+    public Float getThoiGianLamBai() {
         return thoiGianLamBai;
     }
 
-    public void setThoiGianLamBai(float thoiGianLamBai) {
+    public void setThoiGianLamBai(Float thoiGianLamBai) {
         this.thoiGianLamBai = thoiGianLamBai;
     }
 
-    public int getSoCauDung() {
+    public Integer getSoCauDung() {
         return soCauDung;
     }
 
-    public void setSoCauDung(int soCauDung) {
+    public void setSoCauDung(Integer soCauDung) {
         this.soCauDung = soCauDung;
     }
 }

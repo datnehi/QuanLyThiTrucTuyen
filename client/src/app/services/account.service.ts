@@ -33,8 +33,7 @@ export class AccountService {
   }
 
   clearUser() {
-    sessionStorage.removeItem('userToken');
-    sessionStorage.removeItem('user');
+    sessionStorage.clear();
     this.userTokenSubject.next(null);
     this.userInfoSubject.next(null);
   }

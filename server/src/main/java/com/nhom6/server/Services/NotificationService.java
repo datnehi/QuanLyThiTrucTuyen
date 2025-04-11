@@ -1,56 +1,52 @@
 package com.nhom6.server.Services;
 
 import com.nhom6.server.Model.Notification;
-import lombok.Data;
+import com.nhom6.server.Repon.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+
 
 @Service
 public class NotificationService {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-    // lấy thông tin bảng thông báo
-    public List<Notification> getALLNotification(){
-        String sql=" SELECT*FROM thongbao";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Notification.class));
-    }
-    // tạo thông báo mới
-    public Notification createNotification(Notification notification) {
-        String sql = "INSERT INTO thongbao (maThongBao, noiDung, thoiGianTao) VALUES (?, ?, ?)";
-         jdbcTemplate.update(sql,
-                notification.getMaThongBao(),
-                notification.getNoiDung(),
-                notification.getThoiGianTao()
-        );
-         return notification;
-    }
-    //cập nhật thông báo
-    public Notification updateNotification(String maThongBao, Notification notificationDetails) {
-        String sql = "UPDATE thongbao SET noiDung = ?, thoiGianTao = ? WHERE maThongBao = ?";
-       int rowsAffected= jdbcTemplate.update(sql,
-                notificationDetails.getNoiDung(),
-                notificationDetails.getThoiGianTao(),
-                maThongBao
-        );
-        if (rowsAffected == 0) {
-            throw new RuntimeException("Không tìm thấy thông báo!");
-        }
 
-        return getNotificationById(maThongBao);
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    // Lấy tất cả thông báo
+
+    public List<Notification> getAllNotifications() {
+        return notificationRepository.findAll();
     }
-    //xóa thông báo
-    public void deleteNotification(String maThongBao){
-        String sql="DELETE FROM thongbao WHERE maThongBao=? ";
-        jdbcTemplate.update(sql,maThongBao);
+
+    // Tạo mới hoặc cập nhật thông báo
+    public Notification createNotification(Notification notification) {
+        return notificationRepository.save(notification);
     }
-    //tim kiem thongbao theo id
-    public Notification getNotificationById(String maThongBao){
-        String sql = "SELECT * FROM thongbao WHERE maThongBao = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{maThongBao}, new BeanPropertyRowMapper<>(Notification.class));
+    // Tìm thông báo theo ID
+    public Notification getNotificationById(String maThongBao) {
+        return notificationRepository.findById(maThongBao).orElseThrow(() -> new RuntimeException("Thông báo không tồn tại với mã: " + maThongBao));
+    }
+    //cap nhat thong bao
+    public Notification updateNotification(String maThongBao, Notification thongBaoDetails) {
+        Notification thongBao = getNotificationById(maThongBao);
+
+        thongBao.setNoiDung(thongBaoDetails.getNoiDung());
+        thongBao.setTrangThai(thongBaoDetails.getTrangThai());
+        // Don't update thoiGianTao when updating
+
+        return notificationRepository.save(thongBao);
+    }
+    public Notification deleteNotification(String maThongBao) {
+        Notification notification = notificationRepository.findById(maThongBao)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông báo"));
+
+        notification.setTrangThai(true);
+        return notificationRepository.save(notification);
     }
 
 }

@@ -1,0 +1,26 @@
+.exam-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.exam-header {
+  background: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  border-bottom: 2px solid #ddd;
+}
+
+.exam-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-top: 30px;
+}
+
+.question-container {
+  max-width: 800px;
+  margin: auto;
+}

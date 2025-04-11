@@ -8,7 +8,7 @@
     </div>
     <div class="col-6 d-flex align-items-center justify-content-end gap-3">
       <button type="button" class="btn btn-hero btn-primary" (click)="openAdd()">
-        <i class="fa fa-fw fa-plus me-1"></i> Tham gia nhóm
+        <i class="fa fa-fw fa-plus me-1"></i> Tham gia học phần
       </button>
     </div>
   </div>
@@ -87,7 +87,7 @@
   aria-labelledby="offcanvasGroupLabel" [class.show]="showOffcanvas" [attr.aria-modal]="showOffcanvas ? 'true' : null"
   [attr.role]="showOffcanvas ? 'dialog' : null" *ngIf="showOffcanvas">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title">{{selectedMonHoc?.maMonHoc}} - {{selectedMonHoc?.tenMonHoc}}</h5>
+    <h5 class="offcanvas-title">{{selectedMonHoc.maMonHoc}} - {{selectedMonHoc.tenMonHoc}}</h5>
     <button type="button" class="btn-close text-reset" (click)="closeOffcanvas()" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
@@ -121,7 +121,7 @@
             <div class="d-md-flex justify-content-md-between align-items-md-center mb-2">
               <div class="p-1 p-md-2">
                 <h3 class="h4 fw-bold mb-3">
-                  <a [routerLink]="['/student-exams/start', exam.maKiThi]" routerLinkActive="router-link-active"  class="text-dark link-fx" style="text-decoration: none; cursor: pointer;">{{ exam.tenKiThi }}</a>
+                  <a [routerLink]="['/student-exams/detail', exam.maKiThi]" routerLinkActive="router-link-active"  class="text-dark link-fx" style="text-decoration: none; cursor: pointer;">{{ exam.tenKiThi }}</a>
                 </h3>
                 <p class="fs-sm text-muted mb-0">
                   <i class="fa fa-clock me-1"></i> Diễn ra từ <span>{{ exam.thoiGianBatDau }}</span> đến <span>{{

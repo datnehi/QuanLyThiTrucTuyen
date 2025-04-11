@@ -1,4 +1,4 @@
-package com.nhom6.server.Model;
+package com.nhom6.server.DTO;
 
 public class LoginRequest {
     private String id;

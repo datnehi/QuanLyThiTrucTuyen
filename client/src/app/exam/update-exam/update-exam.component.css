@@ -1,0 +1,4 @@
+.disabled {
+  pointer-events: none; /* Chặn click */
+  opacity: 0.5; /* Làm mờ */
+}

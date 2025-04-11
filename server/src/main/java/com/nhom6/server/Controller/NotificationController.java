@@ -1,10 +1,9 @@
 package com.nhom6.server.Controller;
 
-
-import com.nhom6.server.Model.Exam;
 import com.nhom6.server.Model.Notification;
 import com.nhom6.server.Services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,45 +12,47 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
+
     @Autowired
     private NotificationService notificationService;
-//lay du lieu
+
+    // Lấy tất cả thông báo
     @GetMapping
-    public ResponseEntity<List<Notification>> getALLNotification(){
-        List<Notification> notifications= notificationService.getALLNotification();
+    public ResponseEntity<List<Notification>> getAllNotifications() {
+        List<Notification> notifications = notificationService.getAllNotifications();
         return ResponseEntity.ok(notifications);
     }
-    //tao thong bao
-    @PostMapping
-    public ResponseEntity<Notification> createNotification(@RequestBody Notification notification){
-        Notification createNotification= notificationService.createNotification(notification);
-        return ResponseEntity.ok(createNotification);
-    }
-    //cap nhat thong bao
-    @PutMapping ("/{maThongBao}")
-    public ResponseEntity<Notification> updateNotification(@PathVariable String maThongBao, @RequestBody Notification notificationDetails){
-       try {
-           Notification updateNotification = notificationService.updateNotification(maThongBao, notificationDetails);
-           return ResponseEntity.ok(updateNotification);
-       } catch (Exception e) {
-           return ResponseEntity.notFound().build();
-       }
-    }
-    //xoa thong bao
-    @DeleteMapping ("/delete/{maThongBao}")
-    public ResponseEntity<Notification> deleteNotification(@PathVariable String maThongBao){
-        notificationService.deleteNotification(maThongBao);
-        return ResponseEntity.noContent().build();
-    }
-    // Lấy kỳ thi theo mã
+
+    // Lấy thông báo theo mã
     @GetMapping("/{maThongBao}")
-    public ResponseEntity<Notification> getExamById(@PathVariable String maThongBao) {
-        try {
-            Notification notification =notificationService.getNotificationById(maThongBao);
-            return ResponseEntity.ok(notification);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Notification> getNotificationById(@PathVariable String maThongBao) {
+        Notification notification = notificationService.getNotificationById(maThongBao);
+        return ResponseEntity.ok(notification);
     }
 
+    // Tạo thông báo mới
+    @PostMapping
+    public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
+        Notification createdNotification = notificationService.createNotification(notification);
+        return ResponseEntity.ok(createdNotification);
+    }
+
+    // Cập nhật thông báo
+    @PutMapping("/{maThongBao}")
+    public ResponseEntity<Notification> updateNotification(
+            @PathVariable String maThongBao,
+            @RequestBody Notification thongBaoDetails) {
+        Notification updatedNotification = notificationService.updateNotification(maThongBao, thongBaoDetails);
+        return ResponseEntity.ok(updatedNotification);
+    }
+   // xóa thong báo( đặt từ 0->1)
+    @DeleteMapping("/{maThongBao}")
+    public ResponseEntity<String> deleteNotification(@PathVariable String maThongBao) {
+        try {
+            notificationService.deleteNotification(maThongBao);
+            return ResponseEntity.ok("Xóa thông báo thành công.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thông báo với mã: " + maThongBao);
+        }
+    }
 }

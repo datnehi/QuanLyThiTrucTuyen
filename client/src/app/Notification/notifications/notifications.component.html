@@ -1,84 +1,33 @@
 <div class="row mb-4">
     <div class="col-md-6">
-        <input type="text" class="form-control" id="search-input" placeholder="Tìm kiếm thông báo...">
+      <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Tìm kiếm thông báo...">
     </div>
     <div class="col-md-6 text-end">
-        <a routerLink="./create-notifi" class="btn btn-primary show">
-            <i class="fa fa-plus me-1"></i> Tạo thông báo
+      <a routerLink="./create-notifi" class="btn btn-primary show">
+        <i class="fa fa-plus me-1"></i> Tạo thông báo
+      </a>
+    </div>
+  </div>
+  
+  <div *ngFor="let noti of notifications ">
+    <div class="announcement-item border-start border-3 border-success p-3 mb-3" style="background-color: #fff;">
+      <h4 class="fw-bold">{{ noti.noiDung }}</h4>
+      <p class="text-muted">
+        <i class="fa fa-layer-group me-1"></i> Mã thông báo: <strong>{{ noti.maThongBao }}</strong>
+      </p>
+      <div class="text-end">
+        <span class="text-muted me-2">
+          <i class="fa fa-clock"></i> {{ noti.thoiGianTao }}
+        </span>
+        <a class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show"
+           [routerLink]="['./update', noti.maThongBao]">
+          <i class="fa fa-wrench opacity-50 me-1"></i> Chỉnh sửa
         </a>
+        <button class="btn btn-sm btn-danger rounded-pill px-3 my-1 btn-delete show"
+                (click)="delete(noti.maThongBao)">
+          <i class="fa fa-times opacity-50 me-1"></i> Xoá
+        </button>
+      </div>
     </div>
-</div>
-
-<div>
-    <div class="announcement-item border-start border-3 border-success p-3 mb-3" style="background-color: rgb(255, 255, 255);">
-        <h4 class="fw-bold">Khai giảng khóa học mới.</h4>
-        <p class="text-muted">
-            <i class="fa fa-layer-group me-1"></i> Gửi cho học phần: <strong>84105</strong>
-        </p>
-
-        <div class="text-end">
-            <span class="text-muted me-2"><i class="fa fa-clock"></i> 2025-03-01 14:00:00</span>
-            <a  class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show" routerLink="./update,0000000003" href="/notifi/update/0000000003"><i  class="fa fa-wrench opacity-50 me-1"></i> Chỉnh sửa </a>
-            <button  class="btn btn-sm btn-danger rounded-pill px-3 my-1 btn-delete show"><i  class="fa fa-times opacity-50 me-1"></i> Xoá </button>
-        </div>
-    </div>
-    <div class="announcement-item border-start border-3 border-success p-3 mb-3" style="background-color: rgb(255, 255, 255);">
-        <h4 class="fw-bold">Khai giảng khóa học mới.</h4>
-        <p class="text-muted">
-            <i class="fa fa-layer-group me-1"></i> Gửi cho học phần: <strong>84106</strong>
-        </p>
-
-        <div class="text-end">
-            <span class="text-muted me-2"><i class="fa fa-clock"></i> 2025-03-01 14:00:00</span>
-            <a  class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show" routerLink="./update,0000000003" href="/notifi/update/0000000003"><i  class="fa fa-wrench opacity-50 me-1"></i> Chỉnh sửa </a>
-            <button  class="btn btn-sm btn-danger rounded-pill px-3 my-1 btn-delete show"><i  class="fa fa-times opacity-50 me-1"></i> Xoá </button>
-        </div>
-    </div>
-    
-    
-    <div class="announcement-item border-start border-3 border-success p-3 mb-3" style="background-color: rgb(255, 255, 255);">
-        <h4 class="fw-bold">Hạn chót đăng ký thi là 01/03/2025.</h4>
-        <p class="text-muted">
-            <i class="fa fa-layer-group me-1"></i> Gửi cho học phần:  <strong>84104</strong>
-        </p>
-        <div class="text-end">
-            <span class="text-muted me-2"><i class="fa fa-clock"></i> 2025-02-27 08:30:00</span>
-            <a  class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show" routerLink="./update,0000000002" href="/notifi/update/0000000002"><i  class="fa fa-wrench opacity-50 me-1"></i> Chỉnh sửa </a>
-            <button class="btn btn-sm btn-danger rounded-pill px-3 my-1 btn-delete show"><i class="fa fa-times opacity-50 me-1"></i> Xoá </button>
-        </div>
-    </div> 
-    <div class="announcement-item border-start border-3 border-success p-3 mb-3" style="background-color: rgb(255, 255, 255);">
-        <h4 class="fw-bold">Hạn chót đăng ký thi là 01/03/2025.</h4>
-        <p class="text-muted">
-            <i class="fa fa-layer-group me-1"></i> Gửi cho học phần:  <strong>84106</strong>
-        </p>
-        <div class="text-end">
-            <span class="text-muted me-2"><i class="fa fa-clock"></i> 2025-02-27 08:30:00</span>
-            <a  class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show" routerLink="./update,0000000002" href="/notifi/update/0000000002"><i  class="fa fa-wrench opacity-50 me-1"></i> Chỉnh sửa </a>
-            <button  class="btn btn-sm btn-danger rounded-pill px-3 my-1 btn-delete show"><i  class="fa fa-times opacity-50 me-1"></i> Xoá </button>
-        </div>
-    </div>
-
-    <div class="announcement-item border-start border-3 border-success p-3 mb-3" style="background-color: rgb(255, 255, 255);">
-        <h4 class="fw-bold">Lịch thi cuối kỳ đã được cập nhật.</h4>
-        <p class="text-muted">
-            <i class="fa fa-layer-group me-1"></i> Gửi cho học phần: <strong>84104</strong>
-        </p>
-        <div class="text-end">
-            <span class="text-muted me-2"><i class="fa fa-clock"></i>2025-02-25 10:00:00</span>
-            <a  class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show" routerLink="./update,0000000001" href="/notifi/update/0000000001"><i  class="fa fa-wrench opacity-50 me-1"></i> Chỉnh sửa </a>
-            <button  class="btn btn-sm btn-danger rounded-pill px-3 my-1 btn-delete show"><i  class="fa fa-times opacity-50 me-1"></i> Xoá </button>
-        </div>
-    </div>
-    <div class="announcement-item border-start border-3 border-success p-3 mb-3" style="background-color: rgb(255, 255, 255);">
-        <h4 class="fw-bold">Lịch thi cuối kỳ đã được cập nhật.</h4>
-        <p class="text-muted">
-            <i class="fa fa-layer-group me-1"></i> Gửi cho học phần: <strong>84105</strong>
-        </p>
-        <div class="text-end">
-            <span class="text-muted me-2"><i class="fa fa-clock"></i>2025-02-25 10:00:00</span>
-            <a  class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show" routerLink="./update,0000000001" href="/notifi/update/0000000001"><i  class="fa fa-wrench opacity-50 me-1"></i> Chỉnh sửa </a>
-            <button  class="btn btn-sm btn-danger rounded-pill px-3 my-1 btn-delete show"><i  class="fa fa-times opacity-50 me-1"></i> Xoá </button>
-        </div>
-    </div>
-</div>
+  </div>
+  

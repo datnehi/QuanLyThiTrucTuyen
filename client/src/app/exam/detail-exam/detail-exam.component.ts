@@ -11,6 +11,7 @@ import { Chart, registerables } from 'chart.js';
 import * as bootstrap from 'bootstrap';
 import { ChiTietBaiThi } from '../../models/chitietbaithi';
 import { ChitietbaithiService } from '../../services/chitietbaithi.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-detail-exam',
@@ -18,6 +19,7 @@ import { ChitietbaithiService } from '../../services/chitietbaithi.service';
     CommonModule,
     FormsModule,
     RouterModule,
+    NgbModule
   ],
   templateUrl: './detail-exam.component.html',
   styleUrl: './detail-exam.component.css'
@@ -29,8 +31,8 @@ export class DetailExamComponent{
   results: any[] = [];
   searchText: string = '';
   showOffcanvas = false;
-  exam: Exam | null = null;
-  course: Course | null = null;
+  exam!: Exam;
+  course!: Course;
   daNop = 0;
   chuaNop = 0;
   khongThi = 0;
@@ -50,17 +52,17 @@ export class DetailExamComponent{
 
   ngOnInit() {
     this.maKiThi = this.route.snapshot.paramMap.get('maKiThi') || '';
-    this.resultService.getResultsWithCourses(this.maKiThi).subscribe((data) => {
-      this.results = data;
-      this.tinhThongKe();
-    });
-    this.examService.getExambyId(this.maKiThi).subscribe((data) => {
+    this.examService.getExambyMa(this.maKiThi).subscribe((data) => {
       this.exam = data;
       if (this.exam && this.exam.maMonHoc) {
         this.courseService.getCoursebyId(this.exam.maMonHoc).subscribe((data) => {
           this.course = data;
         });
       }
+      this.resultService.getResultsWithUser(this.maKiThi, this.exam?.maMonHoc).subscribe((data) => {
+        this.results = data;
+        this.tinhThongKe();
+      });
     });
   }
 
@@ -109,10 +111,9 @@ export class DetailExamComponent{
   }
 
   tinhThongKe() {
-    this.daNop = this.results.filter(k => k.diem !== null && k.diem !== undefined).length;
-    this.chuaNop = this.results.filter(k => k.diem === null && k.thoigianvaothi !== null).length;
-    this.khongThi = this.results.filter(k => k.thoigianvaothi === null).length;
-
+    this.daNop = this.results.filter(k => k.diem != null && k.diem != undefined).length;
+    this.chuaNop = this.results.filter(k => k.diem == null && k.thoiGianVaoThi != null).length;
+    this.khongThi = this.results.filter(k => k.thoiGianVaoThi == null).length;
     let diemList = this.results.filter(k => k.diem !== null).map(k => k.diem);
     this.diemTrungBinh = diemList.length > 0 ? diemList.reduce((sum, d) => sum + d, 0) / diemList.length : 0;
     this.diemCaoNhat = diemList.length > 0 ? Math.max(...diemList) : 0;
@@ -183,7 +184,7 @@ export class DetailExamComponent{
 
   openExamDetail(student: any) {
     this.selectedStudent = student;
-    this.chiTietBaiThi.getChiTietBaiThi(this.selectedStudent.maKetQua).subscribe(data => {
+    this.chiTietBaiThi.getChiTietBaiLam(this.selectedStudent.maKetQua).subscribe(data => {
       this.selectedExamDetail = data;
       const modal = new bootstrap.Modal(document.getElementById('examDetailModal')!);
       modal.show();
