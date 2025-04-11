@@ -1,40 +1,41 @@
-<main id="main-container" data-select2-id="main-container">
+<main id="main-container">
     <!-- Page Content -->
-    <div class="content" data-select2-id="48">
-        <div class="block block-rounded" data-select2-id="47">
-            <div class="block-header block-header-default d-flex justify-content-between align-items-center">
-                <h3 class="block-title">Tất cả câu hỏi</h3>
+    <div class="content content-wrapper">
+        <div class="block block-rounded">
+            <div class="block-header block-header-default d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <h3 class="block-title mb-2 mb-md-0">Tất cả câu hỏi</h3>
                 <div class="block-options">
-                    <button type="button" class="btn btn-primary btn-lg custom-btn" (click)="openModal()">
+                    <button type="button" class="btn btn-primary btn-lg custom-btn" data-bs-toggle="modal"
+                        data-bs-target="#addQuestionModal">
                         <i class="fa-regular fa-plus me-2"></i> Thêm câu hỏi mới
                     </button>
                 </div>
             </div>
-            <div class="block-content" data-select2-id="46">
-                <form action="#" method="POST" id="search-form" onsubmit="return false;" data-select2-id="search-form">
-                    <div class="row mb-3" data-select2-id="45">
-                        <div class="col-xl-4 d-flex gap-2 align-items-center" data-select2-id="44">
-                            <div>
-                                <select name="monHoc" class="form-select ng-pristine ng-valid ng-touched"
-                                    style="width: 100%;" ng-reflect-name="monHoc" ng-reflect-model="">
-                                    <option value="" disabled="" selected="" ng-reflect-value="">Chọn môn học
-                                    </option>
-                                    <option value="84104" ng-reflect-value="84104"> 84104 - Lập trình hướng đối tượng
-                                    </option>
-                                    <option value="84105" ng-reflect-value="84105"> 84105 - Lập trình Java </option>
-                                    <option value="84106" ng-reflect-value="84106"> 84106 - Lập trình ứng dụng mạng
+            <div class="block-content">
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-xl-4 col-lg-6 col-md-8 col-12">
+                            <div class="d-flex flex-column flex-md-row gap-2 align-items-center">
+                                <select class="form-select mb-2 mb-md-0" [(ngModel)]="selectedSubject" (change)="filterBySubject()"
+                                    name="monHoc">
+                                    <option value="" disabled selected>Chọn môn học</option>
+                                    <option *ngFor="let subject of subjects" [value]="subject.code">
+                                        {{subject.code}} - {{subject.name}}
                                     </option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control form-control-alt" id="search-input"
-                                name="search-input" placeholder="Nội dung câu hỏi...">
-                            <button class="input-group-text bg-body border-0 btn-search">
-                                <i class="fa fa-search"></i>
-                            </button>
+                        <div class="col-12">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-alt" placeholder="Nội dung câu hỏi..."
+                                    [(ngModel)]="searchKeyword" (keyup.enter)="searchQuestions()" name="search-input">
+                                <button type="button" class="input-group-text bg-body border-0 btn-search"
+                                    (click)="searchQuestions()">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -43,351 +44,142 @@
                         <thead>
                             <tr>
                                 <th class="text-center" style="width: 100px;">ID</th>
-                                <th style="width: 700px;">Nội dung câu hỏi</th>
+                                <th>Nội dung câu hỏi</th>
                                 <th class="d-none d-sm-table-cell">Môn học</th>
-                                <th class="text-center col-header-action" style="display: table-cell;">Hành động</th>
+                                <th class="text-center" style="width: 120px;">Hành động</th>
                             </tr>
                         </thead>
-                        <tbody id="listQuestion">
-                            <!-- Các dòng câu hỏi -->
-                            <tr>
-                                <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>1</strong>
-                                    </a>
-                                </td>
-                                <td>OOP là viết tắt của:</td>
-                                <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
-                                </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="1">
-                                        <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="1">
-                                        <i class="fa fa-fw fa-times"></i>
-                                    </a>
+                        <tbody>
+                            <tr *ngIf="isLoading">
+                                <td colspan="4" class="text-center">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
                                 </td>
                             </tr>
-                            <tr>
+
+                            <tr *ngFor="let question of paginatedQuestions">
                                 <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>2</strong>
+                                    <a class="fw-semibold">
+                                        <strong>{{question.macauhoi}}</strong>
                                     </a>
                                 </td>
-                                <td>Đặc điểm cơ bản của lập trình hướng đối tượng thể hiện ở:</td>
+                                <td>{{question.noidung}}</td>
                                 <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
+                                    <a class="fw-semibold">{{getSubjectName(question.mamonhoc)}}</a>
                                 </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="2">
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-alt-secondary"
+                                        (click)="editQuestion(question.macauhoi)" data-bs-toggle="tooltip"
+                                        title="Chỉnh sửa">
                                         <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="2">
+                                    </button>
+                                    <button class="btn btn-sm btn-alt-secondary ms-2"
+                                        (click)="deleteQuestion(question.macauhoi)" data-bs-toggle="tooltip"
+                                        title="Xóa">
                                         <i class="fa fa-fw fa-times"></i>
-                                    </a>
+                                    </button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>3</strong>
-                                    </a>
-                                </td>
-                                <td>Lập trình hướng đối tượng là:</td>
-                                <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
-                                </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="3">
-                                        <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="3">
-                                        <i class="fa fa-fw fa-times"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>4</strong>
-                                    </a>
-                                </td>
-                                <td>Thế nào được gọi là hiện tượng nạp chồng?</td>
-                                <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
-                                </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="4">
-                                        <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="4">
-                                        <i class="fa fa-fw fa-times"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>5</strong>
-                                    </a>
-                                </td>
-                                <td>Trong java, khi khai báo một thuộc tính hoặc một hàm của một lớp mà không có từ khóa quyền truy cập thì mặc định quyền truy cập là gì?</td>
-                                <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
-                                </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="5">
-                                        <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="5">
-                                        <i class="fa fa-fw fa-times"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>6</strong>
-                                    </a>
-                                </td>
-                                <td>Đối với quyền truy cập nào thì cho phép truy cập các lớp con trong cùng gói với lớp cha?</td>
-                                <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
-                                </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="6">
-                                        <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="6">
-                                        <i class="fa fa-fw fa-times"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>7</strong>
-                                    </a>
-                                </td>
-                                <td>Khi xây dựng phương thức khởi tạo (constructor), việc thường làm là:</td>
-                                <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
-                                </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="7">
-                                        <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="7">
-                                        <i class="fa fa-fw fa-times"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>8</strong>
-                                    </a>
-                                </td>
-                                <td>Phương thức khởi tạo (constructor) là phương thức được thực thi:</td>
-                                <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
-                                </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="8">
-                                        <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="8">
-                                        <i class="fa fa-fw fa-times"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>9</strong>
-                                    </a>
-                                </td>
-                                <td>Tên của phương thức khởi tạo:</td>
-                                <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
-                                </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="9">
-                                        <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="9">
-                                        <i class="fa fa-fw fa-times"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center fs-sm">
-                                    <a class="fw-semibold" href="#">
-                                        <strong>10</strong>
-                                    </a>
-                                </td>
-                                <td>Đối tượng sống từ khi:</td>
-                                <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">Lập trình hướng đối tượng</a>
-                                </td>
-                                <td class="text-center col-action">
-                                    <a data-role="cauhoi" data-action="update"
-                                        class="btn btn-sm btn-alt-secondary btn-edit-question show"
-                                        data-bs-toggle="tooltip" aria-label="Chỉnh sửa"
-                                        data-bs-original-title="Chỉnh sửa" data-id="10">
-                                        <i class="fa fa-fw fa-pencil"></i>
-                                    </a>
-                                    <a data-role="cauhoi" data-action="delete"
-                                        class="btn btn-sm btn-alt-secondary btn-delete-question show"
-                                        data-bs-toggle="tooltip" aria-label="Xoá" data-bs-original-title="Xoá"
-                                        data-id="10">
-                                        <i class="fa fa-fw fa-times"></i>
-                                    </a>
-                                </td>
+
+                            <tr *ngIf="!isLoading && paginatedQuestions.length === 0">
+                                <td colspan="4" class="text-center">Không tìm thấy câu hỏi nào</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Phân trang -->
+                <nav class="pagination-container" *ngIf="totalItems > itemsPerPage">
+                    <ul class="pagination justify-content-center justify-content-md-end mt-2 flex-wrap">
+                        <li class="page-item" [class.disabled]="currentPage === 1">
+                            <a class="page-link first-page" (click)="changePage(1)" aria-label="First">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" [class.disabled]="currentPage === 1">
+                            <a class="page-link prev-page" (click)="changePage(currentPage - 1)" aria-label="Previous">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+
+                        <div class="d-flex list-page">
+                            <li class="page-item" *ngFor="let page of getPageNumbers()"
+                                [class.active]="page === currentPage">
+                                <a class="page-link" (click)="changePage(page)">{{page}}</a>
+                            </li>
+                        </div>
+
+                        <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
+                            <a class="page-link next-page" (click)="changePage(currentPage + 1)" aria-label="Next">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
+                            <a class="page-link last-page" (click)="changePage(getTotalPages())" aria-label="Last">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-            <!-- phân trang -->
-            <nav class="pagination-container">
-                <ul class="pagination justify-content-end mt-2">
-                    <li class="page-item">
-                        <a class="page-link first-page disabled" href="javascript:void(0)" tabindex="-1" aria-label="First" data-page="1">
-                            <i class="fas fa-angle-double-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link prev-page disabled" href="javascript:void(0)" tabindex="-1" aria-label="Previous">
-                            <i class="fas fa-angle-left"></i>
-                        </a>
-                    </li>
-                    <div class="d-flex list-page"><li class="page-item active">
-                      <a class="page-link" href="javascript:void(0)" style="border-radius:0;" data-page="1">1</a>
-                  </li><li class="page-item ">
-                      <a class="page-link" href="javascript:void(0)" data-page="2">2</a>
-                  </li><li class="page-item ">
-                      <a class="page-link" href="javascript:void(0)" data-page="3">3</a>
-                  </li><li class="page-item ">
-                      <a class="page-link" href="javascript:void(0)" data-page="4">4</a>
-                  </li><li class="page-item ">
-                      <a class="page-link" href="javascript:void(0)" data-page="5">5</a>
-                  </li><li class="page-item ">
-                      <a class="page-link" href="javascript:void(0)" data-page="6">6</a>
-                  </li><li class="page-item ">
-                      <a class="page-link" href="javascript:void(0)" style="border-radius:0;" data-page="7">7</a>
-                  </li></div>
-                    <li class="page-item">
-                        <a class="page-link next-page" href="javascript:void(0)" tabindex="-1" aria-label="Next">
-                            <i class="fas fa-angle-right"></i>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link last-page" href="javascript:void(0)" tabindex="-1" aria-label="Last">
-                            <i class="fas fa-angle-double-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
     </div>
-    <!-- Modal để thêm câu hỏi mới -->
+
+    <!-- Modal thêm/chỉnh sửa câu hỏi -->
     <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel"
-        aria-hidden="true" #addQuestionModal>
-        <div class="modal-dialog modal-lg">
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addQuestionModalLabel">Thêm câu hỏi mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+                    <h5 class="modal-title" id="addQuestionModalLabel">
+                        {{editingQuestionId ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi mới'}}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        (click)="resetForm()"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addQuestionForm">
+                    <form>
                         <div class="mb-3">
-                            <label for="questionContent" class="form-label">Nội dung câu hỏi</label>
-                            <textarea class="form-control" id="questionContent" rows="3" required></textarea>
+                            <label class="form-label">Nội dung câu hỏi</label>
+                            <textarea class="form-control" rows="3" [(ngModel)]="newQuestion.noidung"
+                                name="questionContent" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="questionSubject" class="form-label">Môn học</label>
-                            <select class="form-select" id="questionSubject" required>
+                            <label class="form-label">Môn học</label>
+                            <select class="form-select" [(ngModel)]="newQuestion.mamonhoc" name="questionSubject"
+                                required>
                                 <option value="">Chọn môn học</option>
-                                <option value="Lập trình hướng đối tượng">Lập trình hướng đối tượng</option>
-                                <option value="Lập trình ứng dụng mạng">Lập trình ứng dụng mạng</option>
+                                <option *ngFor="let subject of subjects" [value]="subject.code">
+                                    {{subject.name}}
+                                </option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="questionAnswers" class="form-label">Danh sách đáp án</label>
-                            <div id="questionAnswers">
-                                <div class="input-group mb-2" id="answer-1">
-                                    <input type="text" class="form-control" placeholder="Đáp án" required>
-                                    <div class="input-group-text">
-                                        <input type="radio" class="form-check-input" name="correctAnswer">
-                                    </div>
-                                    <button type="button" class="btn btn-danger"
-                                        (click)="removeAnswer('answer-1')">Xóa</button>
+                            <label class="form-label">Danh sách đáp án</label>
+                            <div *ngFor="let answer of newQuestion.dapan; let i = index" class="input-group mb-2">
+                                <input type="text" class="form-control" [(ngModel)]="answer.noidung"
+                                    [name]="'answer-' + i" required>
+                                <div class="input-group-text">
+                                    <input type="radio" name="correctAnswer"
+                                        [checked]="i === newQuestion.correctAnswerIndex" (change)="setCorrectAnswer(i)">
                                 </div>
+                                <button type="button" class="btn btn-danger" (click)="removeAnswer(i)">
+                                    <i class="fa fa-times"></i>
+                                </button>
                             </div>
-                            <button type="button" class="btn btn-secondary" (click)="addAnswer()">Thêm đáp án</button>
+                            <button type="button" class="btn btn-secondary" (click)="addAnswer()">
+                                <i class="fa fa-plus me-1"></i> Thêm đáp án
+                            </button>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeModal()">Đóng</button>
-                    <button type="button" class="btn btn-primary" (click)="saveQuestion()">Lưu câu hỏi</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        (click)="resetForm()">Đóng</button>
+                    <button type="button" class="btn btn-primary" (click)="saveQuestion()">
+                        {{editingQuestionId ? 'Cập nhật' : 'Lưu'}} câu hỏi
+                    </button>
                 </div>
             </div>
         </div>
