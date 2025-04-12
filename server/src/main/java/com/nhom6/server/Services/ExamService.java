@@ -69,7 +69,7 @@ public class ExamService {
 
     // Tạo mã kỳ thi tiếp theo
     private String generateNextMaKiThi() {
-        String sql = "SELECT makithi FROM kithi ORDER BY makithi DESC LIMIT 1";
+        String sql = "SELECT TOP 1 makithi FROM kithi ORDER BY makithi DESC";
         try {
             String lastMaKiThi = jdbcTemplate.queryForObject(sql, String.class);
             if (lastMaKiThi == null || lastMaKiThi.isEmpty()) {

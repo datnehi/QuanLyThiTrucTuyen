@@ -54,4 +54,4 @@
     {{ getExamStatus(exam) }}</button>
   </div>
 </div>
-<app-student-exam-result *ngIf="result?.diem != null" style="margin: 10rem;"></app-student-exam-result>
+<app-student-exam-result *ngIf="result != null && result?.diem != null" style="margin: 10rem;"></app-student-exam-result>

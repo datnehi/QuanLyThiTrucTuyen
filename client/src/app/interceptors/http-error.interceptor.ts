@@ -37,7 +37,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         message = error.error.message;
       }
 
-      toastr.error(message, `Lỗi ${error.status}`);
+      toastr.error(message);
       return throwError(() => error);
     })
   );

@@ -61,11 +61,17 @@ public class ResultController {
     public ResponseEntity<Map<String, Object>> getUserExamResult(@PathVariable String maKiThi, @PathVariable String id) {
         try {
             Result result = resultService.checkKetQua(maKiThi, id);
+            if (result == null) {
+                return ResponseEntity.ok(Map.of(
+                        "message", "Sinh viên chưa thi"
+                ));
+            }
             return ResponseEntity.ok(Map.of(
                     "message", "Lấy kết quả chi tiết thành công",
                     "data", result
             ));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of(
                     "message", "Lỗi khi lấy kết quả chi tiết"
             ));
