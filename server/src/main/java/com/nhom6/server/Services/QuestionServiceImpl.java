@@ -18,16 +18,20 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<CauHoi> getAllQuestions() {
-        return questionRepository.findAll();
+        // Chỉ lấy những câu hỏi có trạng thái = 0 (chưa xóa)
+        return questionRepository.findByTrangthai(false);
     }
 
     @Override
     public List<CauHoi> getQuestionsBySubject(String mamonhoc) {
-        return questionRepository.findByMamonhoc(mamonhoc);
+        // Chỉ lấy những câu hỏi có trạng thái = 0 (chưa xóa) và thuộc môn học
+        return questionRepository.findByMamonhocAndTrangthai(mamonhoc, false);
     }
 
     @Override
     public CauHoi createQuestion(CauHoi cauhoi) {
+        // Đảm bảo trạng thái mặc định là false (0)
+        cauhoi.setTrangthai(false);
         if (cauhoi.getMacauhoi() == null || cauhoi.getMacauhoi().isEmpty()) {
             // Lấy câu hỏi cuối cùng
             CauHoi lastQuestion = questionRepository.findTopByOrderByMacauhoiDesc();
@@ -52,10 +56,11 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void deleteQuestion(String macauhoi) {
-        // Xóa các câu trả lời trước
-        answerRepository.deleteByMacauhoi(macauhoi);
-        // Sau đó xóa câu hỏi
-        questionRepository.deleteById(macauhoi);
+        // Thay vì xóa, chúng ta sẽ cập nhật trạng thái thành true (1)
+        questionRepository.findById(macauhoi).ifPresent(question -> {
+            question.setTrangthai(true);
+            questionRepository.save(question);
+        });
     }
 
     @Autowired

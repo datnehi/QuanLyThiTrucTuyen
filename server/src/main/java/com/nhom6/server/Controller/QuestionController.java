@@ -32,6 +32,8 @@ public class QuestionController {
 
     @PostMapping
     public ResponseEntity<CauHoi> createQuestion(@RequestBody CauHoi cauhoi) {
+        // Đảm bảo trạng thái mặc định là false (0)
+        cauhoi.setTrangthai(false);
         CauHoi createdQuestion = questionService.createQuestion(cauhoi);
         return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
     }
@@ -52,23 +54,23 @@ public class QuestionController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    //chỉnh sửa câu hỏi
+    // chỉnh sửa câu hỏi
     // Thêm các phương thức sau vào QuestionController
-@GetMapping("/{macauhoi}/answers")
-public ResponseEntity<List<CauTraLoi>> getAnswersByQuestionId(@PathVariable String macauhoi) {
-    List<CauTraLoi> answers = questionService.getAnswersByQuestionId(macauhoi);
-    return new ResponseEntity<>(answers, HttpStatus.OK);
-}
+    @GetMapping("/{macauhoi}/answers")
+    public ResponseEntity<List<CauTraLoi>> getAnswersByQuestionId(@PathVariable String macauhoi) {
+        List<CauTraLoi> answers = questionService.getAnswersByQuestionId(macauhoi);
+        return new ResponseEntity<>(answers, HttpStatus.OK);
+    }
 
-@PutMapping("/{macauhoi}")
-public ResponseEntity<CauHoi> updateQuestion(@PathVariable String macauhoi, @RequestBody CauHoi cauhoi) {
-    CauHoi updatedQuestion = questionService.updateQuestion(macauhoi, cauhoi);
-    return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
-}
+    @PutMapping("/{macauhoi}")
+    public ResponseEntity<CauHoi> updateQuestion(@PathVariable String macauhoi, @RequestBody CauHoi cauhoi) {
+        CauHoi updatedQuestion = questionService.updateQuestion(macauhoi, cauhoi);
+        return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
+    }
 
-@PutMapping("/{macauhoi}/answers")
-public ResponseEntity<Void> updateAnswers(@PathVariable String macauhoi, @RequestBody List<CauTraLoi> answers) {
-    questionService.updateAnswers(macauhoi, answers);
-    return new ResponseEntity<>(HttpStatus.OK);
-}
+    @PutMapping("/{macauhoi}/answers")
+    public ResponseEntity<Void> updateAnswers(@PathVariable String macauhoi, @RequestBody List<CauTraLoi> answers) {
+        questionService.updateAnswers(macauhoi, answers);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

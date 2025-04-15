@@ -8,9 +8,13 @@ import java.util.List;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<CauHoi, String> {
-    // Tìm câu hỏi theo môn học
-    List<CauHoi> findByMamonhoc(String mamonhoc);
+    // Tìm câu hỏi theo môn học và trạng thái
+    List<CauHoi> findByMamonhocAndTrangthai(String mamonhoc, boolean trangthai);
+    
+    // Tìm câu hỏi theo trạng thái
+    List<CauHoi> findByTrangthai(boolean trangthai);
     
     // Tìm câu hỏi có mã lớn nhất (sắp xếp giảm dần và lấy đầu tiên)
     CauHoi findTopByOrderByMacauhoiDesc();
+    
 }

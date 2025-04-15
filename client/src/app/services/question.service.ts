@@ -16,6 +16,8 @@ export class QuestionService {
   }
 
   createQuestion(questionData: any): Observable<any> {
+    // Đảm bảo trạng thái mặc định là false (0)
+    questionData.trangthai = false;
     return this.http.post(this.apiUrl, questionData);
   }
 

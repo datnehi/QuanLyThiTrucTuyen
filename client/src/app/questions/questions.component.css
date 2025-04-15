@@ -1,139 +1,159 @@
 .custom-btn {
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-bottom: 0.5rem;
+  /* Giảm từ 1rem xuống 0.5rem */
 }
 
 .custom-btn:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #0056b3;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .custom-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
 }
 
 .select2-selection__placeholder {
-    color: #050505 !important;
-    /* Màu chữ nhạt hơn */
+  color: #050505 !important;
+  /* Màu chữ nhạt hơn */
 }
 
 .custom-dropdown {
-    position: relative; /* Container cần có position: relative */
-    width: 100%; /* Đảm bảo dropdown chiếm đủ chiều rộng */
+  position: relative;
+  /* Container cần có position: relative */
+  width: 100%;
+  /* Đảm bảo dropdown chiếm đủ chiều rộng */
 }
 
 .custom-dropdown .placeholder {
-    position: absolute; /* Định vị tuyệt đối trong container */
-    top: 50%; /* Đặt ở giữa theo chiều dọc */
-    left: 0.75rem; /* Cách lề trái */
-    transform: translateY(-50%); /* Dịch chuyển lên trên 50% để căn giữa */
-    color: #0f0f0f; /* Màu nhạt */
-    pointer-events: none; /* Không cho phép tương tác với placeholder */
-    transition: opacity 0.2s ease; /* Hiệu ứng mờ dần */
-    z-index: 2; /* Đảm bảo placeholder nằm trên dropdown */
+  position: absolute;
+  /* Định vị tuyệt đối trong container */
+  top: 50%;
+  /* Đặt ở giữa theo chiều dọc */
+  left: 0.75rem;
+  /* Cách lề trái */
+  transform: translateY(-50%);
+  /* Dịch chuyển lên trên 50% để căn giữa */
+  color: #0f0f0f;
+  /* Màu nhạt */
+  pointer-events: none;
+  /* Không cho phép tương tác với placeholder */
+  transition: opacity 0.2s ease;
+  /* Hiệu ứng mờ dần */
+  z-index: 2;
+  /* Đảm bảo placeholder nằm trên dropdown */
 }
 
 
 
-.custom-dropdown select:focus + .placeholder,
-.custom-dropdown select:not([value=""]) + .placeholder {
-    opacity: 0; /* Ẩn placeholder khi dropdown được focus hoặc có giá trị */
+.custom-dropdown select:focus+.placeholder,
+.custom-dropdown select:not([value=""])+.placeholder {
+  opacity: 0;
+  /* Ẩn placeholder khi dropdown được focus hoặc có giá trị */
 }
 
 /*bang them cau hoi nhe*/
 .modal-content {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 .modal-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
 }
 
 .modal-footer {
-    border-top: 1px solid #dee2e6;
+  border-top: 1px solid #dee2e6;
 }
 
 .input-group {
-    margin-bottom: 10px;
-}
-.table-vcenter {
-    width: 100%;
-    table-layout: fixed; /* Giữ nguyên kích thước cột */
+  margin-bottom: 1rem;
+  /* Giảm từ 1.5rem xuống 1rem */
 }
 
-.table-vcenter th, .table-vcenter td {
-    padding: 12px; /* Tăng padding để bảng trông thoáng hơn */
+.table-vcenter {
+  width: 100%;
+  table-layout: fixed;
+  /* Giữ nguyên kích thước cột */
+}
+
+.table-vcenter th,
+.table-vcenter td {
+  padding: 12px;
+  /* Tăng padding để bảng trông thoáng hơn */
 }
 
 .table-vcenter th {
-    background-color: #f0f2f5; /* Màu nền cho header */
-    font-weight: bold; /* Đậm chữ cho header */
+  background-color: #f0f2f5;
+  /* Màu nền cho header */
+  font-weight: bold;
+  /* Đậm chữ cho header */
 }
 
 /* giu nguyen bang khi thu nho */
 /* Đảm bảo nội dung không bị phá vỡ layout */
 
-    /*chỉnh màn hình to nhỏ như 1*/
-    /* Đảm bảo giao diện responsive */
+/*chỉnh màn hình to nhỏ như 1*/
+/* Đảm bảo giao diện responsive */
 @media (max-width: 768px) {
-    .block-header {
-      flex-direction: column;
-      align-items: flex-start !important;
-    }
-    
-    .block-options {
-      margin-top: 1rem;
-      width: 100%;
-    }
-    
-    .custom-btn {
-      width: 100%;
-    }
-    
-    .table-responsive {
-      border: 0;
-    }
-    
-    .table-responsive table {
-      width: 100%;
-    }
-    
-    .col-action {
-      white-space: nowrap;
-    }
+  .block-header {
+    flex-direction: column;
+    align-items: flex-start !important;
   }
-  
-  /* Đảm bảo modal hiển thị tốt trên mobile */
-  @media (max-width: 576px) {
-    .modal-dialog {
-      margin: 0.5rem auto;
-      max-width: 95%;
-    }
-    
-    .input-group.mb-2 {
-      flex-wrap: nowrap;
-    }
-    
-    .input-group.mb-2 .form-control {
-      flex: 1;
-      min-width: 0;
-    }
-    
-    .input-group.mb-2 .btn {
-      padding: 0.375rem 0.5rem;
-    }
+
+  .block-options {
+    margin-top: 1rem;
+    width: 100%;
   }
-  
-  /* Đảm bảo phân trang không bị tràn */
-  .pagination {
-    flex-wrap: wrap;
+
+  .custom-btn {
+    width: 100%;
   }
-  
-  .page-item {
-    margin-bottom: 0.5rem;
+
+  .table-responsive {
+    border: 0;
   }
+
+  .table-responsive table {
+    width: 100%;
+  }
+
+  .col-action {
+    white-space: nowrap;
+  }
+}
+
+/* Đảm bảo modal hiển thị tốt trên mobile */
+@media (max-width: 576px) {
+  .modal-dialog {
+    margin: 0.5rem auto;
+    max-width: 95%;
+  }
+
+  .input-group.mb-2 {
+    flex-wrap: nowrap;
+  }
+
+  .input-group.mb-2 .form-control {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .input-group.mb-2 .btn {
+    padding: 0.375rem 0.5rem;
+  }
+}
+
+/* Đảm bảo phân trang không bị tràn */
+.pagination {
+  flex-wrap: wrap;
+}
+
+.page-item {
+  margin-bottom: 0.5rem;
+}

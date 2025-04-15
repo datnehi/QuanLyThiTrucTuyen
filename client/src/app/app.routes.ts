@@ -4,6 +4,7 @@ import { authGuard } from './guards/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { loginGuard } from './guards/login.guard';
 import { QuestionsComponent } from './questions/questions.component';
+import { SubjectsComponent } from './subjects/subjects.component';
 import { UsersComponent } from './users/users.component';
 import { NotificationsComponent } from './Notification/notifications/notifications.component';
 import { CreatenotificationsComponent } from './Notification/createnotifications/createnotifications.component';
@@ -59,6 +60,7 @@ export const routes: Routes = [
 
   { path: 'courses', component: HocphanComponent, canActivate: [authGuard],},
   { path: 'questions', component: QuestionsComponent, canActivate: [authGuard]},
+  { path: 'subjects', component: SubjectsComponent, canActivate: [authGuard] },
   { path: 'users', component: UsersComponent, canActivate: [authGuard]},
   {
     path: 'student-exams',

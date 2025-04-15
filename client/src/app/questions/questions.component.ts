@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Question } from '../models/question'; // Điều chỉnh đường dẫn cho phù hợp
 import * as bootstrap from 'bootstrap';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-questions',
@@ -28,6 +29,8 @@ export class QuestionsComponent implements OnInit {
   searchKeyword = '';
   selectedSubject = '';
   editingQuestionId: string | null = null;
+  // Thêm thuộc tính này để quản lý subscriptions
+  private subscriptions: Subscription[] = [];
 
   // Danh sách môn học
   subjects = [
@@ -51,11 +54,20 @@ export class QuestionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadQuestions();
-    // Thêm sự kiện khi modal bị đóng
+    this.initModalEvents();
+  }
+
+  ngOnDestroy(): void {
+    // Hủy tất cả subscriptions khi component bị hủy
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  initModalEvents(): void {
     const modal = document.getElementById('addQuestionModal');
     if (modal) {
       modal.addEventListener('hidden.bs.modal', () => {
         this.resetForm();
+        this.editingQuestionId = null; // Reset biến editing
       });
     }
   }
@@ -64,9 +76,10 @@ export class QuestionsComponent implements OnInit {
     this.isLoading = true;
     this.questionService.getQuestions().subscribe({
       next: (data) => {
-        this.questions = data;
-        this.filteredQuestions = [...data];
-        this.totalItems = data.length;
+        // Lọc chỉ hiển thị những câu hỏi có trangthai = false (0)
+        this.questions = data.filter(q => q.trangthai === false);
+        this.filteredQuestions = [...this.questions];
+        this.totalItems = this.questions.length;
         this.isLoading = false;
       },
       error: (error) => {
@@ -216,6 +229,7 @@ export class QuestionsComponent implements OnInit {
         alert('Vui lòng điền đầy đủ thông tin và ít nhất một đáp án đúng!');
         return;
       }
+      this.isLoading = true; // Bật trạng thái loading
 
       // Chuẩn bị dữ liệu gửi lên server
       const questionData: Question = {
@@ -225,7 +239,8 @@ export class QuestionsComponent implements OnInit {
         trangthai: false // Mặc định là false
       };
 
-      this.questionService.createQuestion(questionData).subscribe({
+      // Sử dụng subscription và lưu vào mảng quản lý
+      const createSub = this.questionService.createQuestion(questionData).subscribe({
         next: (createdQuestion) => {
           // Chuẩn bị dữ liệu câu trả lời
           const answers = this.newQuestion.dapan.map((answer, index) => ({
@@ -235,24 +250,30 @@ export class QuestionsComponent implements OnInit {
           }));
 
           // Lưu các câu trả lời
-          this.questionService.saveAnswers(answers).subscribe({
+          const saveAnswersSub = this.questionService.saveAnswers(answers).subscribe({
             next: () => {
               alert('Câu hỏi và đáp án đã được lưu thành công!');
-              this.resetForm(); // Reset form trước khi đóng modal
               this.closeModal();
-              this.loadQuestions();
+              this.loadQuestions(); // Load lại danh sách
             },
             error: (error) => {
+              this.isLoading = false;
               console.error('Lỗi khi lưu đáp án:', error);
               alert('Câu hỏi đã được lưu nhưng có lỗi khi lưu đáp án!');
+            },
+            complete: () => {
+              this.isLoading = false;
             }
           });
+          this.subscriptions.push(saveAnswersSub);
         },
         error: (error) => {
+          this.isLoading = false;
           console.error('Lỗi khi lưu câu hỏi:', error);
           alert('Có lỗi xảy ra khi lưu câu hỏi!');
         }
       });
+      this.subscriptions.push(createSub);
     }
   }
 
@@ -278,6 +299,7 @@ export class QuestionsComponent implements OnInit {
 
       // Reset form khi đóng modal
       this.resetForm();
+      this.editingQuestionId = null;
 
       // Xóa backdrop nếu có
       const backdrop = document.querySelector('.modal-backdrop');
