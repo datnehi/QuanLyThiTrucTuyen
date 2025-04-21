@@ -5,16 +5,16 @@ import lombok.*;
 import java.util.*;
 
 @Entity
-@Table(name = "phanmon")
+@Table(name = "chitiethongtbao")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(PhanMonId.class)
-public class PhanMon {
+@IdClass(DetailNotificationId.class)
+public class DetailNotification {
     @Id
     @ManyToOne
-    @JoinColumn(name = "id")
-    private User nguoiDung;
+    @JoinColumn(name = "mathongbao")
+    private Notification thongBao;
 
     @Id
     @ManyToOne

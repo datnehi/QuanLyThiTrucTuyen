@@ -1,7 +1,5 @@
 package com.nhom6.server.Controller;
 
-import com.nhom6.server.Model.CauHoi;
-import com.nhom6.server.Model.CauTraLoi;
 import com.nhom6.server.Services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

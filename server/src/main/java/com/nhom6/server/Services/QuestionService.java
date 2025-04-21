@@ -1,8 +1,5 @@
 package com.nhom6.server.Services;
 
-import com.nhom6.server.Model.CauHoi;
-import com.nhom6.server.Model.CauTraLoi;
-
 import java.util.List;
 
 public interface QuestionService {

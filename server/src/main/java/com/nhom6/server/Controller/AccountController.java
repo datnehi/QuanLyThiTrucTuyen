@@ -1,6 +1,5 @@
 package com.nhom6.server.Controller;
 
-import com.nhom6.server.Model.Account;
 import com.nhom6.server.Services.AccountService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

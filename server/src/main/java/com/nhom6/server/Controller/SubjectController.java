@@ -1,6 +1,5 @@
 package com.nhom6.server.Controller;
 
-import com.nhom6.server.Model.Subject;
 import com.nhom6.server.Services.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

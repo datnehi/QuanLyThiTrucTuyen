@@ -2,7 +2,6 @@ package com.nhom6.server.Services;
 
 import com.nhom6.server.DTO.AnswerDto;
 import com.nhom6.server.Model.ChiTietBaiThi;
-import com.nhom6.server.Model.DapAn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;

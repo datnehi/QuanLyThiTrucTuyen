@@ -1,61 +1,38 @@
 package com.nhom6.server.Model;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
+import java.util.*;
 
+@Entity
+@Table(name = "monhoc")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Course {
-    private String maMonHoc;
-    private String tenMonHoc;
-    private String giangVien;
-    private int soTinChi;
-    private String ghiChu;
-    private boolean trangThai;
+    @Id
+    @Column(length = 5)
+    private String mamonhoc;
 
-    public String getMaMonHoc() {
-        return maMonHoc;
-    }
+    @Column(nullable = false, length = 100)
+    private String tenmonhoc;
 
-    public void setMaMonHoc(String maMonHoc) {
-        this.maMonHoc = maMonHoc;
-    }
+    @Column(length = 100)
+    private String giangvien;
 
-    public String getTenMonHoc() {
-        return tenMonHoc;
-    }
+    private Integer sotinchi;
 
-    public void setTenMonHoc(String tenMonHoc) {
-        this.tenMonHoc = tenMonHoc;
-    }
+    @Column(length = 255)
+    private String ghichu;
 
-    public String getGiangVien() {
-        return giangVien;
-    }
+    private boolean trangthai = false;
 
-    public void setGiangVien(String giangVien) {
-        this.giangVien = giangVien;
-    }
+    @OneToMany(mappedBy = "monHoc")
+    private List<Exam> kiThis;
 
-    public int getSoTinChi() {
-        return soTinChi;
-    }
+    @OneToMany(mappedBy = "monHoc")
+    private List<Question> cauHoiList;
 
-    public void setSoTinChi(int soTinChi) {
-        this.soTinChi = soTinChi;
-    }
-
-    public String getGhiChu() {
-        return ghiChu;
-    }
-
-    public void setGhiChu(String ghiChu) {
-        this.ghiChu = ghiChu;
-    }
-
-    public boolean isTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
-    }
+    @OneToMany(mappedBy = "monHoc")
+    private List<PhanMon> phanMons;
 }
