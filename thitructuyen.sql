@@ -78,6 +78,7 @@ create table phanmon(
 create table chitiethongtbao(
 	mathongbao char (10) not null,
 	mamonhoc char(5) not null,
+	trangthai bit default 0,
 	foreign key (mamonhoc) references monhoc(mamonhoc),
 	foreign key (mathongbao) references thongbao(mathongbao),
 	primary key (mathongbao, mamonhoc)

@@ -1,7 +1,5 @@
 package com.nhom6.server.Services;
 
-import com.nhom6.server.Model.CauHoi;
-import com.nhom6.server.Model.CauTraLoi;
 import com.nhom6.server.Repository.AnswerRepository;
 import com.nhom6.server.Repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

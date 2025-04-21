@@ -1,6 +1,5 @@
 package com.nhom6.server.Services;
 
-import com.nhom6.server.Model.Subject;
 import java.util.List;
 
 public interface SubjectService {

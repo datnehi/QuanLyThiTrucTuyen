@@ -2,54 +2,30 @@ package com.nhom6.server.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 @Table(name = "thongbao")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Notification {
-
     @Id
-    @Column(name = "mathongbao", length = 10)
-    private String maThongBao;
+    @Column(length = 10)
+    private String mathongbao;
 
-    @Column(name = "noidung", nullable = false, length = 255)
-    private String noiDung;
+    @Column(nullable = false, length = 255)
+    private String noidung;
 
-    @Column(name = "thoigiantao", nullable = false)
+    @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime thoiGianTao;
+    private LocalDateTime thoigiantao;
 
-    @Column(name = "trangthai")
-    private Boolean trangThai;
+    private boolean trangthai = false;
 
-
-    public Notification() {
-    }
-
-    // Optional: All-args constructor
-    public Notification(String maThongBao, String noiDung, LocalDateTime thoiGianTao, Boolean trangThai) {
-        this.maThongBao = maThongBao;
-        this.noiDung = noiDung;
-        this.thoiGianTao = thoiGianTao;
-        this.trangThai = trangThai;
-    }
-
-    public LocalDateTime getThoiGianTao() {return thoiGianTao;}
-
-    public void setThoiGianTao(LocalDateTime thoiGianTao) {this.thoiGianTao = thoiGianTao;}
-
-    public String getMaThongBao() {return maThongBao;}
-
-    public void setMaThongBao(String maThongBao) {this.maThongBao = maThongBao;}
-
-    public String getNoiDung() {return noiDung;}
-
-    public void setNoiDung(String noiDung) {this.noiDung = noiDung;}
-
-    public Boolean getTrangThai() {return trangThai;}
-
-    public void setTrangThai(Boolean trangThai) {this.trangThai = trangThai;}
+    @OneToMany(mappedBy = "thongBao")
+    private List<DetailNotification> chiTietThongBaos;
 }

@@ -1,72 +1,39 @@
 package com.nhom6.server.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.*;
 
+@Entity
+@Table(name = "ketqua")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Result {
-    private String maKetQua;
-    private String maKiThi;
-    private String id;
-    private Float diem;
+    @Id
+    @Column(length = 10)
+    private String maketqua;
+
+    @ManyToOne
+    @JoinColumn(name = "makithi", nullable = false)
+    private Exam kiThi;
+
+    @ManyToOne
+    @JoinColumn(name = "id", nullable = false)
+    private User nguoiDung;
+
+    private Double diem;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime thoiGianVaoThi;
-    private Float thoiGianLamBai;
-    private Integer soCauDung;
+    private LocalDateTime thoigianvaothi;
 
-    public String getMaKetQua() {
-        return maKetQua;
-    }
+    private Integer thoigianlambai;
 
-    public void setMaKetQua(String maKetQua) {
-        this.maKetQua = maKetQua;
-    }
+    private Integer socaudung;
 
-    public String getMaKiThi() {
-        return maKiThi;
-    }
-
-    public void setMaKiThi(String maKiThi) {
-        this.maKiThi = maKiThi;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Float getDiem() {
-        return diem;
-    }
-
-    public void setDiem(Float diem) {
-        this.diem = diem;
-    }
-
-    public LocalDateTime getThoiGianVaoThi() {
-        return thoiGianVaoThi;
-    }
-
-    public void setThoiGianVaoThi(LocalDateTime thoiGianVaoThi) {
-        this.thoiGianVaoThi = thoiGianVaoThi;
-    }
-
-    public Float getThoiGianLamBai() {
-        return thoiGianLamBai;
-    }
-
-    public void setThoiGianLamBai(Float thoiGianLamBai) {
-        this.thoiGianLamBai = thoiGianLamBai;
-    }
-
-    public Integer getSoCauDung() {
-        return soCauDung;
-    }
-
-    public void setSoCauDung(Integer soCauDung) {
-        this.soCauDung = soCauDung;
-    }
+    @OneToMany(mappedBy = "ketQua")
+    private List<ChiTietBaiThi> chiTietDes;
 }

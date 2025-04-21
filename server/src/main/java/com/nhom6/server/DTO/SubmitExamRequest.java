@@ -1,7 +1,5 @@
 package com.nhom6.server.DTO;
 
-import java.util.Map;
-
 public class SubmitExamRequest {
     private String maKiThi;
     private String id;

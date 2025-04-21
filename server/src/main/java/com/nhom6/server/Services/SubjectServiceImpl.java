@@ -1,6 +1,5 @@
 package com.nhom6.server.Services;
 
-import com.nhom6.server.Model.Subject;
 import com.nhom6.server.Repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
