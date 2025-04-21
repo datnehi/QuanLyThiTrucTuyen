@@ -28,6 +28,6 @@ export class NotificationsService {
   }
 
   deleteNotification(maThongBao: string): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl + '/delete'}/${maThongBao}`);
+    return this.http.delete<any>(`${this.baseUrl}/${maThongBao}`);
   }
 }

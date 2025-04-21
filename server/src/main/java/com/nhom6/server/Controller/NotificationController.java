@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -47,12 +48,16 @@ public class NotificationController {
     }
    // xóa thong báo( đặt từ 0->1)
     @DeleteMapping("/{maThongBao}")
-    public ResponseEntity<String> deleteNotification(@PathVariable String maThongBao) {
+    public ResponseEntity<Map<String, Object>> deleteNotification(@PathVariable String maThongBao) {
         try {
             notificationService.deleteNotification(maThongBao);
-            return ResponseEntity.ok("Xóa thông báo thành công.");
+            return ResponseEntity.ok(Map.of(
+                    "message", "Xóa thông báo thành công."
+            ));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thông báo với mã: " + maThongBao);
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "message", "Không tìm thấy thông báo với mã: " + maThongBao
+            ));
         }
     }
 }
