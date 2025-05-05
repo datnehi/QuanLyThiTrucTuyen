@@ -1,6 +1,7 @@
 package com.nhom6.server.Controller;
 
-import com.nhom6.server.DTO.AnswerDto;
+import com.nhom6.server.DTO.ChiTietBaiThiDto;
+import com.nhom6.server.DTO.SaveAnswerDto;
 import com.nhom6.server.Model.ChiTietBaiThi;
 import com.nhom6.server.Services.ChiTietBaiThiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class ChiTietBaiThiController {
     @GetMapping("/{maketqua}")
     public ResponseEntity<Map<String, Object>> getChiTietBaiLam(@PathVariable String maketqua) {
         try {
-            List<ChiTietBaiThi> danhSachCauHoi = chiTietBaiThiService.getChiTietBaiLam(maketqua);
+            List<ChiTietBaiThiDto> danhSachCauHoi = chiTietBaiThiService.getChiTietBaiLam(maketqua);
             return ResponseEntity.ok(Map.of(
                     "message", "Lấy danh sách câu hỏi thành công",
                     "data", danhSachCauHoi
@@ -35,7 +36,7 @@ public class ChiTietBaiThiController {
 
     // -------------------- POST: Lưu đáp án --------------------
     @PostMapping("/save")
-    public ResponseEntity<Map<String, Object>> saveAnswer(@RequestBody AnswerDto answerDto) {
+    public ResponseEntity<Map<String, Object>> saveAnswer(@RequestBody SaveAnswerDto answerDto) {
         try {
             chiTietBaiThiService.saveAnswer(answerDto);
             return ResponseEntity.ok(Map.of(

@@ -1,5 +1,6 @@
 package com.nhom6.server.Repository;
 
+import com.nhom6.server.Model.Answer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,12 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface AnswerRepository extends JpaRepository<CauTraLoi, String> {
-    List<CauTraLoi> findByMacauhoi(String macauhoi);
+public interface AnswerRepository extends JpaRepository<Answer, String> {
 
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM CauTraLoi c WHERE c.macauhoi = :macauhoi")
-    void deleteByMacauhoi(@Param("macauhoi") String macauhoi);
-    CauTraLoi findTopByOrderByMacautraloiDesc();
+//    @Transactional
+//    @Modifying
+//    @Query("DELETE FROM CauTraLoi c WHERE c.macauhoi = :macauhoi")
+//    void deleteByMacauhoi(@Param("macauhoi") String macauhoi);
+//    CauTraLoi findTopByOrderByMacautraloiDesc();
 }

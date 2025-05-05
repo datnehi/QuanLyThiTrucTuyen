@@ -83,27 +83,27 @@ public class ExamController {
     @PostMapping
     public ResponseEntity<Map<String, Object>> createExam(@RequestBody Exam exam) {
         // Kiểm tra dữ liệu hợp lệ
-        if (exam.getTenKiThi() == null || exam.getTenKiThi().trim().isEmpty()) {
+        if (exam.getTenkithi() == null || exam.getTenkithi().trim().isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Tên kỳ thi không được để trống"));
         }
 
-        if (exam.getMaMonHoc() == null || exam.getMaMonHoc().trim().isEmpty()) {
+        if (exam.getMonHoc().getMamonhoc() == null || exam.getMonHoc().getMamonhoc().trim().isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Mã môn học không được để trống"));
         }
 
-        if (exam.getThoiGianBatDau() == null || exam.getThoiGianKetThuc() == null) {
+        if (exam.getThoigianbatdau() == null || exam.getThoigianketthuc() == null) {
             return ResponseEntity.badRequest().body(Map.of("message", "Thời gian bắt đầu và kết thúc không được để trống"));
         }
 
-        if (exam.getThoiGianBatDau().isAfter(exam.getThoiGianKetThuc()) || exam.getThoiGianBatDau().isEqual(exam.getThoiGianKetThuc())) {
+        if (exam.getThoigianbatdau().isAfter(exam.getThoigianketthuc()) || exam.getThoigianbatdau().isEqual(exam.getThoigianketthuc())) {
             return ResponseEntity.badRequest().body(Map.of("message", "Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc"));
         }
 
-        if (exam.getThoiGianThi() <= 0) {
+        if (exam.getThoigianthi() <= 0) {
             return ResponseEntity.badRequest().body(Map.of("message", "Thời gian thi phải lớn hơn 0"));
         }
 
-        if (exam.getSoCau() <= 0) {
+        if (exam.getSocau() <= 0) {
             return ResponseEntity.badRequest().body(Map.of("message", "Số câu phải lớn hơn 0"));
         }
 
@@ -124,15 +124,15 @@ public class ExamController {
     @PutMapping("/{maKiThi}")
     public ResponseEntity<Map<String, Object>> updateExam(@PathVariable String maKiThi, @RequestBody Exam examDetails) {
         // Kiểm tra dữ liệu hợp lệ
-        if (examDetails.getTenKiThi() == null || examDetails.getTenKiThi().trim().isEmpty()) {
+        if (examDetails.getTenkithi() == null || examDetails.getTenkithi().trim().isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Tên kỳ thi không được để trống"));
         }
 
-        if (examDetails.getThoiGianKetThuc() == null) {
+        if (examDetails.getThoigianketthuc() == null) {
             return ResponseEntity.badRequest().body(Map.of("message", "Thời gian kết thúc không được để trống"));
         }
 
-        if (examDetails.getThoiGianBatDau().isAfter(examDetails.getThoiGianKetThuc()) || examDetails.getThoiGianBatDau().isEqual(examDetails.getThoiGianKetThuc())) {
+        if (examDetails.getThoigianbatdau().isAfter(examDetails.getThoigianketthuc()) || examDetails.getThoigianbatdau().isEqual(examDetails.getThoigianketthuc())) {
             return ResponseEntity.badRequest().body(Map.of("message", "Thời gian kết thúc phải lớn hơn thời gian bắt đầu"));
         }
 

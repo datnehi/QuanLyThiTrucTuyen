@@ -1,6 +1,7 @@
 package com.nhom6.server.Controller;
 
-import com.nhom6.server.Services.AccountService;
+import com.nhom6.server.Model.User;
+import com.nhom6.server.Services.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,10 +12,10 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-public class AccountController {
+public class UserController {
 
     @Autowired
-    private AccountService accountService;
+    private UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginRequest, HttpSession session) {
@@ -34,7 +35,7 @@ public class AccountController {
                         .body(Map.of("message", "Mã sinh viên phải có 7 số!"));
             }
 
-            Optional<Map<String, Object>> user = accountService.login(id, matkhau);
+            Optional<User> user = userService.login(id, matkhau);
 
             if (user.isPresent()) {
                 String token = UUID.randomUUID().toString();
@@ -74,8 +75,8 @@ public class AccountController {
     @GetMapping("/accounts")
     public ResponseEntity<Map<String, Object>> getAllAccounts() {
         try {
-            List<Account> accounts = accountService.getAll();
-            if (accounts.isEmpty()) {
+            List<User> users = userService.getAll();
+            if (users.isEmpty()) {
                 return ResponseEntity
                         .status(HttpStatus.NO_CONTENT)
                         .body(Map.of("message", "Không có tài khoản nào"));
@@ -83,7 +84,7 @@ public class AccountController {
 
             return ResponseEntity.ok(Map.of(
                     "message", "Lấy danh sách tài khoản thành công",
-                    "data", accounts
+                    "data", users
             ));
         } catch (Exception e) {
             return ResponseEntity

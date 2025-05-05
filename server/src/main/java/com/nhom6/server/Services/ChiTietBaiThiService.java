@@ -1,9 +1,12 @@
 package com.nhom6.server.Services;
 
 import com.nhom6.server.DTO.AnswerDto;
-import com.nhom6.server.Model.ChiTietBaiThi;
+import com.nhom6.server.DTO.ChiTietBaiThiDto;
+import com.nhom6.server.DTO.SaveAnswerDto;
+import com.nhom6.server.Model.*;
+import com.nhom6.server.Repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -11,121 +14,120 @@ import java.util.*;
 @Service
 public class ChiTietBaiThiService {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private ChiTietBaiThiRepository chiTietBaiThiRepository;
+    @Autowired
+    private QuestionRepository questionRepository;
+    @Autowired
+    private ResultRepository resultRepository;
+    @Autowired// nếu cần
+    private AnswerRepository answerRepository;
 
-    public List<ChiTietBaiThi> getChiTietBaiLam(String maketqua) {
-        try {
-            String sql = """
-                SELECT 
-                    ch.macauhoi, 
-                    ch.noidung AS cauhoi,
-                    ctl.maketqua,
-                    ctl.dapanchon AS dapan_chon,
-                    ctl.thutu,
-                    ct.macautraloi,
-                    ct.noidung AS dapan,
-                    ct.ladapan
-                FROM chitietde ctl
-                JOIN cauhoi ch ON ctl.macauhoi = ch.macauhoi
-                JOIN cautraloi ct ON ch.macauhoi = ct.macauhoi
-                WHERE ctl.maketqua = ? 
-                ORDER BY ctl.thutu, ct.macautraloi;
-            """;
+    // ✅ Trả về danh sách câu hỏi và đáp án đã làm của 1 kết quả
+    public List<ChiTietBaiThiDto> getChiTietBaiLam(String maketqua) {
+        List<ChiTietBaiThi> chiTietList = chiTietBaiThiRepository.findByKetQua_Maketqua(maketqua);
+        Map<String, ChiTietBaiThiDto> map = new LinkedHashMap<>();
 
-            List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, maketqua);
-            Map<String, ChiTietBaiThi> cauHoiMap = new LinkedHashMap<>();
+        for (ChiTietBaiThi chiTiet : chiTietList) {
+            Question cauHoi = chiTiet.getCauHoi();
+            String maCauHoi = cauHoi.getMacauhoi();
 
-            for (Map<String, Object> row : rows) {
-                String macauhoi = (String) row.get("macauhoi");
-                String noidung = (String) row.get("cauhoi");
-                int thutu = (int) row.get("thutu");
+            map.putIfAbsent(maCauHoi, new ChiTietBaiThiDto(
+                    maCauHoi,
+                    cauHoi.getNoidung(),
+                    chiTiet.getThutu(),
+                    new ArrayList<>()
+            ));
 
-                cauHoiMap.putIfAbsent(macauhoi, new ChiTietBaiThi(macauhoi, noidung, thutu));
-                ChiTietBaiThi cauHoi = cauHoiMap.get(macauhoi);
+            ChiTietBaiThiDto dto = map.get(maCauHoi);
+            List<Answer> listDapAn = cauHoi.getCauTraLoiList();
 
-                String macautraloi = (String) row.get("macautraloi");
-                String noidungDapan = (String) row.get("dapan");
-                boolean ladapan = (boolean) row.get("ladapan");
-                boolean laDapAnChon = row.get("dapan_chon") != null && macautraloi.equals(row.get("dapan_chon"));
-
-                cauHoi.addDapAn(new DapAn(macautraloi, noidungDapan, ladapan, laDapAnChon));
+            for (Answer dapAn : listDapAn) {
+                boolean laDapAnChon = chiTiet.getDapAnChon() != null &&
+                        chiTiet.getDapAnChon().getMacautraloi().equals(dapAn.getMacautraloi());
+                dto.getDapAns().add(new AnswerDto(
+                        dapAn.getMacautraloi(),
+                        dapAn.getNoidung(),
+                        dapAn.isLadapan(),
+                        laDapAnChon
+                ));
             }
-
-            return new ArrayList<>(cauHoiMap.values());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
         }
+
+        return new ArrayList<>(map.values());
     }
 
+    // ✅ Lấy danh sách mã câu hỏi đã có trong chi tiết đề
     public List<String> checkCauHoi(String maKetQua) {
-        try {
-            String sql = "SELECT maCauHoi FROM chitietde WHERE maKetQua = ?";
-            return jdbcTemplate.queryForList(sql, String.class, maKetQua);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+        List<ChiTietBaiThi> list = chiTietBaiThiRepository.findByKetQua_Maketqua(maKetQua);
+        List<String> maCauHoiList = new ArrayList<>();
+        for (ChiTietBaiThi ctb : list) {
+            maCauHoiList.add(ctb.getCauHoi().getMacauhoi());
         }
+        return maCauHoiList;
     }
 
-    public List<Map<String, Object>> randomCauHoi(String maKetQua, String maMonHoc, int soCau) {
-        try {
-            String sql = "SELECT TOP (?) * FROM cauhoi WHERE maMonHoc = ? AND trangthai = 0 ORDER BY NEWID()";
-            List<Map<String, Object>> cauHoiList = jdbcTemplate.queryForList(sql, soCau, maMonHoc);
+    // ✅ Random câu hỏi và lưu vào chi tiết đề
+    @Transactional
+    public List<Question> randomCauHoi(String maKetQua, String maMonHoc, int soCau) {
+        List<Question> danhSach = questionRepository.findRandomByMonHoc(maMonHoc, soCau);
+        Result ketQua = resultRepository.findById(maKetQua).orElseThrow();
 
-            String insertSql = "INSERT INTO chitietde (maKetQua, maCauHoi, thuTu) VALUES (?, ?, ?)";
-            int index = 1;
-            for (Map<String, Object> cauHoi : cauHoiList) {
-                jdbcTemplate.update(insertSql, maKetQua, cauHoi.get("maCauHoi"), index++);
-            }
-            return cauHoiList;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+        int index = 1;
+        List<ChiTietBaiThi> result = new ArrayList<>();
+        for (Question q : danhSach) {
+            ChiTietBaiThi chiTiet = new ChiTietBaiThi();
+            chiTiet.setKetQua(ketQua);
+            chiTiet.setCauHoi(q);
+            chiTiet.setThutu(index++);
+            chiTiet.setDapAnChon(null);
+            result.add(chiTiet);
         }
+
+        chiTietBaiThiRepository.saveAll(result);
+        return danhSach;
     }
 
-    public List<ChiTietBaiThi> getCauHoi(List<Map<String, Object>> cauHoiList, String maKetQua) {
-        List<ChiTietBaiThi> danhSachCauHoi = new ArrayList<>();
-        try {
-            String sqlDapAnChon = "SELECT macauhoi, dapanchon FROM chitietde WHERE maketqua = ?";
-            List<Map<String, Object>> dapAnChonList = jdbcTemplate.queryForList(sqlDapAnChon, maKetQua);
+    // ✅ Trả về danh sách câu hỏi theo danh sách đã random (dạng DTO)
+    public List<ChiTietBaiThiDto> getCauHoi(List<Question> cauHoiList, String maKetQua) {
+        List<ChiTietBaiThiDto> result = new ArrayList<>();
 
-            Map<String, String> dapAnChonMap = new HashMap<>();
-            for (Map<String, Object> row : dapAnChonList) {
-                dapAnChonMap.put((String) row.get("macauhoi"), (String) row.get("dapanchon"));
+        Map<String, String> mapDapAnChon = new HashMap<>();
+        chiTietBaiThiRepository.findByKetQua_Maketqua(maKetQua).forEach(ct -> {
+            if (ct.getDapAnChon() != null) {
+                mapDapAnChon.put(ct.getCauHoi().getMacauhoi(), ct.getDapAnChon().getMacautraloi());
             }
+        });
 
-            for (Map<String, Object> cauHoi : cauHoiList) {
-                String maCauHoi = (String) cauHoi.get("macauhoi");
-                String noiDungCauHoi = (String) cauHoi.get("noidung");
+        for (Question q : cauHoiList) {
+            ChiTietBaiThiDto dto = new ChiTietBaiThiDto();
+            dto.setMaCauHoi(q.getMacauhoi());
+            dto.setNoiDungCauHoi(q.getNoidung());
+            dto.setThuTu(0); // nếu cần thì truyền thêm từ ngoài vào
 
-                String sqlDapAn = "SELECT * FROM cautraloi WHERE maCauHoi = ?";
-                List<DapAn> dapAns = jdbcTemplate.query(sqlDapAn, (rs, rowNum) -> new DapAn(
-                        rs.getString("maCauTraLoi"),
-                        rs.getString("noiDung"),
-                        rs.getBoolean("laDapAn"),
-                        rs.getString("maCauTraLoi").equals(dapAnChonMap.get(maCauHoi))
-                ), maCauHoi);
-
-                danhSachCauHoi.add(new ChiTietBaiThi(maCauHoi, noiDungCauHoi, dapAns, 0));
+            List<AnswerDto> dapAns = new ArrayList<>();
+            for (Answer a : q.getCauTraLoiList()) {
+                boolean laChon = a.getMacautraloi().equals(mapDapAnChon.get(q.getMacauhoi()));
+                dapAns.add(new AnswerDto(
+                        a.getMacautraloi(),
+                        a.getNoidung(),
+                        a.isLadapan(),
+                        laChon
+                ));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            dto.setDapAns(dapAns);
+            result.add(dto);
         }
-        return danhSachCauHoi;
+
+        return result;
     }
 
-    public void saveAnswer(AnswerDto answer) {
-        try {
-            String sql = "UPDATE chitietde SET dapanchon = ? WHERE maketqua = ? AND macauhoi = ?";
-            jdbcTemplate.update(sql,
-                    answer.getDapanchon(),
-                    answer.getMaketqua(),
-                    answer.getMacauhoi()
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    // ✅ Lưu đáp án được chọn
+    @Transactional
+    public void saveAnswer(SaveAnswerDto answer) {
+        ChiTietBaiThiId id = new ChiTietBaiThiId(answer.getMaketqua(), answer.getMacauhoi());
+        ChiTietBaiThi chiTiet = chiTietBaiThiRepository.findById(id).orElseThrow();
+        Answer dapAn = answerRepository.findById(answer.getDapanchon()).orElse(null);
+        chiTiet.setDapAnChon(dapAn);
+        chiTietBaiThiRepository.save(chiTiet);
     }
 }

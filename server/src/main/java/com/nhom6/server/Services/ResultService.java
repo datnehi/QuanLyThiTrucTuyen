@@ -1,16 +1,13 @@
 package com.nhom6.server.Services;
 
-import com.nhom6.server.DTO.ResultDto;
+import com.nhom6.server.DTO.ChiTietBaiThiDto;
 import com.nhom6.server.DTO.SubmitExamRequest;
-import com.nhom6.server.Model.ChiTietBaiThi;
-import com.nhom6.server.Model.Exam;
-import com.nhom6.server.Model.Result;
+import com.nhom6.server.Model.*;
+import com.nhom6.server.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -18,11 +15,25 @@ import java.util.concurrent.*;
 public class ResultService {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private ResultRepository resultRepository;
+
+    @Autowired
+    private ExamRepository examRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private ChiTietBaiThiService chiTietBaiThiService;
+
     @Autowired
-    private ExamService examService;
+    private PhanMonRepository phanMonRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private ChiTietBaiThiRepository chiTietBaiThiRepository;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
     private final ConcurrentHashMap<String, ScheduledFuture<?>> runningTimers = new ConcurrentHashMap<>();
@@ -32,179 +43,129 @@ public class ResultService {
     }
 
     public void startExam(String maKiThi, String id, int durationMinutes) {
-        try {
-            String key = generateKey(maKiThi, id);
-            if (runningTimers.containsKey(key)) return;
+        String key = generateKey(maKiThi, id);
+        if (runningTimers.containsKey(key)) return;
 
-            Runnable autoSubmitTask = () -> autoSubmitExam(maKiThi, id, durationMinutes);
-            ScheduledFuture<?> scheduledTask = scheduler.schedule(autoSubmitTask, durationMinutes + 1, TimeUnit.MINUTES);
+        Runnable autoSubmitTask = () -> autoSubmitExam(maKiThi, id, durationMinutes);
+        ScheduledFuture<?> scheduledTask = scheduler.schedule(autoSubmitTask, durationMinutes + 1, TimeUnit.MINUTES);
 
-            if (scheduledTask != null) runningTimers.put(key, scheduledTask);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        runningTimers.put(key, scheduledTask);
     }
 
     private void autoSubmitExam(String maKiThi, String id, int durationMinutes) {
-        try {
-            String key = generateKey(maKiThi, id);
-            if (runningTimers.containsKey(key)) {
-                runningTimers.remove(key);
-                submitExam(new SubmitExamRequest(maKiThi, id, durationMinutes));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        String key = generateKey(maKiThi, id);
+        runningTimers.remove(key);
+        submitExam(new SubmitExamRequest(maKiThi, id, durationMinutes));
     }
 
     public List<Result> getAllResults() {
-        try {
-            String sql = "SELECT * FROM ketqua";
-            return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Result.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
+        return resultRepository.findAll();
     }
 
     public List<Result> getResultById(String maKiThi) {
-        try {
-            String sql = "SELECT * FROM ketqua WHERE maKiThi = ?";
-            return jdbcTemplate.query(sql, new Object[]{maKiThi}, new BeanPropertyRowMapper<>(Result.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
+        return resultRepository.findByKiThi_Makithi(maKiThi);
     }
 
-    public List<ResultDto> getResultsWithUsers(String maKiThi, String maMonHoc) {
-        try {
-            String sql = """
-                SELECT * FROM phanmon pm
-                JOIN nguoidung nd ON pm.id = nd.id
-                LEFT JOIN ketqua kq ON pm.id = kq.id AND kq.maKiThi = ?
-                WHERE pm.maMonHoc = ?
-            """;
+    public List<Result> getResultsWithUsers(String maKiThi, String maMonHoc) {
+        List<PhanMon> phanMons = phanMonRepository.findByMonHoc_Mamonhoc(maMonHoc);
 
-            return jdbcTemplate.query(sql, new Object[]{maKiThi, maMonHoc}, (rs, rowNum) -> {
-                ResultDto result = new ResultDto();
-                result.setMaKetQua(rs.getString("maketqua"));
-                result.setId(rs.getString("id"));
-                result.setHoten(rs.getString("hoten"));
-                result.setDiem(rs.getObject("diem") != null ? rs.getFloat("diem") : null);
-                result.setThoiGianVaoThi(rs.getTimestamp("thoigianvaothi") != null
-                        ? rs.getTimestamp("thoigianvaothi").toLocalDateTime()
-                        : null);
-                result.setThoiGianLamBai(rs.getObject("thoigianlambai") != null ? rs.getFloat("thoigianlambai") : null);
-                return result;
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+        List<Result> results = new ArrayList<>();
+
+        for (PhanMon pm : phanMons) {
+            User nd = pm.getNguoiDung();
+            Optional<Result> kq = resultRepository.findByKiThi_MakithiAndNguoiDung_Id(maKiThi, nd.getId());
+
+            Result result = new Result();
+            result.setNguoiDung(nd);
+
+            if (kq.isPresent()) {
+                result.setMaketqua(kq.get().getMaketqua());
+                result.setDiem(kq.get().getDiem());
+                result.setThoigianvaothi(kq.get().getThoigianvaothi());
+                result.setThoigianlambai(kq.get().getThoigianlambai());
+            }
+
+            results.add(result);
         }
+
+        return results;
     }
 
     private String generateNextMaKetQua() {
-        try {
-            String sql = "SELECT TOP 1 maketqua FROM ketqua ORDER BY maketqua DESC";
-            String lastMaKetQua = jdbcTemplate.queryForObject(sql, String.class);
-            if (lastMaKetQua == null || lastMaKetQua.isEmpty()) return "0000000001";
-
-            long number = Long.parseLong(lastMaKetQua);
-            return String.format("%010d", ++number);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "0000000001";
-        }
+        String lastId = resultRepository.findTopByOrderByMaketquaDesc();
+        if (lastId == null) return "0000000001";
+        long number = Long.parseLong(lastId);
+        return String.format("%010d", number + 1);
     }
 
     public String createResult(String maKiThi, String id) {
-        try {
-            String maKetQua = generateNextMaKetQua();
-            String sql = """
-                INSERT INTO ketqua (maketqua, makithi, id, diem, thoigianvaothi, thoigianlambai, socaudung)
-                VALUES (?, ?, ?, null, GETDATE(), null, null)
-            """;
-            jdbcTemplate.update(sql, maKetQua, maKiThi, id);
-            return maKetQua;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        Optional<Exam> kiThi = examRepository.findById(maKiThi);
+        Optional<User> user = userRepository.findById(id);
+        if (kiThi.isEmpty() || user.isEmpty()) return null;
+
+        Result kq = new Result();
+        kq.setMaketqua(generateNextMaKetQua());
+        kq.setKiThi(kiThi.get());
+        kq.setNguoiDung(user.get());
+        kq.setThoigianvaothi(LocalDateTime.now());
+
+        resultRepository.save(kq);
+        return kq.getMaketqua();
     }
 
     public Result checkKetQua(String maKiThi, String id) {
-        try {
-            String sql = "SELECT * FROM ketqua WHERE maKiThi = ? AND id = ?";
-            return jdbcTemplate.queryForObject(sql, new Object[]{maKiThi, id}, new BeanPropertyRowMapper<>(Result.class));
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return resultRepository.findByKiThi_MakithiAndNguoiDung_Id(maKiThi, id).orElse(null);
     }
 
-    public List<ChiTietBaiThi> createExamResult(String maKiThi, String id) {
-        try {
-            Optional<Exam> kiThi = examService.getExamByMa(maKiThi);
-            if (kiThi.isEmpty()) return Collections.emptyList();
+    public List<ChiTietBaiThiDto> createExamResult(String maKiThi, String id) {
+        Optional<Exam> exam = examRepository.findById(maKiThi);
+        if (exam.isEmpty()) return Collections.emptyList();
 
-            Result existingKetQua = checkKetQua(maKiThi, id);
-            String maKetQua = existingKetQua == null ? createResult(maKiThi, id) : existingKetQua.getMaKetQua();
-            if (maKetQua == null) return Collections.emptyList();
+        Result result = checkKetQua(maKiThi, id);
+        String maKetQua = result == null ? createResult(maKiThi, id) : result.getMaketqua();
 
-            List<String> existingCauHoiIds = chiTietBaiThiService.checkCauHoi(maKetQua);
-            List<Map<String, Object>> cauHoiList;
+        if (maKetQua == null) return Collections.emptyList();
 
-            if (!existingCauHoiIds.isEmpty()) {
-                String placeholders = String.join(",", Collections.nCopies(existingCauHoiIds.size(), "?"));
-                String selectCauHoiSql = "SELECT * FROM cauhoi WHERE maCauHoi IN (" + placeholders + ")";
-                cauHoiList = jdbcTemplate.queryForList(selectCauHoiSql, existingCauHoiIds.toArray());
-            } else {
-                cauHoiList = chiTietBaiThiService.randomCauHoi(maKetQua, kiThi.get().getMaMonHoc(), kiThi.get().getSoCau());
-            }
+        List<String> existingIds = chiTietBaiThiService.checkCauHoi(maKetQua);
+        List<Question> cauHoiList;
 
-            return chiTietBaiThiService.getCauHoi(cauHoiList, maKetQua);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+        if (!existingIds.isEmpty()) {
+            cauHoiList = questionRepository.findAllById(existingIds);
+        } else {
+            cauHoiList = chiTietBaiThiService.randomCauHoi(maKetQua, exam.get().getMonHoc().getMamonhoc(), exam.get().getSocau());
         }
+
+        return chiTietBaiThiService.getCauHoi(cauHoiList, maKetQua);
     }
 
     public void submitExam(SubmitExamRequest request) {
-        try {
-            String key = generateKey(request.getMaKiThi(), request.getId());
-            if (runningTimers.containsKey(key)) {
-                runningTimers.get(key).cancel(false);
-                runningTimers.remove(key);
-            }
-
-            Result result = checkKetQua(request.getMaKiThi(), request.getId());
-            if (result == null) throw new IllegalArgumentException("Không tìm thấy kết quả thi.");
-
-            Optional<Exam> exam = examService.getExamByMa(request.getMaKiThi());
-            if (exam.isEmpty()) throw new IllegalArgumentException("Không tìm thấy kỳ thi.");
-
-            String selectQuery = "SELECT macauhoi, dapanchon FROM chitietde WHERE maketqua = ?";
-            List<Map<String, Object>> answers = jdbcTemplate.queryForList(selectQuery, result.getMaKetQua());
-
-            int correctCount = 0;
-
-            for (Map<String, Object> answer : answers) {
-                String dapAnChon = (String) answer.get("dapanchon");
-                if (dapAnChon == null || dapAnChon.isEmpty()) continue;
-
-                String checkQuery = "SELECT COUNT(*) FROM cautraloi WHERE macautraloi = ? AND ladapan = 1";
-                int isCorrect = jdbcTemplate.queryForObject(checkQuery, Integer.class, dapAnChon);
-                correctCount += isCorrect;
-            }
-
-            float diem = (10.0f / exam.get().getSoCau()) * correctCount;
-            String updateKetQua = "UPDATE ketqua SET diem = ?, socaudung = ?, thoigianlambai = ? WHERE maketqua = ?";
-            jdbcTemplate.update(updateKetQua, diem, correctCount, request.getTimeUsed(), result.getMaKetQua());
-        } catch (Exception e) {
-            e.printStackTrace();
+        String key = generateKey(request.getMaKiThi(), request.getId());
+        if (runningTimers.containsKey(key)) {
+            runningTimers.get(key).cancel(false);
+            runningTimers.remove(key);
         }
+
+        Result result = checkKetQua(request.getMaKiThi(), request.getId());
+        if (result == null) throw new IllegalArgumentException("Không tìm thấy kết quả thi.");
+
+        Optional<Exam> exam = examRepository.findById(request.getMaKiThi());
+        if (exam.isEmpty()) throw new IllegalArgumentException("Không tìm thấy kỳ thi.");
+
+        List<ChiTietBaiThi> answers = chiTietBaiThiRepository.findByKetQua_Maketqua(result.getMaketqua());
+
+        int correctCount = 0;
+        for (ChiTietBaiThi chiTiet : answers) {
+            Answer dapAnChon = chiTiet.getDapAnChon();
+            if (dapAnChon != null && dapAnChon.isLadapan()) {
+                correctCount++;
+            }
+        }
+
+        Double diem = (10.0D / exam.get().getSocau()) * correctCount;
+        result.setDiem(diem);
+        result.setSocaudung(correctCount);
+        result.setThoigianlambai(request.getTimeUsed());
+
+        resultRepository.save(result);
     }
 }

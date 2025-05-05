@@ -49,7 +49,9 @@ export class ExamService {
       exams: this.http.get<{ data: Exam[] }>(this.baseUrl).pipe(
         map(res => res.data)
       ),
-      courses: this.http.get<Course[]>(this.courseUrl)
+      courses: this.http.get<{ data: Course[] }>(this.courseUrl).pipe(
+        map(res => res.data)
+      )
     }).pipe(
       map(({ exams, courses }) => {
         const courseMap = new Map(courses.map(s => [s.maMonHoc, s.tenMonHoc]));

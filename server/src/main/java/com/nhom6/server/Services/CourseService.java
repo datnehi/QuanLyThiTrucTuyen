@@ -2,25 +2,24 @@ package com.nhom6.server.Services;
 
 
 import com.nhom6.server.Model.Course;
+import com.nhom6.server.Repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseService {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private CourseRepository courseRepository;
 
     public List<Course> getAllMonHoc() {
-        String sql = "SELECT * FROM monhoc WHERE trangthai = 0";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Course.class));
+        return courseRepository.findByTrangthaiFalse();
     }
 
-    public Course getMonHocById(String maMonHoc) {
-        String sql = "SELECT * FROM monhoc WHERE maMonHoc = ? AND trangthai = 0";
-        return jdbcTemplate.queryForObject(sql, new Object[]{maMonHoc}, new BeanPropertyRowMapper<>(Course.class));
+    public Optional<Course> getMonHocById(String maMonHoc) {
+        return courseRepository.findById(maMonHoc)
+                .filter(course -> !course.isTrangthai());
     }
 }

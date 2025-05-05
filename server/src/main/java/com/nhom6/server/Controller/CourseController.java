@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -18,13 +20,33 @@ public class CourseController {
     private CourseService courseService;
 
     @GetMapping
-    public List<Course> getAllMonHoc() {
-        return courseService.getAllMonHoc();
+    public ResponseEntity<Map<String, Object>> getAllMonHoc() {
+        try {
+            List<Course> courses = courseService.getAllMonHoc();
+            return ResponseEntity.ok(Map.of(
+                    "message", "Lấy danh sách môm học thành công",
+                    "data", courses
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "message", "Lỗi khi lấy danh sách môm học"
+            ));
+        }
     }
 
     @GetMapping("/{mamonhoc}")
-    public Course getMonHocById(@PathVariable String mamonhoc) {
-        return courseService.getMonHocById(mamonhoc);
+    public ResponseEntity<Map<String, Object>> getMonHocById(@PathVariable String mamonhoc) {
+        try {
+            Optional<Course> course = courseService.getMonHocById(mamonhoc);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Lấy môn học thành công",
+                    "data", course
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(Map.of(
+                    "message", "Không tìm thấy môn học với mã: " + mamonhoc
+            ));
+        }
     }
 
 }

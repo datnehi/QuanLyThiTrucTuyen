@@ -1,8 +1,8 @@
 package com.nhom6.server.Model;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.*;
 
 @Entity
 @Table(name = "chitietde")
@@ -10,6 +10,10 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(ChiTietBaiThiId.class)
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.IntSequenceGenerator.class,
+        property = "@id"
+)
 public class ChiTietBaiThi {
     @Id
     @ManyToOne

@@ -1,5 +1,6 @@
 package com.nhom6.server.Model;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.*;
@@ -10,6 +11,10 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(PhanMonId.class)
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.IntSequenceGenerator.class,
+        property = "@id"
+)
 public class PhanMon {
     @Id
     @ManyToOne

@@ -35,8 +35,8 @@ public class NotificationService {
     public Notification updateNotification(String maThongBao, Notification thongBaoDetails) {
         Notification thongBao = getNotificationById(maThongBao);
 
-        thongBao.setNoiDung(thongBaoDetails.getNoiDung());
-        thongBao.setTrangThai(thongBaoDetails.getTrangThai());
+        thongBao.setNoidung(thongBaoDetails.getNoidung());
+        thongBao.setTrangthai(thongBaoDetails.isTrangthai());
         // Don't update thoiGianTao when updating
 
         return notificationRepository.save(thongBao);
@@ -45,7 +45,7 @@ public class NotificationService {
         Notification notification = notificationRepository.findById(maThongBao)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy thông báo"));
 
-        notification.setTrangThai(true);
+        notification.setTrangthai(true);
         return notificationRepository.save(notification);
     }
 

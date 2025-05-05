@@ -1,69 +1,72 @@
 package com.nhom6.server.Services;
 
 import com.nhom6.server.Model.Course;
+import com.nhom6.server.Model.PhanMon;
+import com.nhom6.server.Model.User;
+import com.nhom6.server.Repository.CourseRepository;
+import com.nhom6.server.Repository.PhanMonRepository;
+import com.nhom6.server.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PhanMonService {
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private PhanMonRepository phanMonRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
+
+    // Lấy danh sách môn học sinh viên đang học
     public List<Course> getMonHocBySinhVien(String id) {
-        try {
-            String sql = "SELECT * " +
-                    "FROM phanmon pm " +
-                    "JOIN monhoc mh ON pm.mamonhoc = mh.mamonhoc " +
-                    "WHERE pm.id = ? AND pm.trangthai = 0";
-
-            return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Course.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+        List<PhanMon> phanMons = phanMonRepository.findByNguoiDung_IdAndTrangthaiFalse(id);
+        List<Course> monHocs = new ArrayList<>();
+        for (PhanMon pm : phanMons) {
+            monHocs.add(pm.getMonHoc());
         }
+        return monHocs;
     }
 
+    // Thêm phân môn cho sinh viên
     public Map<String, Object> addPhanMon(String id, String mamonhoc) {
         Map<String, Object> response = new HashMap<>();
-        try {
-            // Kiểm tra người dùng có tồn tại không
-            String checkUserSql = "SELECT COUNT(*) FROM nguoidung WHERE id = ?";
-            int userCount = jdbcTemplate.queryForObject(checkUserSql, Integer.class, id);
-            if (userCount == 0) {
-                response.put("success", false);
-                response.put("message", "Người dùng không tồn tại.");
-                return response;
-            }
 
-            // Kiểm tra môn học có tồn tại không
-            String checkSubjectSql = "SELECT COUNT(*) FROM monhoc WHERE mamonhoc = ?";
-            int subjectCount = jdbcTemplate.queryForObject(checkSubjectSql, Integer.class, mamonhoc);
-            if (subjectCount == 0) {
-                response.put("success", false);
-                response.put("message", "Môn học không tồn tại.");
-                return response;
-            }
-
-            // Chèn vào bảng phanmon
-            String sql = "INSERT INTO phanmon (id, mamonhoc, trangthai) VALUES (?, ?, ?)";
-            int rowsAffected = jdbcTemplate.update(sql, id.trim(), mamonhoc.trim(), 0);
-
-            // Trả về kết quả
-            response.put("success", rowsAffected > 0);
-            response.put("message", rowsAffected > 0 ? "Tham gia học phần thành công!" : "Tham gia học phần thất bại.");
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
+        Optional<User> nguoiDungOpt = userRepository.findById(id.trim());
+        if (nguoiDungOpt.isEmpty()) {
             response.put("success", false);
-            response.put("message", "Đã có lỗi xảy ra.");
+            response.put("message", "Người dùng không tồn tại.");
             return response;
         }
+
+        Optional<Course> monHocOpt = courseRepository.findById(mamonhoc.trim());
+        if (monHocOpt.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Môn học không tồn tại.");
+            return response;
+        }
+
+        boolean exists = phanMonRepository.existsByNguoiDung_IdAndMonHoc_Mamonhoc(id.trim(), mamonhoc.trim());
+        if (exists) {
+            response.put("success", false);
+            response.put("message", "Sinh viên đã tham gia môn học này rồi.");
+            return response;
+        }
+
+        PhanMon pm = new PhanMon();
+        pm.setNguoiDung(nguoiDungOpt.get());
+        pm.setMonHoc(monHocOpt.get());
+        pm.setTrangthai(false);
+
+        phanMonRepository.save(pm);
+
+        response.put("success", true);
+        response.put("message", "Tham gia học phần thành công!");
+        return response;
     }
 }
