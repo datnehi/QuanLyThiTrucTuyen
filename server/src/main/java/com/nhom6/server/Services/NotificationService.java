@@ -1,13 +1,10 @@
 package com.nhom6.server.Services;
 
 import com.nhom6.server.Model.Notification;
-import com.nhom6.server.Repon.NotificationRepository;
+import com.nhom6.server.Repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 

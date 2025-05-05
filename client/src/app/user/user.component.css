@@ -1,0 +1,26 @@
+
+.container {
+    padding: 20px;
+  }
+  
+  .table th {
+    white-space: nowrap;
+  }
+  
+  .action-buttons {
+    min-width: 120px;
+  }
+  
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .modal-content {
+    padding: 20px;
+  }
+  
+  .form-label.required:after {
+    content: " *";
+    color: red;
+  }

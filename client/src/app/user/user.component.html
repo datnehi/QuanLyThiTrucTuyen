@@ -1,10 +1,109 @@
-<div class="row mb-4">
-    <div class="col-md-6">
-        <input type="text" class="form-control" id="search-input" placeholder="Tìm kiếm người dùng">
+<h3 class="block-title mb-2 mb-md-0">Danh sách</h3>
+<div class="block-options">
+  <button type="button" class="btn btn-primary btn-lg custom-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <i class="fa-regular fa-plus me-2"></i> Thêm người dùng mới
+  </button>
+</div>
+
+<div class="block-content">
+  <div class="table-responsive" id="get_user">
+    <table class="table table-vcenter">
+      <thead>
+        <tr>
+          <th class="text-center" style="width: 100px;">ID</th>
+          <th>Họ và tên</th>
+          <th class="text-center">Giới tính</th>
+          <th class="text-center">Ngày sinh</th>
+          <th class="text-center">Avatar</th>
+          <th class="text-center">Số điện thoại</th>
+          <th class="text-center">Email</th>
+          <th class="text-center">Mật khẩu</th>
+          <th class="text-center">Role</th>
+          <th class="text-center col-header-action">Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="list-user">
+        <tr *ngFor="let user of nguoiDungList">
+          <td class="text-center"><strong>{{ user.id }}</strong></td>
+          <td class="text-primary">{{ user.hoTen }}</td>
+          <td class="text-center">{{ user.gioiTinh ? 'Nam' : 'Nữ' }}</td>
+          <td class="text-center">{{ user.ngaySinh | date: 'yyyy-MM-dd' }}</td>
+          <td class="text-center">
+            <!-- <img *ngIf="user.avatar" [src]="user.avatar" alt="Avatar" width="40" height="40"> -->
+          </td>
+          <td class="text-center">{{ user.soDienThoai }}</td>
+          <td class="text-center">{{ user.email }}</td>
+          <td class="text-center">{{ user.matKhau }}</td>
+          <td class="text-center">{{ user.role }}</td>
+          <td class="text-center col-action">
+            <a class="btn btn-sm btn-alt-secondary user-edit show" href="javascript:void(0)" (click)="editUser(user)">
+              <i class="fa fa-fw fa-pencil"></i>
+            </a>
+            <a class="btn btn-sm btn-alt-secondary user-delete show" href="javascript:void(0)" (click)="deleteUser(user.id)">
+              <i class="fa fa-fw fa-times"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Thêm/Sửa Người Dùng -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form (ngSubmit)="onSubmit()" #userForm="ngForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addUserModalLabel">
+            {{ selectedUser?.id ? 'Chỉnh sửa người dùng' : 'Thêm người dùng mới' }}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label>Họ tên</label>
+            <input type="text" class="form-control" name="hoTen" [(ngModel)]="formUser.hoTen" required />
+          </div>
+          <div class="col-md-6">
+            <label>Giới tính</label>
+            <select class="form-control" name="gioiTinh" [(ngModel)]="formUser.gioiTinh">
+              <option>Nam</option>
+              <option>Nữ</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label>Ngày sinh</label>
+            <input type="date" class="form-control" name="ngaySinh" [(ngModel)]="formUser.ngaySinh" />
+          </div>
+          <div class="col-md-6">
+            <label>Avatar (URL)</label>
+            <input type="text" class="form-control" name="avatar" [(ngModel)]="formUser.avatar" />
+          </div>
+          <div class="col-md-6">
+            <label>Số điện thoại</label>
+            <input type="text" class="form-control" name="soDienThoai" [(ngModel)]="formUser.soDienThoai" />
+          </div>
+          <div class="col-md-6">
+            <label>Email</label>
+            <input type="email" class="form-control" name="email" [(ngModel)]="formUser.email" required />
+          </div>
+          <div class="col-md-6">
+            <label>Mật khẩu</label>
+            <input type="password" class="form-control" name="matKhau" [(ngModel)]="formUser.matKhau" />
+          </div>
+          <div class="col-md-6">
+            <label>Role</label>
+            <input type="text" class="form-control" name="role" [(ngModel)]="formUser.role" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button type="submit" class="btn btn-primary">
+            {{ selectedUser?.id ? 'Cập nhật' : 'Thêm mới' }}
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="col-md-6 text-end">
-        <a routerLink="./create-notifi" class="btn btn-primary show">
-            <i class="fa fa-plus me-1"></i> thêm người dùng
-        </a>
-    </div>
+  </div>
 </div>
