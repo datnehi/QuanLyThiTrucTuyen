@@ -1,6 +1,7 @@
 package com.nhom6.server.Controller;
 
 import com.nhom6.server.DTO.ChiTietBaiThiDto;
+import com.nhom6.server.DTO.ResultDto;
 import com.nhom6.server.DTO.SubmitExamRequest;
 import com.nhom6.server.Model.Exam;
 import com.nhom6.server.Model.Result;
@@ -83,7 +84,7 @@ public class ResultController {
             @RequestParam String maKiThi,
             @RequestParam String maMonHoc) {
         try {
-            List<Result> result = resultService.getResultsWithUsers(maKiThi, maMonHoc);
+            List<ResultDto> result = resultService.getResultsWithUsers(maKiThi, maMonHoc);
             return ResponseEntity.ok(Map.of(
                     "message", "Lấy kết quả cùng thông tin người dùng thành công",
                     "data", result
@@ -109,7 +110,7 @@ public class ResultController {
             }
 
             List<ChiTietBaiThiDto> listCauHoi = resultService.createExamResult(maKiThi, id);
-            resultService.startExam(maKiThi, id, kiThi.get().getThoigianthi());
+            resultService.startExam(maKiThi, id, kiThi.get().getThoiGianThi());
 
             return ResponseEntity.ok(Map.of(
                     "message", "Bắt đầu làm bài thành công",

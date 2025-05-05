@@ -6,6 +6,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DetailNotificationId implements java.io.Serializable {
-    private String thongBao;
-    private String monHoc;
+    private String maThongBao;
+    private String maMonHoc;
 }

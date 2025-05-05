@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class AccountService {
-  baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrl + 'user';
   private userTokenSubject = new BehaviorSubject<string | null>(sessionStorage.getItem('userToken'));
   userToken$ = this.userTokenSubject.asObservable();
   private userInfoSubject = new BehaviorSubject<any>(JSON.parse(sessionStorage.getItem('user') || 'null'));
@@ -16,7 +16,7 @@ export class AccountService {
   constructor(private http: HttpClient) { }
 
   login(model: any) {
-    return this.http.post<any>(this.baseUrl + 'login', model).pipe(
+    return this.http.post<any>(this.baseUrl + '/login', model).pipe(
       map(response => {
         if (response && response.userToken && response.user) {
           this.setUser(response.userToken, response.user);
@@ -43,7 +43,7 @@ export class AccountService {
   }
 
   logout() {
-    return this.http.post(this.baseUrl + 'logout', {}).pipe(
+    return this.http.post(this.baseUrl + '/logout', {}).pipe(
       map(response => {
         if (response) {
           this.clearUser();

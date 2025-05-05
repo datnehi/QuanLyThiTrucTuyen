@@ -2,7 +2,6 @@ package com.nhom6.server.Controller;
 
 import com.nhom6.server.DTO.ChiTietBaiThiDto;
 import com.nhom6.server.DTO.SaveAnswerDto;
-import com.nhom6.server.Model.ChiTietBaiThi;
 import com.nhom6.server.Services.ChiTietBaiThiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

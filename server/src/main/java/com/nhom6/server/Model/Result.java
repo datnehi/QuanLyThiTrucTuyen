@@ -5,36 +5,35 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
 
 @Entity
 @Table(name = "ketqua")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "maketqua")
 public class Result {
+
     @Id
-    @Column(length = 10)
-    private String maketqua;
+    @Column(name = "maketqua", length = 10)
+    private String maKetQua;
 
-    @ManyToOne
-    @JoinColumn(name = "makithi", nullable = false)
-    private Exam kiThi;
+    @Column(name = "makithi", length = 10, nullable = false)
+    private String maKiThi;
 
-    @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
-    private User nguoiDung;
+    @Column(name = "id", length = 7, nullable = false)
+    private String id;
 
+    @Column(name = "diem")
     private Double diem;
 
+    @Column(name = "thoigianvaothi")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime thoigianvaothi;
+    private LocalDateTime thoiGianVaoThi;
 
-    private Integer thoigianlambai;
+    @Column(name = "thoigianlambai")
+    private Integer thoiGianLamBai;
 
-    private Integer socaudung;
+    @Column(name = "socaudung")
+    private Integer soCauDung;
 
-    @OneToMany(mappedBy = "ketQua")
-    private List<ChiTietBaiThi> chiTietDes;
 }

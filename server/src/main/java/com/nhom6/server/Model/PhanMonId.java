@@ -6,6 +6,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PhanMonId implements java.io.Serializable {
-    private String nguoiDung;
-    private String monHoc;
+    private String id;
+    private String maMonHoc;
 }

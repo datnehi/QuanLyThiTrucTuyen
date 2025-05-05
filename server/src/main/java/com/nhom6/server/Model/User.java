@@ -1,50 +1,46 @@
 package com.nhom6.server.Model;
 
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.*;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "nguoidung")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
+
     @Id
-    @Column(length = 7)
+    @Column(name = "id", length = 7)
     private String id;
 
-    @Column(nullable = false, length = 100)
-    private String hoten;
+    @Column(name = "hoten", nullable = false, length = 100)
+    private String hoTen;
 
-    @Column(nullable = false)
-    private boolean gioitinh;
+    @Column(name = "gioitinh", nullable = false)
+    private boolean gioiTinh;
 
-    @Column(nullable = false)
-    private Date ngaysinh;
+    @Column(name = "ngaysinh", nullable = false)
+    private Date ngaySinh;
 
-    @Column(length = 255)
+    @Column(name = "avatar", length = 255)
     private String avatar;
 
-    @Column(nullable = false, length = 10)
-    private String sodienthoai;
+    @Column(name = "sodienthoai", nullable = false, length = 10)
+    private String soDienThoai;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = false, length = 50)
-    private String matkhau;
+    @Column(name = "matkhau", nullable = false, length = 50)
+    private String matKhau;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "role", nullable = false, length = 50)
     private String role;
 
-    private boolean trangthai = false;
-
-    @OneToMany(mappedBy = "nguoiDung")
-    private List<PhanMon> phanMons;
-
-    @OneToMany(mappedBy = "nguoiDung")
-    private List<Result> ketQuas;
+    @Column(name = "trangthai", nullable = false)
+    private boolean trangThai = false;
 }
+

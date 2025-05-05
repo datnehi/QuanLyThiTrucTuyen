@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PhanMonService {
@@ -25,48 +26,64 @@ public class PhanMonService {
 
     // Lấy danh sách môn học sinh viên đang học
     public List<Course> getMonHocBySinhVien(String id) {
-        List<PhanMon> phanMons = phanMonRepository.findByNguoiDung_IdAndTrangthaiFalse(id);
-        List<Course> monHocs = new ArrayList<>();
-        for (PhanMon pm : phanMons) {
-            monHocs.add(pm.getMonHoc());
+        try {
+            List<PhanMon> phanMons = phanMonRepository.findByIdAndTrangThai(id, false);
+            return phanMons.stream()
+                    .map(phanMon -> {
+                        Course course = new Course();
+                        course.setMaMonHoc(phanMon.getMaMonHoc());
+                        return course;
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
-        return monHocs;
     }
 
     // Thêm phân môn cho sinh viên
     public Map<String, Object> addPhanMon(String id, String mamonhoc) {
         Map<String, Object> response = new HashMap<>();
+        try {
+            // Kiểm tra người dùng có tồn tại không
+            if (!userRepository.existsById(id)) {
+                response.put("success", false);
+                response.put("message", "Người dùng không tồn tại.");
+                return response;
+            }
 
-        Optional<User> nguoiDungOpt = userRepository.findById(id.trim());
-        if (nguoiDungOpt.isEmpty()) {
+            // Kiểm tra môn học có tồn tại không
+            if (!courseRepository.existsByMaMonHoc(mamonhoc)) {
+                response.put("success", false);
+                response.put("message", "Môn học không tồn tại.");
+                return response;
+            }
+
+            // Kiểm tra xem sinh viên đã tham gia môn học này chưa
+            boolean exists = phanMonRepository.existsByIdAndMaMonHoc(id.trim(), mamonhoc.trim());
+            if (exists) {
+                response.put("success", false);
+                response.put("message", "Sinh viên đã tham gia môn học này rồi.");
+                return response;
+            }
+
+            // Thêm phân môn cho sinh viên
+            PhanMon phanMon = new PhanMon();
+            phanMon.setId(id.trim());
+            phanMon.setMaMonHoc(mamonhoc.trim());
+            phanMon.setTrangThai(false);
+
+            // Lưu phân môn
+            phanMonRepository.save(phanMon);
+
+            response.put("success", true);
+            response.put("message", "Tham gia học phần thành công!");
+            return response;
+        }catch (Exception e) {
+            e.printStackTrace();
             response.put("success", false);
-            response.put("message", "Người dùng không tồn tại.");
+            response.put("message", "Đã có lỗi xảy ra.");
             return response;
         }
-
-        Optional<Course> monHocOpt = courseRepository.findById(mamonhoc.trim());
-        if (monHocOpt.isEmpty()) {
-            response.put("success", false);
-            response.put("message", "Môn học không tồn tại.");
-            return response;
-        }
-
-        boolean exists = phanMonRepository.existsByNguoiDung_IdAndMonHoc_Mamonhoc(id.trim(), mamonhoc.trim());
-        if (exists) {
-            response.put("success", false);
-            response.put("message", "Sinh viên đã tham gia môn học này rồi.");
-            return response;
-        }
-
-        PhanMon pm = new PhanMon();
-        pm.setNguoiDung(nguoiDungOpt.get());
-        pm.setMonHoc(monHocOpt.get());
-        pm.setTrangthai(false);
-
-        phanMonRepository.save(pm);
-
-        response.put("success", true);
-        response.put("message", "Tham gia học phần thành công!");
-        return response;
     }
 }

@@ -1,9 +1,7 @@
 package com.nhom6.server.Model;
 
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.*;
 
 @Entity
 @Table(name = "phanmon")
@@ -11,20 +9,16 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(PhanMonId.class)
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.IntSequenceGenerator.class,
-        property = "@id"
-)
 public class PhanMon {
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "id")
-    private User nguoiDung;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "mamonhoc")
-    private Course monHoc;
+    @Column(name = "id", length = 7, nullable = false)
+    private String id;
 
-    private boolean trangthai = false;
+    @Id
+    @Column(name = "mamonhoc", length = 5, nullable = false)
+    private String maMonHoc;
+
+    @Column(name = "trangthai")
+    private boolean trangThai = false;
 }

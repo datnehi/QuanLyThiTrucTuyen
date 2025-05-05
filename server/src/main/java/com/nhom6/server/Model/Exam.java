@@ -5,52 +5,51 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
 
 @Entity
 @Table(name = "kithi")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "makithi")
 public class Exam {
+
     @Id
-    @Column(length = 10)
-    private String makithi;
+    @Column(name = "makithi", length = 10)
+    private String maKiThi;
 
-    @ManyToOne
-    @JoinColumn(name = "mamonhoc", nullable = false)
-    private Course monHoc;
+    @Column(name = "mamonhoc", length = 5, nullable = false)
+    private String maMonHoc;
 
-    @Column(nullable = false, length = 50)
-    private String tenkithi;
+    @Column(name = "tenkithi", length = 50, nullable = false)
+    private String tenKiThi;
 
-    @Column(nullable = false)
+    @Column(name = "thoigiantao", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime thoigiantao;
+    private LocalDateTime thoiGianTao;
 
-    @Column(nullable = false)
-    private int thoigianthi;
+    @Column(name = "thoigianthi", nullable = false)
+    private int thoiGianThi;
 
-    @Column(nullable = false)
+    @Column(name = "thoigianbatdau", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime thoigianbatdau;
+    private LocalDateTime thoiGianBatDau;
 
-    @Column(nullable = false)
+    @Column(name = "thoigianketthuc", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime thoigianketthuc;
+    private LocalDateTime thoiGianKetThuc;
 
-    private boolean xemdiem = false;
+    @Column(name = "xemdiem")
+    private boolean xemDiem = false;
 
-    private boolean xemdapan = false;
+    @Column(name = "xemdapan")
+    private boolean xemDapAn = false;
 
-    private boolean hienthibailam = false;
+    @Column(name = "hienthibailam")
+    private boolean hienThiBaiLam = false;
 
-    @Column(nullable = false)
-    private int socau;
+    @Column(name = "socau", nullable = false)
+    private int soCau;
 
-    private boolean trangthai = false;
-
-    @OneToMany(mappedBy = "kiThi")
-    private List<Result> ketQuas;
+    @Column(name = "trangthai")
+    private boolean trangThai = false;
 }

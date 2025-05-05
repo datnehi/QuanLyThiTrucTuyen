@@ -5,129 +5,160 @@ import com.nhom6.server.DTO.ChiTietBaiThiDto;
 import com.nhom6.server.DTO.SaveAnswerDto;
 import com.nhom6.server.Model.*;
 import com.nhom6.server.Repository.*;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ChiTietBaiThiService {
+
     @Autowired
     private ChiTietBaiThiRepository chiTietBaiThiRepository;
+
     @Autowired
     private QuestionRepository questionRepository;
+
     @Autowired
-    private ResultRepository resultRepository;
-    @Autowired// nếu cần
     private AnswerRepository answerRepository;
 
-    // ✅ Trả về danh sách câu hỏi và đáp án đã làm của 1 kết quả
-    public List<ChiTietBaiThiDto> getChiTietBaiLam(String maketqua) {
-        List<ChiTietBaiThi> chiTietList = chiTietBaiThiRepository.findByKetQua_Maketqua(maketqua);
-        Map<String, ChiTietBaiThiDto> map = new LinkedHashMap<>();
+    @PersistenceContext
+    private EntityManager entityManager;
 
-        for (ChiTietBaiThi chiTiet : chiTietList) {
-            Question cauHoi = chiTiet.getCauHoi();
-            String maCauHoi = cauHoi.getMacauhoi();
+    // 1. Trả về chi tiết bài làm theo mã kết quả
+    public List<ChiTietBaiThiDto> getChiTietBaiLam(String maKetQua) {
+        try {
+            // Lấy tất cả ChiTietBaiThi cho maKetQua
+            List<ChiTietBaiThi> chiTietBaiThis = chiTietBaiThiRepository.findByMaKetQua(maKetQua);
 
-            map.putIfAbsent(maCauHoi, new ChiTietBaiThiDto(
-                    maCauHoi,
-                    cauHoi.getNoidung(),
-                    chiTiet.getThutu(),
-                    new ArrayList<>()
-            ));
+            // Lấy các câu hỏi liên quan từ bảng cauhoi
+            Map<String, ChiTietBaiThiDto> cauHoiMap = new LinkedHashMap<>();
 
-            ChiTietBaiThiDto dto = map.get(maCauHoi);
-            List<Answer> listDapAn = cauHoi.getCauTraLoiList();
+            for (ChiTietBaiThi chiTiet : chiTietBaiThis) {
+                String maCauHoi = chiTiet.getMaCauHoi();
 
-            for (Answer dapAn : listDapAn) {
-                boolean laDapAnChon = chiTiet.getDapAnChon() != null &&
-                        chiTiet.getDapAnChon().getMacautraloi().equals(dapAn.getMacautraloi());
-                dto.getDapAns().add(new AnswerDto(
-                        dapAn.getMacautraloi(),
-                        dapAn.getNoidung(),
-                        dapAn.isLadapan(),
-                        laDapAnChon
+                // Tạo mới ChiTietBaiThiDto nếu chưa có trong map
+                cauHoiMap.putIfAbsent(maCauHoi, new ChiTietBaiThiDto(
+                        maCauHoi,
+                        "", // Nội dung câu hỏi sẽ lấy sau từ CauHoi
+                        new ArrayList<>(),
+                        chiTiet.getThuTu()
                 ));
+
+                // Tìm câu hỏi và lấy nội dung câu hỏi từ CauHoiRepository
+                Optional<Question> cauHoiOptional = questionRepository.findByMaCauHoi(maCauHoi);
+                if (cauHoiOptional.isPresent()) {
+                    cauHoiMap.get(maCauHoi).setNoiDungCauHoi(cauHoiOptional.get().getNoiDung());
+                }
+
+                // Tìm các đáp án liên quan cho mỗi câu hỏi
+                List<Answer> answers = answerRepository.findByMaCauHoi(maCauHoi);
+
+                // Thêm các AnswerDto vào danh sách đáp án của câu hỏi
+                for (Answer answer : answers) {
+                    boolean laDapAnChon = chiTiet.getDapAnChon() != null && chiTiet.getDapAnChon().equals(answer.getMaCauTraLoi());
+                    AnswerDto answerDto = new AnswerDto(
+                            answer.getMaCauTraLoi(),
+                            answer.getNoiDung(),
+                            answer.isLaDapAn(),
+                            laDapAnChon
+                    );
+
+                    // Thêm AnswerDto vào danh sách đáp án của câu hỏi
+                    cauHoiMap.get(maCauHoi).getDapAns().add(answerDto);
+                }
             }
-        }
 
-        return new ArrayList<>(map.values());
+            // Trả về danh sách các ChiTietBaiThiDto
+            return new ArrayList<>(cauHoiMap.values());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
-    // ✅ Lấy danh sách mã câu hỏi đã có trong chi tiết đề
-    public List<String> checkCauHoi(String maKetQua) {
-        List<ChiTietBaiThi> list = chiTietBaiThiRepository.findByKetQua_Maketqua(maKetQua);
-        List<String> maCauHoiList = new ArrayList<>();
-        for (ChiTietBaiThi ctb : list) {
-            maCauHoiList.add(ctb.getCauHoi().getMacauhoi());
+
+    // 2. Kiểm tra mã câu hỏi đã có trong kết quả
+    public List<ChiTietBaiThi> checkCauHoi(String maKetQua) {
+        try {
+            return chiTietBaiThiRepository.findByMaKetQua(maKetQua);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
-        return maCauHoiList;
     }
 
-    // ✅ Random câu hỏi và lưu vào chi tiết đề
-    @Transactional
+    // 3. Random câu hỏi và insert vào chi tiết đề
     public List<Question> randomCauHoi(String maKetQua, String maMonHoc, int soCau) {
-        List<Question> danhSach = questionRepository.findRandomByMonHoc(maMonHoc, soCau);
-        Result ketQua = resultRepository.findById(maKetQua).orElseThrow();
+        try {
 
-        int index = 1;
-        List<ChiTietBaiThi> result = new ArrayList<>();
-        for (Question q : danhSach) {
-            ChiTietBaiThi chiTiet = new ChiTietBaiThi();
-            chiTiet.setKetQua(ketQua);
-            chiTiet.setCauHoi(q);
-            chiTiet.setThutu(index++);
-            chiTiet.setDapAnChon(null);
-            result.add(chiTiet);
+            List<Question> randomQuestions = questionRepository.findRandomQuestions(maMonHoc, soCau);
+
+            int thuTu = 1;
+            for (Question q : randomQuestions) {
+                ChiTietBaiThi chiTiet = new ChiTietBaiThi();
+                chiTiet.setMaKetQua(maKetQua);
+                chiTiet.setMaCauHoi(q.getMaCauHoi());
+                chiTiet.setThuTu(thuTu++);
+                chiTietBaiThiRepository.save(chiTiet);
+            }
+
+            return randomQuestions;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
-
-        chiTietBaiThiRepository.saveAll(result);
-        return danhSach;
     }
 
-    // ✅ Trả về danh sách câu hỏi theo danh sách đã random (dạng DTO)
+    // 4. Lấy danh sách câu hỏi theo danh sách câu hỏi và mã kết quả
     public List<ChiTietBaiThiDto> getCauHoi(List<Question> cauHoiList, String maKetQua) {
-        List<ChiTietBaiThiDto> result = new ArrayList<>();
+        try {
+            List<ChiTietBaiThiDto> danhSachCauHoi = new ArrayList<>();
 
-        Map<String, String> mapDapAnChon = new HashMap<>();
-        chiTietBaiThiRepository.findByKetQua_Maketqua(maKetQua).forEach(ct -> {
-            if (ct.getDapAnChon() != null) {
-                mapDapAnChon.put(ct.getCauHoi().getMacauhoi(), ct.getDapAnChon().getMacautraloi());
+            // Lấy danh sách đáp án đã chọn từ cơ sở dữ liệu
+            List<Object[]> dapAnChonList = chiTietBaiThiRepository.findDapAnChonByMaKetQua(maKetQua);
+            Map<String, String> dapAnChonMap = dapAnChonList.stream()
+                    .collect(Collectors.toMap(
+                            row -> (String) row[0],  // maCauHoi
+                            row -> (String) row[1]   // dapAnChon
+                    ));
+
+            for (Question cauHoi : cauHoiList) {
+                String maCauHoi = cauHoi.getMaCauHoi();
+                String noiDungCauHoi = cauHoi.getNoiDung();
+
+                // Lấy danh sách đáp án tương ứng với câu hỏi
+                List<Answer> dapAnEntities = answerRepository.findByMaCauHoi(maCauHoi);
+                List<AnswerDto> dapAns = dapAnEntities.stream()
+                        .map(a -> new AnswerDto(
+                                a.getMaCauTraLoi(),
+                                a.getNoiDung(),
+                                a.isLaDapAn(),
+                                a.getMaCauTraLoi().equals(dapAnChonMap.get(maCauHoi))
+                        ))
+                        .collect(Collectors.toList());
+
+                danhSachCauHoi.add(new ChiTietBaiThiDto(maCauHoi, noiDungCauHoi, dapAns, 0));
             }
-        });
 
-        for (Question q : cauHoiList) {
-            ChiTietBaiThiDto dto = new ChiTietBaiThiDto();
-            dto.setMaCauHoi(q.getMacauhoi());
-            dto.setNoiDungCauHoi(q.getNoidung());
-            dto.setThuTu(0); // nếu cần thì truyền thêm từ ngoài vào
-
-            List<AnswerDto> dapAns = new ArrayList<>();
-            for (Answer a : q.getCauTraLoiList()) {
-                boolean laChon = a.getMacautraloi().equals(mapDapAnChon.get(q.getMacauhoi()));
-                dapAns.add(new AnswerDto(
-                        a.getMacautraloi(),
-                        a.getNoidung(),
-                        a.isLadapan(),
-                        laChon
-                ));
-            }
-            dto.setDapAns(dapAns);
-            result.add(dto);
+            return danhSachCauHoi;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
-
-        return result;
     }
 
-    // ✅ Lưu đáp án được chọn
-    @Transactional
+    // 5. Lưu đáp án chọn
     public void saveAnswer(SaveAnswerDto answer) {
         ChiTietBaiThiId id = new ChiTietBaiThiId(answer.getMaketqua(), answer.getMacauhoi());
-        ChiTietBaiThi chiTiet = chiTietBaiThiRepository.findById(id).orElseThrow();
-        Answer dapAn = answerRepository.findById(answer.getDapanchon()).orElse(null);
-        chiTiet.setDapAnChon(dapAn);
-        chiTietBaiThiRepository.save(chiTiet);
+        Optional<ChiTietBaiThi> optional = chiTietBaiThiRepository.findById(id);
+        if (optional.isPresent()) {
+            ChiTietBaiThi chiTiet = optional.get();
+            chiTiet.setDapAnChon(answer.getDapanchon());
+            chiTietBaiThiRepository.save(chiTiet);
+        }
     }
 }

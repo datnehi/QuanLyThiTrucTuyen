@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface PhanMonRepository extends JpaRepository<PhanMon, Long> {
 
-    List<PhanMon> findByMonHoc_Mamonhoc(String maMonHoc);
-    List<PhanMon> findByNguoiDung_IdAndTrangthaiFalse(String id);
-    boolean existsByNguoiDung_IdAndMonHoc_Mamonhoc(String id, String mamonhoc);
+    List<PhanMon> findByMaMonHoc(String maMonHoc);
+    List<PhanMon> findByIdAndTrangThai(String id, boolean trangThai);
+    boolean existsByIdAndMaMonHoc(String id, String mamonhoc);
 }

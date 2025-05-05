@@ -30,7 +30,7 @@ create table thongbao(
 create table cauhoi(
 	macauhoi char(10) primary key,
 	noidung nvarchar (255) not null,
-	mamonhoc char (10) not null,
+	mamonhoc char (5) not null,
 	trangthai bit default 0
 );
 ----

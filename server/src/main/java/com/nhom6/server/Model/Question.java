@@ -1,33 +1,25 @@
 package com.nhom6.server.Model;
 
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.*;
 
 @Entity
 @Table(name = "cauhoi")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "macauhoi")
 public class Question {
+
     @Id
-    @Column(length = 10)
-    private String macauhoi;
+    @Column(name = "macauhoi", length = 10)
+    private String maCauHoi;
 
-    @Column(nullable = false, length = 255)
-    private String noidung;
+    @Column(name = "noidung", nullable = false, length = 255)
+    private String noiDung;
 
-    @ManyToOne
-    @JoinColumn(name = "mamonhoc", nullable = false)
-    private Course monHoc;
+    @Column(name = "mamonhoc", length = 10, nullable = false)
+    private String maMonHoc;
 
-    private boolean trangthai = false;
-
-    @OneToMany(mappedBy = "cauHoi")
-    private List<Answer> cauTraLoiList;
-
-    @OneToMany(mappedBy = "cauHoi")
-    private List<ChiTietBaiThi> chiTietDes;
+    @Column(name = "trangthai")
+    private boolean trangThai = false;
 }

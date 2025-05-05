@@ -14,12 +14,14 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
+    // Lấy tất cả các môn học có trạng thái là false (trangthai = 0)
     public List<Course> getAllMonHoc() {
-        return courseRepository.findByTrangthaiFalse();
+        return courseRepository.findByTrangThaiFalse();
     }
 
-    public Optional<Course> getMonHocById(String maMonHoc) {
-        return courseRepository.findById(maMonHoc)
-                .filter(course -> !course.isTrangthai());
+    // Lấy môn học theo mã môn học và trạng thái false
+    public Course getMonHocById(String maMonHoc) {
+        Optional<Course> course = courseRepository.findByMaMonHocAndTrangThaiFalse(maMonHoc);
+        return course.orElseThrow(() -> new RuntimeException("Môn học không tồn tại!"));
     }
 }

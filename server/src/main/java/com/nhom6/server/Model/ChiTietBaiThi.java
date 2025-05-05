@@ -1,6 +1,5 @@
 package com.nhom6.server.Model;
 
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,24 +9,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(ChiTietBaiThiId.class)
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.IntSequenceGenerator.class,
-        property = "@id"
-)
 public class ChiTietBaiThi {
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "maketqua")
-    private Result ketQua;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "macauhoi")
-    private Question cauHoi;
+    @Column(name = "maketqua", length = 10)
+    private String maKetQua;
 
-    @ManyToOne
-    @JoinColumn(name = "dapanchon")
-    private Answer dapAnChon;
+    @Id
+    @Column(name = "macauhoi", length = 10)
+    private String maCauHoi;
 
-    private Integer thutu;
+    @Column(name = "dapanchon", length = 10)
+    private String dapAnChon;
+
+    @Column(name = "thutu")
+    private Integer thuTu;
 }

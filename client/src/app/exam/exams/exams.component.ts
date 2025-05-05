@@ -27,7 +27,6 @@ export class ExamsComponent {
   ngOnInit(): void {
     this.examService.getExamsWithCourses().subscribe((data) => {
       this.exams = data;
-      console.log(this.exams);
     });
   }
 
@@ -35,7 +34,7 @@ export class ExamsComponent {
     return this.exams.filter(exam => {
       const status = this.getExamStatus(exam);
       const matchesStatus = this.selectedStatus === 'Tất cả' || status === this.selectedStatus;
-      const matchesSearch = exam.tenkithi.toLowerCase().includes(this.searchText.toLowerCase());
+      const matchesSearch = exam.tenKiThi.toLowerCase().includes(this.searchText.toLowerCase());
       return matchesStatus && matchesSearch;
     });
   }

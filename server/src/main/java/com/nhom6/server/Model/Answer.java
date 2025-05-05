@@ -1,8 +1,5 @@
 package com.nhom6.server.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,18 +8,18 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "macautraloi")
 public class Answer {
+
     @Id
-    @Column(length = 10)
-    private String macautraloi;
+    @Column(name = "macautraloi", length = 10)
+    private String maCauTraLoi;
 
-    @ManyToOne
-    @JoinColumn(name = "macauhoi", nullable = false)
-    private Question cauHoi;
+    @Column(name = "macauhoi", length = 10, nullable = false)
+    private String maCauHoi;
 
-    @Column(nullable = false, length = 255)
-    private String noidung;
+    @Column(name = "noidung", nullable = false, length = 255)
+    private String noiDung;
 
-    private boolean ladapan = false;
+    @Column(name = "ladapan")
+    private boolean laDapAn = false;
 }

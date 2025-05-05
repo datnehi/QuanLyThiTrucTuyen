@@ -1,40 +1,31 @@
 package com.nhom6.server.Model;
 
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.*;
 
 @Entity
 @Table(name = "monhoc")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "mamonhoc")
 public class Course {
+
     @Id
-    @Column(length = 5)
-    private String mamonhoc;
+    @Column(name = "mamonhoc", length = 5)
+    private String maMonHoc;
 
-    @Column(nullable = false, length = 100)
-    private String tenmonhoc;
+    @Column(name = "tenmonhoc", nullable = false, length = 100)
+    private String tenMonHoc;
 
-    @Column(length = 100)
-    private String giangvien;
+    @Column(name = "giangvien", length = 100)
+    private String giangVien;
 
-    private Integer sotinchi;
+    @Column(name = "sotinchi")
+    private Integer soTinChi;
 
-    @Column(length = 255)
-    private String ghichu;
+    @Column(name = "ghichu", length = 255)
+    private String ghiChu;
 
-    private boolean trangthai = false;
-
-    @OneToMany(mappedBy = "monHoc")
-    private List<Exam> kiThis;
-
-    @OneToMany(mappedBy = "monHoc")
-    private List<Question> cauHoiList;
-
-    @OneToMany(mappedBy = "monHoc")
-    private List<PhanMon> phanMons;
+    @Column(name = "trangthai")
+    private boolean trangThai = false;
 }

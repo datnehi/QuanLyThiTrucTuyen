@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -37,7 +36,7 @@ public class CourseController {
     @GetMapping("/{mamonhoc}")
     public ResponseEntity<Map<String, Object>> getMonHocById(@PathVariable String mamonhoc) {
         try {
-            Optional<Course> course = courseService.getMonHocById(mamonhoc);
+            Course course = courseService.getMonHocById(mamonhoc);
             return ResponseEntity.ok(Map.of(
                     "message", "Lấy môn học thành công",
                     "data", course

@@ -5,28 +5,25 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
 
 @Entity
 @Table(name = "thongbao")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "mathongbao")
 public class Notification {
+
     @Id
-    @Column(length = 10)
-    private String mathongbao;
+    @Column(name = "mathongbao", length = 10)
+    private String maThongBao;
 
-    @Column(nullable = false, length = 255)
-    private String noidung;
+    @Column(name = "noidung", nullable = false, length = 255)
+    private String noiDung;
 
-    @Column(nullable = false)
+    @Column(name = "thoigiantao", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime thoigiantao;
+    private LocalDateTime thoiGianTao;
 
-    private boolean trangthai = false;
-
-    @OneToMany(mappedBy = "thongBao")
-    private List<DetailNotification> chiTietThongBaos;
+    @Column(name = "trangthai")
+    private boolean trangThai = false;
 }

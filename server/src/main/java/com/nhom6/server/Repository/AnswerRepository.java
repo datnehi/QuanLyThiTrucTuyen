@@ -13,7 +13,9 @@ import java.util.List;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, String> {
+    List<Answer> findByMaCauHoi(String maCauHoi);
 
+    boolean existsByMaCauTraLoiAndLaDapAnTrue(String maCauTraLoi);
 //    @Transactional
 //    @Modifying
 //    @Query("DELETE FROM CauTraLoi c WHERE c.macauhoi = :macauhoi")

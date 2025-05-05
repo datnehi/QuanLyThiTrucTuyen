@@ -1,61 +1,77 @@
 package com.nhom6.server.Services;
 
 import com.nhom6.server.DTO.ChiTietBaiThiDto;
+import com.nhom6.server.DTO.ResultDto;
 import com.nhom6.server.DTO.SubmitExamRequest;
 import com.nhom6.server.Model.*;
 import com.nhom6.server.Repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ResultService {
 
     @Autowired
+    private ChiTietBaiThiService chiTietBaiThiService;
+
+    @Autowired
+    private ExamService examService;
+
+    @Autowired
     private ResultRepository resultRepository;
 
     @Autowired
-    private ExamRepository examRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ChiTietBaiThiService chiTietBaiThiService;
+    private UserRepository nguoiDungRepository;
 
     @Autowired
     private PhanMonRepository phanMonRepository;
 
     @Autowired
+    private ChiTietBaiThiRepository chiTietBaiThiRepository;
+
+    @Autowired
     private QuestionRepository questionRepository;
 
     @Autowired
-    private ChiTietBaiThiRepository chiTietBaiThiRepository;
+    private ExamRepository examRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
     private final ConcurrentHashMap<String, ScheduledFuture<?>> runningTimers = new ConcurrentHashMap<>();
 
-    private String generateKey(String maKiThi, String id) {
-        return maKiThi + "_" + id;
-    }
-
     public void startExam(String maKiThi, String id, int durationMinutes) {
-        String key = generateKey(maKiThi, id);
-        if (runningTimers.containsKey(key)) return;
+        try {
+            String key = generateKey(maKiThi, id);
+            if (runningTimers.containsKey(key)) return;
 
-        Runnable autoSubmitTask = () -> autoSubmitExam(maKiThi, id, durationMinutes);
-        ScheduledFuture<?> scheduledTask = scheduler.schedule(autoSubmitTask, durationMinutes + 1, TimeUnit.MINUTES);
+            Runnable autoSubmitTask = () -> autoSubmitExam(maKiThi, id, durationMinutes);
+            ScheduledFuture<?> scheduledTask = scheduler.schedule(autoSubmitTask, durationMinutes + 1, TimeUnit.MINUTES);
 
-        runningTimers.put(key, scheduledTask);
+            if (scheduledTask != null) runningTimers.put(key, scheduledTask);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void autoSubmitExam(String maKiThi, String id, int durationMinutes) {
-        String key = generateKey(maKiThi, id);
-        runningTimers.remove(key);
-        submitExam(new SubmitExamRequest(maKiThi, id, durationMinutes));
+        try {
+            String key = generateKey(maKiThi, id);
+            if (runningTimers.containsKey(key)) {
+                runningTimers.remove(key);
+                submitExam(new SubmitExamRequest(maKiThi, id, durationMinutes));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Result> getAllResults() {
@@ -63,109 +79,144 @@ public class ResultService {
     }
 
     public List<Result> getResultById(String maKiThi) {
-        return resultRepository.findByKiThi_Makithi(maKiThi);
+        return resultRepository.findByMaKiThi(maKiThi);
     }
 
-    public List<Result> getResultsWithUsers(String maKiThi, String maMonHoc) {
-        List<PhanMon> phanMons = phanMonRepository.findByMonHoc_Mamonhoc(maMonHoc);
-
-        List<Result> results = new ArrayList<>();
-
-        for (PhanMon pm : phanMons) {
-            User nd = pm.getNguoiDung();
-            Optional<Result> kq = resultRepository.findByKiThi_MakithiAndNguoiDung_Id(maKiThi, nd.getId());
-
-            Result result = new Result();
-            result.setNguoiDung(nd);
-
-            if (kq.isPresent()) {
-                result.setMaketqua(kq.get().getMaketqua());
-                result.setDiem(kq.get().getDiem());
-                result.setThoigianvaothi(kq.get().getThoigianvaothi());
-                result.setThoigianlambai(kq.get().getThoigianlambai());
-            }
-
-            results.add(result);
+    public List<ResultDto> getResultsWithUsers(String maKiThi, String maMonHoc) {
+        try {
+            List<Object[]> rows = resultRepository.findResultsWithUsers(maKiThi, maMonHoc);
+            return rows.stream().map(row -> {
+                ResultDto dto = new ResultDto();
+                dto.setMaKetQua((String) row[0]);
+                dto.setId((String) row[1]);
+                dto.setHoten((String) row[2]);
+                dto.setDiem(Double.valueOf(row[3] != null ? ((Number) row[3]).floatValue() : null));
+                dto.setThoiGianVaoThi(row[4] != null ? ((Timestamp) row[4]).toLocalDateTime() : null);
+                dto.setThoiGianLamBai(row[5] != null ? ((Number) row[5]).intValue() : null);
+                return dto;
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
-
-        return results;
     }
+
 
     private String generateNextMaKetQua() {
-        String lastId = resultRepository.findTopByOrderByMaketquaDesc();
-        if (lastId == null) return "0000000001";
-        long number = Long.parseLong(lastId);
-        return String.format("%010d", number + 1);
+        try {
+            String lastMaKetQua = resultRepository.findLatestMaKetQua().orElse(null);
+            if (lastMaKetQua == null || lastMaKetQua.isEmpty()) {
+                return "0000000001";
+            }
+            long number = Long.parseLong(lastMaKetQua);
+            return String.format("%010d", number + 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0000000001";
+        }
     }
 
+    @Transactional
     public String createResult(String maKiThi, String id) {
-        Optional<Exam> kiThi = examRepository.findById(maKiThi);
-        Optional<User> user = userRepository.findById(id);
-        if (kiThi.isEmpty() || user.isEmpty()) return null;
+        try {
+            String maKetQua = generateNextMaKetQua(); // dùng phiên bản đã chuyển ở trên
+            Result ketQua = new Result();
+            ketQua.setMaKetQua(maKetQua);
+            ketQua.setMaKiThi(maKiThi);
+            ketQua.setId(id);
+            ketQua.setDiem(null);
+            ketQua.setThoiGianVaoThi(LocalDateTime.now());
+            ketQua.setThoiGianLamBai(null);
+            ketQua.setSoCauDung(null);
 
-        Result kq = new Result();
-        kq.setMaketqua(generateNextMaKetQua());
-        kq.setKiThi(kiThi.get());
-        kq.setNguoiDung(user.get());
-        kq.setThoigianvaothi(LocalDateTime.now());
-
-        resultRepository.save(kq);
-        return kq.getMaketqua();
+            resultRepository.save(ketQua);
+            return maKetQua;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Result checkKetQua(String maKiThi, String id) {
-        return resultRepository.findByKiThi_MakithiAndNguoiDung_Id(maKiThi, id).orElse(null);
+        try {
+            return resultRepository.findByMaKiThiAndId(maKiThi, id).orElse(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public List<ChiTietBaiThiDto> createExamResult(String maKiThi, String id) {
-        Optional<Exam> exam = examRepository.findById(maKiThi);
-        if (exam.isEmpty()) return Collections.emptyList();
+        try {
+            Optional<Exam> optionalExam = examService.getExamByMa(maKiThi);
+            if (optionalExam.isEmpty()) return Collections.emptyList();
 
-        Result result = checkKetQua(maKiThi, id);
-        String maKetQua = result == null ? createResult(maKiThi, id) : result.getMaketqua();
+            Exam exam = optionalExam.get();
 
-        if (maKetQua == null) return Collections.emptyList();
+            Result existingResult = checkKetQua(maKiThi, id);
+            String maKetQua = existingResult == null
+                    ? createResult(maKiThi, id)
+                    : existingResult.getMaKetQua();
 
-        List<String> existingIds = chiTietBaiThiService.checkCauHoi(maKetQua);
-        List<Question> cauHoiList;
+            if (maKetQua == null) return Collections.emptyList();
 
-        if (!existingIds.isEmpty()) {
-            cauHoiList = questionRepository.findAllById(existingIds);
-        } else {
-            cauHoiList = chiTietBaiThiService.randomCauHoi(maKetQua, exam.get().getMonHoc().getMamonhoc(), exam.get().getSocau());
+            // Lấy danh sách mã câu hỏi đã tồn tại trong chi tiết bài thi
+            List<ChiTietBaiThi> existingChiTietList = chiTietBaiThiRepository.findByMaKetQua(maKetQua);
+            List<String> maCauHoiList = existingChiTietList.stream()
+                    .map(ChiTietBaiThi::getMaCauHoi)  // Truyền maCauHoi từ DTO
+                    .collect(Collectors.toList());
+            List<Question> cauHoiList;
+
+            if (!existingChiTietList.isEmpty()) {
+                cauHoiList = questionRepository.findByMaCauHoiIn(maCauHoiList);
+            } else {
+                cauHoiList = chiTietBaiThiService.randomCauHoi(maKetQua, exam.getMaMonHoc(), exam.getSoCau());
+            }
+
+            return chiTietBaiThiService.getCauHoi(cauHoiList, maKetQua);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
-
-        return chiTietBaiThiService.getCauHoi(cauHoiList, maKetQua);
     }
 
     public void submitExam(SubmitExamRequest request) {
-        String key = generateKey(request.getMaKiThi(), request.getId());
-        if (runningTimers.containsKey(key)) {
-            runningTimers.get(key).cancel(false);
-            runningTimers.remove(key);
-        }
-
-        Result result = checkKetQua(request.getMaKiThi(), request.getId());
-        if (result == null) throw new IllegalArgumentException("Không tìm thấy kết quả thi.");
-
-        Optional<Exam> exam = examRepository.findById(request.getMaKiThi());
-        if (exam.isEmpty()) throw new IllegalArgumentException("Không tìm thấy kỳ thi.");
-
-        List<ChiTietBaiThi> answers = chiTietBaiThiRepository.findByKetQua_Maketqua(result.getMaketqua());
-
-        int correctCount = 0;
-        for (ChiTietBaiThi chiTiet : answers) {
-            Answer dapAnChon = chiTiet.getDapAnChon();
-            if (dapAnChon != null && dapAnChon.isLadapan()) {
-                correctCount++;
+        try {
+            String key = generateKey(request.getMaKiThi(), request.getId());
+            if (runningTimers.containsKey(key)) {
+                runningTimers.get(key).cancel(false);
+                runningTimers.remove(key);
             }
+
+            Result result = resultRepository.findByMaKiThiAndId(request.getMaKiThi(), request.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy kết quả thi."));
+
+            Exam exam = examRepository.findByMaKiThi(request.getMaKiThi())
+                    .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy kỳ thi."));
+
+            List<Object[]> answerData = chiTietBaiThiRepository.findDapAnChonByMaKetQua(result.getMaKetQua());
+
+            int correctCount = 0;
+            for (Object[] row : answerData) {
+                String dapAnChon = (String) row[1];
+                if (dapAnChon == null || dapAnChon.isEmpty()) continue;
+
+                boolean isCorrect = answerRepository.existsByMaCauTraLoiAndLaDapAnTrue(dapAnChon);
+                if (isCorrect) correctCount++;
+            }
+
+            Double diem = (10.0 / exam.getSoCau()) * correctCount;
+            result.setDiem(diem);
+            result.setSoCauDung(correctCount);
+            result.setThoiGianLamBai(request.getTimeUsed());
+            resultRepository.save(result);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
 
-        Double diem = (10.0D / exam.get().getSocau()) * correctCount;
-        result.setDiem(diem);
-        result.setSocaudung(correctCount);
-        result.setThoigianlambai(request.getTimeUsed());
-
-        resultRepository.save(result);
+    private String generateKey(String maKiThi, String id) {
+        return maKiThi + ":" + id;
     }
 }

@@ -8,6 +8,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChiTietBaiThiId implements Serializable {
-    private String ketQua;
-    private String cauHoi;
+    private String maKetQua;
+    private String maCauHoi;
 }
