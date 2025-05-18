@@ -133,10 +133,20 @@
         </div>
       </div>
 
-      <div class="tab-pane fade" *ngIf="activeTab === 'so-profile'">
-        <!-- <div *ngFor="let announcement of announcements">
-          <p>thong bao</p>
-        </div> -->
+      <div class="tab-pane fade active show" *ngIf="activeTab === 'so-profile'">
+        <div class="px-2">
+          <div *ngFor="let noti of notifications"
+            class="block block-content mb-2 bg-white border-start border-2 border-danger rounded">
+            <div class="d-md-flex justify-content-md-between align-items-md-center mb-2">
+              <div class="p-1 p-md-2">
+                <h3 class="h4 fw-bold mb-3">{{ noti.noiDung }}</h3>
+                <p class="fs-sm text-muted mb-0">
+                  <i class="fa fa-clock me-1"></i> Thời gian gửi <span>{{ noti.thoiGianTao }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="tab-pane fade" *ngIf="activeTab === 'so-people'">
         <!-- <ul>

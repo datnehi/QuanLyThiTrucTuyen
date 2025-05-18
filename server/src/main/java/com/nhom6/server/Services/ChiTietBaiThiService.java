@@ -20,7 +20,7 @@ public class ChiTietBaiThiService {
     private ChiTietBaiThiRepository chiTietBaiThiRepository;
 
     @Autowired
-    private QuestionRepository questionRepository;
+    private QuestionService questionService;
 
     @Autowired
     private AnswerRepository answerRepository;
@@ -49,7 +49,7 @@ public class ChiTietBaiThiService {
                 ));
 
                 // Tìm câu hỏi và lấy nội dung câu hỏi từ CauHoiRepository
-                Optional<Question> cauHoiOptional = questionRepository.findByMaCauHoi(maCauHoi);
+                Optional<Question> cauHoiOptional = questionService.getQuestionByMaCauHoi(maCauHoi);
                 if (cauHoiOptional.isPresent()) {
                     cauHoiMap.get(maCauHoi).setNoiDungCauHoi(cauHoiOptional.get().getNoiDung());
                 }
@@ -68,7 +68,7 @@ public class ChiTietBaiThiService {
                     );
 
                     // Thêm AnswerDto vào danh sách đáp án của câu hỏi
-                    cauHoiMap.get(maCauHoi).getDapAns().add(answerDto);
+                    cauHoiMap.get(maCauHoi).getDapAnList().add(answerDto);
                 }
             }
 
@@ -95,7 +95,7 @@ public class ChiTietBaiThiService {
     public List<Question> randomCauHoi(String maKetQua, String maMonHoc, int soCau) {
         try {
 
-            List<Question> randomQuestions = questionRepository.findRandomQuestions(maMonHoc, soCau);
+            List<Question> randomQuestions = questionService.getRandomQuestions(maMonHoc, soCau);
 
             int thuTu = 1;
             for (Question q : randomQuestions) {
@@ -121,9 +121,10 @@ public class ChiTietBaiThiService {
             // Lấy danh sách đáp án đã chọn từ cơ sở dữ liệu
             List<Object[]> dapAnChonList = chiTietBaiThiRepository.findDapAnChonByMaKetQua(maKetQua);
             Map<String, String> dapAnChonMap = dapAnChonList.stream()
+                    .filter(row -> row[0] != null && row[1] != null)
                     .collect(Collectors.toMap(
-                            row -> (String) row[0],  // maCauHoi
-                            row -> (String) row[1]   // dapAnChon
+                            row -> (String) row[0],
+                            row -> (String) row[1]
                     ));
 
             for (Question cauHoi : cauHoiList) {

@@ -26,4 +26,6 @@ public interface QuestionRepository extends JpaRepository<Question, String> {
     List<Question> findByMaCauHoiIn(List<String> maCauHoiList);
 
     Optional<Question> findByMaCauHoi(String maCauHoi);
+
+    int countByMaMonHoc(String maMonHoc);
 }

@@ -1,33 +1,36 @@
 <div class="row mb-4">
-    <div class="col-md-6">
-      <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Tìm kiếm thông báo...">
-    </div>
-    <div class="col-md-6 text-end">
-      <a routerLink="./create-notifi" class="btn btn-primary show">
-        <i class="fa fa-plus me-1"></i> Tạo thông báo
-      </a>
-    </div>
+  <div class="col-md-6">
+    <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Tìm kiếm thông báo...">
   </div>
-  
-  <div *ngFor="let noti of filteredNotifications ">
-    <div class="announcement-item border-start border-3 border-success p-3 mb-3" style="background-color: #fff;">
-      <h4 class="fw-bold">{{ noti.noiDung }}</h4>
-      <p class="text-muted">
-        <i class="fa fa-layer-group me-1"></i> Mã thông báo: <strong>{{ noti.maThongBao }}</strong>
-      </p>
-      <div class="text-end">
-        <span class="text-muted me-2">
+  <div class="col-6 d-flex align-items-center justify-content-end gap-3">
+    <a routerLink="./create-notifi" class="btn btn-primary show">
+      <i class="fa fa-fw fa-plus me-1"></i> Tạo thông báo
+    </a>
+  </div>
+</div>
+
+<div *ngFor="let noti of filteredNotifications" class="mb-2 bg-white rounded-3">
+  <div class="border-start border-3 border-danger rounded-start">
+    <div class="d-md-flex justify-content-md-between align-items-md-center">
+      <div class="p-1 p-md-4">
+        <h4 class="h4 fw-bold mb-3">
+          <a [routerLink]="['./update', noti.maThongBao]" class="text-dark text-decoration-none">{{noti.noiDung }}</a>
+        </h4>
+        <p class="fs-sm text-muted mb-2">
+          <i class="fa fa-layer-group me-1"></i> Thông báo cho học phần <strong>{{ noti.tenMonHoc }}</strong>
+        </p>
+        <span class="fs-sm text-muted mb-2">
           <i class="fa fa-clock"></i> {{ noti.thoiGianTao }}
         </span>
-        <a class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show"
-           [routerLink]="['./update', noti.maThongBao]">
+      </div>
+      <div class="p-1 p-md-3">
+        <a class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show" [routerLink]="['./update', noti.maThongBao]">
           <i class="fa fa-wrench opacity-50 me-1"></i> Chỉnh sửa
         </a>
-        <button class="btn btn-sm btn-danger rounded-pill px-3 my-1 btn-delete show"
-                (click)="delete(noti.maThongBao)">
+        <button class="btn btn-sm btn-danger rounded-pill px-3 my-1 show" (click)="delete(noti.maThongBao!)">
           <i class="fa fa-times opacity-50 me-1"></i>Xóa
         </button>
       </div>
     </div>
   </div>
-  
+</div>

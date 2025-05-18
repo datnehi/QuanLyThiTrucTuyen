@@ -45,7 +45,7 @@ export const routes: Routes = [
     children: [
       { path: '', component: NotificationsComponent, },
       { path: 'create-notifi', component: CreatenotificationsComponent},
-      { path: 'update/:mathongbao', component: UpdateNotificationComponent, }
+      { path: 'update/:maThongBao', component: UpdateNotificationComponent, }
 
     ]
   },

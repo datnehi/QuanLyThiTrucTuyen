@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { NotificationsService } from '../../services/notifications.service';
 import { FormsModule } from '@angular/forms';
 import { Notification } from '../../models/notification';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-notifications',
@@ -17,39 +18,38 @@ import { Notification } from '../../models/notification';
   styleUrls: ['./notifications.component.css']
 })
 export class NotificationsComponent implements OnInit {
-  allNotifications: Notification[] = []; // Lưu tất cả thông báo
-  filteredNotifications: Notification[] = []; // Chỉ chứa thông báo có trangThai = 0
+  notifications: any[] = [];
   searchText: string = '';
 
-  constructor(private notificationService: NotificationsService) {}
+  constructor(private notificationService: NotificationsService) { }
 
   ngOnInit(): void {
-    this.loadNotifications();
-  }
-
-  loadNotifications(): void {
-    this.notificationService.getNotification().subscribe({
-      next: (data) => {
-        this.allNotifications = data;
-        this.filterActiveNotifications(); // Lọc ngay khi nhận dữ liệu
-      },
-      error: (err) => console.error('Lỗi khi tải thông báo:', err)
+    this.notificationService.getNotificationWithCourses().subscribe((data) => {
+      this.notifications = data;
     });
   }
 
-  // Lọc chỉ lấy thông báo có trangThai = 0
-  filterActiveNotifications(): void {
-    this.filteredNotifications = this.allNotifications.filter(
-      noti => Number(noti.trangThai) === 0
-    );
+  get filteredNotifications() {
+    return this.notifications.filter(noti => {
+      const matchesSearch = noti.noiDung.toLowerCase().includes(this.searchText.toLowerCase());
+      return matchesSearch;
+    });
   }
 
-  delete(maThongBao: string): void {
-    if (confirm('Bạn có chắc muốn xoá thông báo này không?')) {
-      this.notificationService.deleteNotification(maThongBao).subscribe({
-        next: () => this.loadNotifications(),
-        error: (err) => console.error('Lỗi khi xóa thông báo:', err)
-      });
-    }
+  delete(maThongBao: string) {
+    Swal.fire({
+      icon: 'info',
+      title: 'Bạn có chắc chắn muốn xóa thông báo này?',
+      showCancelButton: true,
+      confirmButtonText: 'Vâng, chắc chắn!',
+      cancelButtonText: 'Huỷ',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.notificationService.deleteNotification(maThongBao).subscribe(() => {
+          this.ngOnInit();
+        });
+      }
+    });
   }
 }

@@ -1,9 +1,9 @@
 <div class="bg-white p-3 rounded">
   <h2>Kết quả bài thi: {{ course?.tenMonHoc }} (Đã hoàn thành)</h2>
-  <p><strong>Thí sinh:</strong> {{ user.hoten }}</p>
+  <p><strong>Thí sinh:</strong> {{ user.hoTen }}</p>
   <div *ngIf="exam?.xemDiem">
-    <p><strong>Số câu đúng:</strong> {{ result.soCauDung }} / {{ exam?.soCau }}</p>
-    <p><strong>Điểm số:</strong> {{ result.diem }}</p>
+    <p><strong>Số câu đúng:</strong> {{ result?.soCauDung }} / {{ exam?.soCau }}</p>
+    <p><strong>Điểm số:</strong> {{ result?.diem }}</p>
   </div>
 
   <div *ngIf="exam?.hienThiBaiLam">

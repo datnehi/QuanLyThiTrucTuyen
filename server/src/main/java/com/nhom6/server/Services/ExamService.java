@@ -28,7 +28,7 @@ public class ExamService {
     // Lấy kỳ thi theo maKiThi
     public Optional<Exam> getExamByMa(String maKiThi) {
         try {
-            return examRepository.findByMaKiThiAndTrangThaiFalse(maKiThi);
+            return examRepository.findByMaKiThi(maKiThi);
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
@@ -36,7 +36,7 @@ public class ExamService {
     }
 
     // Lấy kỳ thi theo maMonHoc
-    public List<Exam> getExamsByName(String maMonHoc) {
+    public List<Exam> getExamsByMaMonHoc(String maMonHoc) {
         try {
             return examRepository.findByMaMonHocAndTrangThaiFalseOrderByThoiGianTaoDesc(maMonHoc);
         } catch (Exception e) {

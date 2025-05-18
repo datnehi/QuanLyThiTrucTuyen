@@ -27,14 +27,7 @@ public class PhanMonService {
     // Lấy danh sách môn học sinh viên đang học
     public List<Course> getMonHocBySinhVien(String id) {
         try {
-            List<PhanMon> phanMons = phanMonRepository.findByIdAndTrangThai(id, false);
-            return phanMons.stream()
-                    .map(phanMon -> {
-                        Course course = new Course();
-                        course.setMaMonHoc(phanMon.getMaMonHoc());
-                        return course;
-                    })
-                    .collect(Collectors.toList());
+            return phanMonRepository.findCoursesBySinhVienId(id);
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();

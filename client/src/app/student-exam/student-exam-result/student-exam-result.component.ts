@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './student-exam-result.component.css'
 })
 export class StudentExamResultComponent {
-  result!: Result;
+  result: Result | null = null;
   maKiThi: string = "";
   user: any;
   examDetail: ChiTietBaiThi[] = [];

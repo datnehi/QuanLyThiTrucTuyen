@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Course } from '../models/course';
 
 @Injectable({
@@ -13,10 +13,14 @@ export class CourseService {
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<Course[]> {
-    return this.http.get<Course[]>(this.baseUrl);
+    return this.http.get<{data: Course[]}>(this.baseUrl).pipe(
+      map(res => res.data)
+    );
   }
 
   getCoursebyId(maMonHoc: string): Observable<Course> {
-    return this.http.get<Course>(`${this.baseUrl}/${maMonHoc}`);
+    return this.http.get<{data: Course}>(`${this.baseUrl}/${maMonHoc}`).pipe(
+      map(res => res.data)
+    );
   }
 }

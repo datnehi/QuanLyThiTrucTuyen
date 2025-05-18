@@ -13,19 +13,29 @@ public interface ExamRepository extends JpaRepository<Exam, String> {
 
     List<Exam> findByTrangThaiFalseOrderByThoiGianTaoDesc();
 
-    Optional<Exam> findByMaKiThiAndTrangThaiFalse(String maKiThi);
-
     Optional<Exam> findByMaKiThi(String maKiThi);
 
     List<Exam> findByMaMonHocAndTrangThaiFalseOrderByThoiGianTaoDesc(String maMonHoc);
 
     @Query(value = """
-        SELECT * FROM kithi k
+        SELECT k.makithi as makithi,
+               k.mamonhoc as mamonhoc,
+               k.tenkithi as tenkithi,
+               k.thoigiantao as thoigiantao,
+               k.thoigianthi as thoigianthi,
+               k.thoigianbatdau as thoigianbatdau,
+               k.thoigianketthuc as thoigianketthuc,
+               k.xemdiem as xemdiem,
+               k.xemdapan as xemdapan,
+               k.hienthibailam as hienthibailam,
+               k.socau as socau,
+               k.trangthai as trangthai
+        FROM kithi k
         JOIN phanmon pm ON k.mamonhoc = pm.mamonhoc
         JOIN monhoc mh ON k.mamonhoc = mh.mamonhoc
         WHERE pm.id = :id AND k.trangthai = 0
         ORDER BY k.thoigiantao DESC
-    """, nativeQuery = true)
+        """, nativeQuery = true)
     List<Exam> findExamsByPhanMonIdAndTrangThai(@Param("id") String id);
 
     Optional<Exam> findTopByOrderByMaKiThiDesc();

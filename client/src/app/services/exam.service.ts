@@ -10,7 +10,7 @@ import { Course } from '../models/course';
 })
 export class ExamService {
   baseUrl = environment.apiUrl + 'exams';
-  courseUrl = environment.apiUrl + 'courses'
+  courseUrl = environment.apiUrl + 'courses';
 
   constructor(private http: HttpClient) { }
 
@@ -68,7 +68,9 @@ export class ExamService {
       exams: this.http.get<{ data: Exam[] }>(`${this.baseUrl}/sinhvien/${id}`).pipe(
         map(res => res.data)
       ),
-      courses: this.http.get<Course[]>(this.courseUrl)
+      courses: this.http.get<{ data: Course[] }>(this.courseUrl).pipe(
+        map(res => res.data)
+      )
     }).pipe(
       map(({ exams, courses }) => {
         const courseMap = new Map(courses.map(s => [s.maMonHoc, s.tenMonHoc]));

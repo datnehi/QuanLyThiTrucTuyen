@@ -17,6 +17,9 @@ public class Notification {
     @Column(name = "mathongbao", length = 10)
     private String maThongBao;
 
+    @Column(name = "mamonhoc", nullable = false, length = 5)
+    private String maMonHoc;
+
     @Column(name = "noidung", nullable = false, length = 255)
     private String noiDung;
 

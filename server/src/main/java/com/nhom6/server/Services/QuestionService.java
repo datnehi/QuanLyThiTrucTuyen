@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -14,6 +15,22 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    public List<Question> getRandomQuestions(String maMonHoc, int soCau) {
+        return questionRepository.findRandomQuestions(maMonHoc, soCau);
+    }
+
+    public List<Question> getQuestionsByMaCauHoiList(List<String> maCauHoiList) {
+        return questionRepository.findByMaCauHoiIn(maCauHoiList);
+    }
+
+    public Optional<Question> getQuestionByMaCauHoi(String maCauHoi) {
+        return questionRepository.findByMaCauHoi(maCauHoi);
+    }
+
+    public int countQuestionsByMaMonHoc(String maMonHoc) {
+            return questionRepository.countByMaMonHoc(maMonHoc);
+    }
 
 //    public List<CauHoi> getAllQuestions() {
 //        // Chỉ lấy những câu hỏi có trạng thái = 0 (chưa xóa)

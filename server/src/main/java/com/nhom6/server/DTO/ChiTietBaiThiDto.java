@@ -10,7 +10,7 @@ import java.util.*;
 public class ChiTietBaiThiDto {
     private String maCauHoi;
     private String noiDungCauHoi;
-    private List<AnswerDto> dapAns = new ArrayList<>();
+    private List<AnswerDto> dapAnList = new ArrayList<>();
     private int thuTu;
 }
 

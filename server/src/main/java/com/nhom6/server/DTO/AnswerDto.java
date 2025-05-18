@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 public class AnswerDto {
     private String maCauTraLoi;
-    private String noiDung;
-    private boolean laDapAn;
-    private boolean laDapAnChon;
+    private String noiDungDapAn;
+    private boolean daAnDung;
+    private boolean dapAnChon;
 }

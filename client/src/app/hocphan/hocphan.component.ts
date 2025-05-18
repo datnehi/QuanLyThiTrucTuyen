@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { AccountService } from '../services/account.service';
-import { CourseService } from '../services/course.service';
 import { Course } from '../models/course';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -10,6 +9,8 @@ import { PhanmonService } from '../services/phanmon.service';
 import { Router, RouterModule } from '@angular/router';
 import { Exam } from '../models/exam';
 import { ExamService } from '../services/exam.service';
+import { NotificationsService } from '../services/notifications.service';
+import { Notification } from '../models/notification';
 
 @Component({
   selector: 'app-hocphan',
@@ -30,9 +31,10 @@ export class HocphanComponent {
   activeTab = 'so-settings';
   showOffcanvas: boolean = false;
   selectedMonHoc!: Course;
-  exams: Exam[] = []
+  exams: Exam[] = [];
+  notifications: Notification[] = [];
 
-  constructor(private accountService: AccountService, private courseService: CourseService,
+  constructor(private accountService: AccountService, private notificationsService: NotificationsService,
     private phanMonService: PhanmonService, private examService: ExamService) { }
 
   ngOnInit() {
@@ -83,7 +85,10 @@ export class HocphanComponent {
     if (this.selectedMonHoc) {
       this.examService.getExamsByMaMonHoc(this.selectedMonHoc?.maMonHoc).subscribe((data) => {
         this.exams = data;
-      })
+      });
+      this.notificationsService.getNotificationbyMaMonHoc(this.selectedMonHoc?.maMonHoc).subscribe((data) => {
+        this.notifications = data;
+      });
     }
   }
 

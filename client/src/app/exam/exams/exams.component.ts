@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Exam } from '../../models/exam';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-exams',
@@ -58,8 +59,19 @@ export class ExamsComponent {
   }
 
   delete(maKiThi: string){
-    this.examService.deleteExam(maKiThi).subscribe(() => {
-      this.ngOnInit();
-    });
+    Swal.fire({
+      icon: 'info',
+      title: 'Bạn có chắc chắn muốn xóa kì thi này?',
+      showCancelButton: true,
+      confirmButtonText: 'Vâng, chắc chắn!',
+      cancelButtonText: 'Huỷ',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+            this.examService.deleteExam(maKiThi).subscribe(() => {
+              this.ngOnInit();
+            });
+          }
+        });
   }
 }

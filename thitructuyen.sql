@@ -23,9 +23,11 @@ create table monhoc(
 );
 create table thongbao(
 	mathongbao char (10) primary key,
+	mamonhoc char (5) not null,
 	noidung nvarchar(255) not null,
+	trangthai bit default 0,
 	thoigiantao datetime not null,
-	trangthai bit default 0
+	foreign key (mamonhoc) references monhoc(mamonhoc)
 );
 create table cauhoi(
 	macauhoi char(10) primary key,
@@ -33,7 +35,6 @@ create table cauhoi(
 	mamonhoc char (5) not null,
 	trangthai bit default 0
 );
-----
 create table kithi(
 	makithi char(10) primary key,
 	mamonhoc char(5) not null,
@@ -78,7 +79,6 @@ create table phanmon(
 create table chitiethongtbao(
 	mathongbao char (10) not null,
 	mamonhoc char(5) not null,
-	trangthai bit default 0,
 	foreign key (mamonhoc) references monhoc(mamonhoc),
 	foreign key (mathongbao) references thongbao(mathongbao),
 	primary key (mathongbao, mamonhoc)
@@ -102,16 +102,17 @@ INSERT INTO nguoidung (id, hoten, gioitinh, ngaysinh, avatar, sodienthoai, email
 ('1000004', N'Lê Thị D', 0, '1997-07-18', NULL, '0945678901', 'd@gmail.com', '654321', 'sinhvien', 0),
 ('1000005', N'Hoàng Minh E', 1, '1999-09-12', NULL, '0956789012', 'e@gmail.com', 'pass456', 'sinhvien', 0);
 
+-- Thêm dữ liệu vào bảng monhoc
 INSERT INTO monhoc (mamonhoc, tenmonhoc, giangvien, sotinchi, ghichu, trangthai) VALUES
 ('84104', N'Lập trình hướng đối tượng',N'Nguyễn Trần H', 4, null , 0),
 ('84105', N'Lập trình Java',N'Lê Đào B', 4,null , 0),
 ('84106', N'Lập trình ứng dụng mạng',N'Nguyễn Văn C', 4, null, 0);
 
 -- Thêm dữ liệu vào bảng thongbao
-INSERT INTO thongbao (mathongbao, noidung, thoigiantao,trangthai) VALUES
-('0000000001', N'Lịch thi cuối kỳ đã được cập nhật.', '2025-02-25 10:00:00',0),
-('0000000002', N'Hạn chót đăng ký thi là 01/03/2025.', '2025-02-27 08:30:00',0),
-('0000000003', N'Khai giảng khóa học mới.', '2025-03-01 14:00:00',0);
+INSERT INTO thongbao (mathongbao, mamonhoc, noidung, thoigiantao,trangthai) VALUES
+('0000000001', '84104', N'Lịch thi cuối kỳ đã được cập nhật.', '2025-02-25 10:00:00',0),
+('0000000002', '84105', N'Hạn chót đăng ký thi là 01/03/2025.', '2025-02-27 08:30:00',0),
+('0000000003', '84106', N'Khai giảng khóa học mới.', '2025-03-01 14:00:00',0);
 
 -- Thêm dữ liệu vào bảng cauhoi
 INSERT INTO cauhoi (macauhoi, noidung, mamonhoc, trangthai) VALUES
@@ -206,15 +207,6 @@ INSERT INTO ketqua (maketqua, makithi, id, diem, thoigianvaothi, thoigianlambai,
 ('0000000002', '0000000001', '1000003', 10.0, '2025-01-03 14:05:00', 10, 5), -- Phạm Văn C thi Lập trình hướng đối tượng
 ('0000000003', '0000000001', '1000004', 6.0,  '2025-02-03 12:05:00', 5, 3), -- Lê Thị D thi Lập trình ứng dụng mạng
 ('0000000004', '0000000001', '1000005', 8.0,  '2025-02-22 12:10:00', 15, 4); -- Hoàng Minh E thi Lập trình Java
-
-
-INSERT INTO phanmon (id, mamonhoc, trangthai) VALUES
-('1000002', '84104', 0), -- Trần Thị P học Lập trình hướng đối tượng
-('1000003', '84104', 0), -- Phạm Văn C học Lập trình hướng đối tượng
-('1000003', '84105', 0), -- Phạm Văn C học Lập trình Java
-('1000004', '84105', 0), -- Lê Thị D học Lập trình Java
-('1000004', '84106', 0), -- Lê Thị D học Lập trình ứng dụng mạng
-('1000005', '84106', 0) -- Hoàng Minh E học Lập trình ứng dụng mạng
 
 INSERT INTO chitiethongtbao (mathongbao, mamonhoc) VALUES
 ('0000000001', '84104'), -- Lịch thi cuối kỳ cập nhật cho môn Lập trình hướng đối tượng

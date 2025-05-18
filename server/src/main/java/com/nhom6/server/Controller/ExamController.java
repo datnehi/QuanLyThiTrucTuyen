@@ -2,6 +2,7 @@ package com.nhom6.server.Controller;
 
 import com.nhom6.server.Model.Exam;
 import com.nhom6.server.Services.ExamService;
+import com.nhom6.server.Services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,9 @@ public class ExamController {
 
     @Autowired
     private ExamService examService;
+
+    @Autowired
+    private QuestionService questionService;
 
     // -------------------- GET: Lấy tất cả kỳ thi --------------------
     @GetMapping
@@ -51,7 +55,7 @@ public class ExamController {
     @GetMapping("/mamonhoc/{maMonHoc}")
     public ResponseEntity<Map<String, Object>> getExamByMaMonHoc(@PathVariable String maMonHoc) {
         try {
-            List<Exam> exams = examService.getExamsByName(maMonHoc);
+            List<Exam> exams = examService.getExamsByMaMonHoc(maMonHoc);
             return ResponseEntity.ok(Map.of(
                     "message", "Tìm kiếm kỳ thi theo môn học thành công",
                     "data", exams
@@ -105,6 +109,11 @@ public class ExamController {
 
         if (exam.getSoCau() <= 0) {
             return ResponseEntity.badRequest().body(Map.of("message", "Số câu phải lớn hơn 0"));
+        }
+
+        int soCauHoiHienCo = questionService.countQuestionsByMaMonHoc(exam.getMaMonHoc());
+        if (soCauHoiHienCo < exam.getSoCau()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Không đủ câu hỏi để tạo kỳ thi. Hiện có " + soCauHoiHienCo + " câu hỏi."));
         }
 
         try {

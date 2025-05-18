@@ -43,7 +43,7 @@
               name="thoiGianBatDau" [(ngModel)]="exam.thoiGianBatDau">
           </div>
           <div class="col-xl-6">
-            <input type="text" class="form-control" name="thoiGianKetThuc" [(ngModel)]="exam.thoiGianKetThuc" required
+            <input type="text" id="time-end" class="form-control" name="thoiGianKetThuc" [(ngModel)]="exam.thoiGianKetThuc" required
               #thoiGianKetThuc="ngModel">
             <div *ngIf="thoiGianKetThuc.invalid && thoiGianKetThuc.touched" class="text-danger">
               Thời gian kết thúc không được để trống!

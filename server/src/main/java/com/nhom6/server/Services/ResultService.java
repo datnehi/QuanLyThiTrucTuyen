@@ -37,7 +37,7 @@ public class ResultService {
     private ChiTietBaiThiRepository chiTietBaiThiRepository;
 
     @Autowired
-    private QuestionRepository questionRepository;
+    private QuestionService questionService;
 
     @Autowired
     private ExamRepository examRepository;
@@ -90,7 +90,7 @@ public class ResultService {
                 dto.setMaKetQua((String) row[0]);
                 dto.setId((String) row[1]);
                 dto.setHoten((String) row[2]);
-                dto.setDiem(Double.valueOf(row[3] != null ? ((Number) row[3]).floatValue() : null));
+                dto.setDiem(row[3] != null ? Double.valueOf(((Number) row[3]).doubleValue()) : null);
                 dto.setThoiGianVaoThi(row[4] != null ? ((Timestamp) row[4]).toLocalDateTime() : null);
                 dto.setThoiGianLamBai(row[5] != null ? ((Number) row[5]).intValue() : null);
                 return dto;
@@ -168,7 +168,7 @@ public class ResultService {
             List<Question> cauHoiList;
 
             if (!existingChiTietList.isEmpty()) {
-                cauHoiList = questionRepository.findByMaCauHoiIn(maCauHoiList);
+                cauHoiList = questionService.getQuestionsByMaCauHoiList(maCauHoiList);
             } else {
                 cauHoiList = chiTietBaiThiService.randomCauHoi(maKetQua, exam.getMaMonHoc(), exam.getSoCau());
             }
