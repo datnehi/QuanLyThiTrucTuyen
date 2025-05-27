@@ -50,7 +50,7 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'users',
+    path: 'user',
     runGuardsAndResolvers: 'always',
     canActivate: [authGuard],
     children: [

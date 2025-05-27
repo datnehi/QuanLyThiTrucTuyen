@@ -17,10 +17,13 @@ import { RouterModule } from '@angular/router';
 })
 export class UserComponent implements OnInit {
   nguoiDungList: any[] = [];
-  apiUrl = 'http://localhost:8080/api/nguoidung';
+  allActiveUsers: any[] = [];
+  apiUrl = 'http://localhost:8080/api/user';
 
   formUser: any = {};
   selectedUser: any = null;
+  keyword: string = '';
+  searched: boolean = false;
 
   constructor(private http: HttpClient) {}
 
@@ -31,6 +34,7 @@ export class UserComponent implements OnInit {
   getAllActiveUsers() {
     this.http.get<any[]>(`${this.apiUrl}/active`).subscribe({
       next: (data) => {
+        this.allActiveUsers = data; 
         this.nguoiDungList = data;
       },
       error: (err) => {
@@ -39,12 +43,32 @@ export class UserComponent implements OnInit {
     });
   }
 
+searchUsers() {
+  const trimmedKeyword = this.keyword.trim().toLowerCase();
+
+  if (!trimmedKeyword) {
+    // Nếu bỏ trống, trả về toàn bộ user active
+    this.nguoiDungList = this.allActiveUsers;
+    this.searched = false;
+    return;
+  }
+
+  this.nguoiDungList = this.allActiveUsers.filter(user => {
+    return (user.name && user.name.toLowerCase().includes(trimmedKeyword))
+        || (user.email && user.email.toLowerCase().includes(trimmedKeyword))
+        || (user.soDienThoai && user.soDienThoai.includes(trimmedKeyword)) //vì sdt là số nên k cần phải dùng toLowercase để chuyển đổi iểu chữ
+        || (user.id && user.id.includes(trimmedKeyword));
+  });
+
+  this.searched = true;
+}
+
   deleteUser(id: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
         this.http.delete(`${this.apiUrl}/${id}`).subscribe({
           next: () => {
-            this.getAllActiveUsers(); // Sửa lại thành getAllActiveUsers
+            this.getAllActiveUsers();
             resolve();
           },
           error: (err) => {
@@ -66,7 +90,6 @@ export class UserComponent implements OnInit {
   }
 
   onSubmit() {
-    // Tạo bản sao của formUser và chuyển đổi các trường cần thiết
     const userToSend = {
       ...this.formUser,
       active: this.convertGenderToBoolean(this.formUser.active),
@@ -75,7 +98,7 @@ export class UserComponent implements OnInit {
 
     if (this.selectedUser) {
       this.http.put(`${this.apiUrl}/${this.selectedUser.id}`, userToSend).subscribe({
-        next: (data) => {
+        next: () => {
           this.getAllActiveUsers();
           this.resetForm();
           this.closeModal();
@@ -87,7 +110,7 @@ export class UserComponent implements OnInit {
       });
     } else {
       this.http.post(this.apiUrl, userToSend).subscribe({
-        next: (data) => {
+        next: () => {
           this.getAllActiveUsers();
           this.resetForm();
           this.closeModal();
@@ -99,19 +122,19 @@ export class UserComponent implements OnInit {
       });
     }
   }
-  
-  // Hàm chuyển đổi giá trị sang boolean
-  private convertGenderToBoolean(gender: any): boolean {
-    if (typeof gender === 'boolean') return gender;
-    if (typeof gender === 'string') {
-      return gender.toLowerCase() === 'nam' || gender === 'true';
+
+  private convertGenderToBoolean(value: any): boolean {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'string') {
+      return value.toLowerCase() === 'nam' || value === 'true';
     }
-    return false; 
+    return false;
   }
+
   resetForm() {
     this.formUser = {};
     this.selectedUser = null;
-  } 
+  }
 
   closeModal() {
     const modalElement = document.getElementById('addUserModal');
