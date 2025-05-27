@@ -25,15 +25,16 @@ create table thongbao(
 	mathongbao char (10) primary key,
 	mamonhoc char (5) not null,
 	noidung nvarchar(255) not null,
-	trangthai bit default 0,
 	thoigiantao datetime not null,
+	trangthai bit default 0,
 	foreign key (mamonhoc) references monhoc(mamonhoc)
 );
 create table cauhoi(
 	macauhoi char(10) primary key,
 	noidung nvarchar (255) not null,
 	mamonhoc char (5) not null,
-	trangthai bit default 0
+	trangthai bit default 0,
+	foreign key (mamonhoc) references monhoc(mamonhoc)
 );
 create table kithi(
 	makithi char(10) primary key,
@@ -75,13 +76,6 @@ create table phanmon(
 	foreign key (id) references nguoidung(id),
 	foreign key (mamonhoc) references monhoc(mamonhoc),
 	primary key (id,mamonhoc)
-);
-create table chitiethongtbao(
-	mathongbao char (10) not null,
-	mamonhoc char(5) not null,
-	foreign key (mamonhoc) references monhoc(mamonhoc),
-	foreign key (mathongbao) references thongbao(mathongbao),
-	primary key (mathongbao, mamonhoc)
 );
 create table chitietde(
 	maketqua char(10) not null,
@@ -208,13 +202,13 @@ INSERT INTO ketqua (maketqua, makithi, id, diem, thoigianvaothi, thoigianlambai,
 ('0000000003', '0000000001', '1000004', 6.0,  '2025-02-03 12:05:00', 5, 3), -- Lê Thị D thi Lập trình ứng dụng mạng
 ('0000000004', '0000000001', '1000005', 8.0,  '2025-02-22 12:10:00', 15, 4); -- Hoàng Minh E thi Lập trình Java
 
-INSERT INTO chitiethongtbao (mathongbao, mamonhoc) VALUES
-('0000000001', '84104'), -- Lịch thi cuối kỳ cập nhật cho môn Lập trình hướng đối tượng
-('0000000001', '84105'), -- Lịch thi cuối kỳ cập nhật cho môn Lập trình Java
-('0000000002', '84104'), -- Hạn chót đăng ký thi áp dụng cho Lập trình hướng đối tượng
-('0000000002', '84106'), -- Hạn chót đăng ký thi áp dụng cho Lập trình ứng dụng mạng
-('0000000003', '84105'), -- Khai giảng khóa học mới cho môn Lập trình Java
-('0000000003', '84106'); -- Khai giảng khóa học mới cho môn Lập trình ứng dụng mạng
+INSERT INTO phanmon (id, mamonhoc, trangthai) VALUES
+('1000002', '84104', 0), -- Trần Thị P học Lập trình hướng đối tượng
+('1000003', '84104', 0), -- Phạm Văn C học Lập trình hướng đối tượng
+('1000003', '84105', 0), -- Phạm Văn C học Lập trình Java
+('1000004', '84105', 0), -- Lê Thị D học Lập trình Java
+('1000004', '84106', 0), -- Lê Thị D học Lập trình ứng dụng mạng
+('1000005', '84106', 0) -- Hoàng Minh E học Lập trình ứng dụng mạng
 
 INSERT INTO chitietde (maketqua, macauhoi, dapanchon, thutu) VALUES
 -- Kết quả của Trần Thị P (KQ0001) - Kỳ thi 1 (Lập trình hướng đối tượng)
