@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByIdAndMatKhauAndTrangThaiFalse(String id, String matkhau);
     boolean existsById(String id);
-//    List<User> findByTrangThai(boolean trangThai);
-//    User findTopByOrderByIdDesc();
-//    List<User> findByHoTenContainingIgnoreCaseOrEmailContainingIgnoreCase(String hoTen, String email);
+    List<User> findByTrangThai(boolean trangThai);
+    User findTopByOrderByIdDesc();
+    List<User> findByHoTenContainingIgnoreCaseOrEmailContainingIgnoreCase(String hoTen, String email);
 }

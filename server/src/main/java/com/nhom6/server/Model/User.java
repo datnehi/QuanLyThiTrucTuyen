@@ -42,5 +42,6 @@ public class User {
 
     @Column(name = "trangthai", nullable = false)
     private boolean trangThai = false;
+
 }
 

@@ -93,54 +93,78 @@ public class UserController {
         }
     }
 
-//    // Lấy tất cả người dùng
-//    @GetMapping
-//    public ResponseEntity<List<NguoiDung>> getAllUsers() {
-//        List<NguoiDung> users = nguoiDungService.getAllUsers();
-//        return new ResponseEntity<>(users, HttpStatus.OK);
-//    }
-//
-//    // Lấy danh sách người dùng đang hoạt động (trạng thái = false)
-//    @GetMapping("/active")
-//    public ResponseEntity<List<NguoiDung>> getActiveUsers() {
-//        List<NguoiDung> activeUsers = nguoiDungService.getActiveUsers();
-//        return new ResponseEntity<>(activeUsers, HttpStatus.OK);
-//    }
-//
-//    // Tạo mới người dùng
-//    @PostMapping
-//    public ResponseEntity<NguoiDung> createUser(@RequestBody NguoiDung nguoiDung) {
-//        NguoiDung createdUser = nguoiDungService.createUser(nguoiDung);
-//        return ResponseEntity.ok(createdUser);
-//    }
-//
-//    // Cập nhật thông tin người dùng
-//    @PutMapping("/{id}")
-//    public ResponseEntity<NguoiDung> updateUser(
-//            @PathVariable String id,
-//            @RequestBody NguoiDung nguoiDung) {
-//        NguoiDung updatedUser = nguoiDungService.updateUser(id, nguoiDung);
-//        return ResponseEntity.ok(updatedUser);
-//    }
-//
-//    // Xóa người dùng (cập nhật trạng thái = true)
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-//        nguoiDungService.deleteUser(id);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    // Chuyển đổi trạng thái người dùng (active/inactive)
-//    @PatchMapping("/{id}/toggle-status")
-//    public ResponseEntity<NguoiDung> toggleUserStatus(@PathVariable String id) {
-//        nguoiDungService.toggleUserStatus(id);
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    // Tìm kiếm người dùng theo từ khóa (họ tên hoặc email)
-//    @GetMapping("/search")
-//    public ResponseEntity<List<NguoiDung>> searchUsers(@RequestParam String keyword) {
-//        List<NguoiDung> result = nguoiDungService.searchUsers(keyword);
-//        return ResponseEntity.ok(result);
-//    }
+    // Lấy tất cả người dùng
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    // Lấy danh sách người dùng đang hoạt động (trạng thái = false)
+    @GetMapping("/active")
+    public ResponseEntity<List<User>> getActiveUsers() {
+        List<User> activeUsers = userService.getActiveUsers();
+        return new ResponseEntity<>(activeUsers, HttpStatus.OK);
+    }
+
+    // Tạo mới người dùng
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User nguoiDung) {
+        User createdUser = userService.createUser(nguoiDung);
+        return ResponseEntity.ok(createdUser);
+    }
+
+    // Cập nhật thông tin người dùng
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(
+            @PathVariable String id,
+            @RequestBody User nguoiDung) {
+        User updatedUser = userService.updateUser(id, nguoiDung);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    // Xóa người dùng (cập nhật trạng thái = true)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // Chuyển đổi trạng thái người dùng (active/inactive)
+    @PatchMapping("/{id}/toggle-status")
+    public ResponseEntity<User> toggleUserStatus(@PathVariable String id) {
+        userService.toggleUserStatus(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // Tìm kiếm người dùng theo từ khóa (họ tên hoặc email)
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String keyword) {
+        List<User> result = userService.searchUsers(keyword);
+        return ResponseEntity.ok(result);
+    }
+    @PutMapping("/{id}/password")
+    public ResponseEntity<?> updateUserPassword(
+            @PathVariable String id,
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword) {
+
+        try {
+            User updatedUser = userService.updateUserPassword(
+                    id,
+                    currentPassword,
+                    newPassword
+            );
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("message", e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(404)
+                    .body(Map.of("message", e.getMessage()));
+        }
+
+    }
 }

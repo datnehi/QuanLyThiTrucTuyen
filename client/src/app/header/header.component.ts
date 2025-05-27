@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AccountService } from '../services/account.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HasRoleDirective } from '../directives/has-role.directive';
@@ -10,7 +10,8 @@ import { HasRoleDirective } from '../directives/has-role.directive';
   imports: [
     CommonModule,
     NgbModule,
-    HasRoleDirective
+    HasRoleDirective,
+    RouterModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
