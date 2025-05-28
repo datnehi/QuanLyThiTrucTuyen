@@ -19,8 +19,8 @@
                                 <select class="form-select mb-2 mb-md-0" [(ngModel)]="selectedSubject" (change)="filterBySubject()"
                                     name="monHoc">
                                     <option value="" disabled selected>Chọn môn học</option>
-                                    <option *ngFor="let subject of subjects" [value]="subject.code">
-                                        {{subject.code}} - {{subject.name}}
+                                    <option *ngFor="let subject of subjects" [value]="subject.maMonHoc">
+                                        {{subject.maMonHoc}} - {{subject.tenMonHoc}}
                                     </option>
                                 </select>
                             </div>
@@ -61,21 +61,21 @@
                             <tr *ngFor="let question of paginatedQuestions">
                                 <td class="text-center fs-sm">
                                     <a class="fw-semibold">
-                                        <strong>{{question.macauhoi}}</strong>
+                                        <strong>{{question.maCauHoi}}</strong>
                                     </a>
                                 </td>
-                                <td>{{question.noidung}}</td>
+                                <td>{{question.noiDung}}</td>
                                 <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">{{getSubjectName(question.mamonhoc)}}</a>
+                                    <a class="fw-semibold">{{getSubjectName(question.maMonHoc)}}</a>
                                 </td>
                                 <td class="text-center">
                                     <button class="btn btn-sm btn-alt-secondary"
-                                        (click)="editQuestion(question.macauhoi)" data-bs-toggle="tooltip"
+                                        (click)="editQuestion(question.maCauHoi)" data-bs-toggle="tooltip"
                                         title="Chỉnh sửa">
                                         <i class="fa fa-fw fa-pencil"></i>
                                     </button>
                                     <button class="btn btn-sm btn-alt-secondary ms-2"
-                                        (click)="deleteQuestion(question.macauhoi)" data-bs-toggle="tooltip"
+                                        (click)="deleteQuestion(question.maCauHoi)" data-bs-toggle="tooltip"
                                         title="Xóa">
                                         <i class="fa fa-fw fa-times"></i>
                                     </button>
@@ -142,23 +142,23 @@
                     <form>
                         <div class="mb-3">
                             <label class="form-label">Nội dung câu hỏi</label>
-                            <textarea class="form-control" rows="3" [(ngModel)]="newQuestion.noidung"
+                            <textarea class="form-control" rows="3" [(ngModel)]="newQuestion.noiDung"
                                 name="questionContent" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Môn học</label>
-                            <select class="form-select" [(ngModel)]="newQuestion.mamonhoc" name="questionSubject"
+                            <select class="form-select" [(ngModel)]="newQuestion.maMonHoc" name="questionSubject"
                                 required>
                                 <option value="">Chọn môn học</option>
-                                <option *ngFor="let subject of subjects" [value]="subject.code">
-                                    {{subject.name}}
+                                <option *ngFor="let subject of subjects" [value]="subject.maMonHoc">
+                                    {{subject.tenMonHoc}}
                                 </option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Danh sách đáp án</label>
-                            <div *ngFor="let answer of newQuestion.dapan; let i = index" class="input-group mb-2">
-                                <input type="text" class="form-control" [(ngModel)]="answer.noidung"
+                            <div *ngFor="let answer of newQuestion.dapAnList; let i = index" class="input-group mb-2">
+                                <input type="text" class="form-control" [(ngModel)]="answer.noiDung"
                                     [name]="'answer-' + i" required>
                                 <div class="input-group-text">
                                     <input type="radio" name="correctAnswer"

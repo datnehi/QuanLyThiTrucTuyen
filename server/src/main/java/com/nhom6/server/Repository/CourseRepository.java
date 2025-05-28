@@ -9,6 +9,14 @@ import java.util.*;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, String> {
     List<Course> findByTrangThaiFalse();
+
     Optional<Course> findByMaMonHocAndTrangThaiFalse(String maMonHoc);
+
     boolean existsByMaMonHoc(String maMonHoc);
+
+    List<Course> findByTenMonHocContainingIgnoreCase(String keyword);
+
+    Course findTopByOrderByMaMonHocDesc();
+
+    List<Course> findByTrangThai(Boolean trangthai);
 }

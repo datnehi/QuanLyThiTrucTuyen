@@ -96,7 +96,7 @@ public class UserController {
     // Lấy tất cả người dùng
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+        List<User> users = userService.getAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -130,19 +130,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    // Chuyển đổi trạng thái người dùng (active/inactive)
-    @PatchMapping("/{id}/toggle-status")
-    public ResponseEntity<User> toggleUserStatus(@PathVariable String id) {
-        userService.toggleUserStatus(id);
-        return ResponseEntity.ok().build();
-    }
-
     // Tìm kiếm người dùng theo từ khóa (họ tên hoặc email)
     @GetMapping("/search")
     public ResponseEntity<List<User>> searchUsers(@RequestParam String keyword) {
         List<User> result = userService.searchUsers(keyword);
         return ResponseEntity.ok(result);
     }
+
     @PutMapping("/{id}/password")
     public ResponseEntity<?> updateUserPassword(
             @PathVariable String id,

@@ -51,12 +51,12 @@
                             <tr *ngFor="let subject of paginatedSubjects">
                                 <td class="fs-sm">
                                     <a class="fw-semibold">
-                                        <strong>{{subject.mamonhoc}}</strong>
+                                        <strong>{{subject.maMonHoc}}</strong>
                                     </a>
                                 </td>
-                                <td>{{subject.tenmonhoc}}</td>
-                                <td>{{subject.giangvien}}</td>
-                                <td>{{subject.sotinchi}}</td>
+                                <td>{{subject.tenMonHoc}}</td>
+                                <td>{{subject.giangVien}}</td>
+                                <td>{{subject.soTinChi}}</td>
                                 <td class="text-center">
                                     <button class="btn btn-sm btn-alt-secondary" (click)="editSubject(subject.mamonhoc)"
                                         data-bs-toggle="tooltip" title="Chỉnh sửa">
@@ -129,21 +129,21 @@
                     <form>
                         <div class="mb-3">
                             <label class="form-label">Mã môn học <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" [(ngModel)]="newSubject.mamonhoc" name="subjectCode"
+                            <input type="text" class="form-control" [(ngModel)]="newSubject.maMonHoc" name="subjectCode"
                                 [disabled]="editingSubjectId !== null" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Tên môn học <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" [(ngModel)]="newSubject.tenmonhoc"
+                            <input type="text" class="form-control" [(ngModel)]="newSubject.tenMonHoc"
                                 name="subjectName" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Giảng viên</label>
-                            <input type="text" class="form-control" [(ngModel)]="newSubject.giangvien" name="lecturer">
+                            <input type="text" class="form-control" [(ngModel)]="newSubject.giangVien" name="lecturer">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Số tín chỉ <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" [(ngModel)]="newSubject.sotinchi" name="credit"
+                            <input type="number" class="form-control" [(ngModel)]="newSubject.soTinChi" name="credit"
                                 min="1" required>
                         </div>
                     </form>

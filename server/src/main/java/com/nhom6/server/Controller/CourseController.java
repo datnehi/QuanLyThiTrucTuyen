@@ -3,11 +3,9 @@ package com.nhom6.server.Controller;
 import com.nhom6.server.Model.Course;
 import com.nhom6.server.Services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +16,7 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Map<String, Object>> getAllMonHoc() {
         try {
             List<Course> courses = courseService.getAllMonHoc();
@@ -46,6 +44,48 @@ public class CourseController {
                     "message", "Không tìm thấy môn học với mã: " + mamonhoc
             ));
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Course>> getAllSubjects() {
+        List<Course> subjects = courseService.getAllSubjects();
+        return new ResponseEntity<>(subjects, HttpStatus.OK);
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<Course>> getActiveSubjects() {
+        List<Course> subjects = courseService.getActiveSubjects();
+        return new ResponseEntity<>(subjects, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<Course> createSubject(@RequestBody Course subject) {
+        Course createdSubject = courseService.createSubject(subject);
+        return new ResponseEntity<>(createdSubject, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{mamonhoc}")
+    public ResponseEntity<Course> updateSubject(@PathVariable String mamonhoc, @RequestBody Course subject) {
+        Course updatedSubject = courseService.updateSubject(mamonhoc, subject);
+        return new ResponseEntity<>(updatedSubject, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{mamonhoc}")
+    public ResponseEntity<Void> deleteSubject(@PathVariable String mamonhoc) {
+        courseService.deleteSubject(mamonhoc);
+        return new ResponseEntity<>(HttpStatus.OK); // Trả về 200 thay vì 204
+    }
+
+    @PatchMapping("/{mamonhoc}/toggle-status")
+    public ResponseEntity<Void> toggleSubjectStatus(@PathVariable String mamonhoc) {
+        courseService.toggleSubjectStatus(mamonhoc);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Course>> searchSubjects(@RequestParam String keyword) {
+        List<Course> subjects = courseService.searchSubjects(keyword);
+        return new ResponseEntity<>(subjects, HttpStatus.OK);
     }
 
 }

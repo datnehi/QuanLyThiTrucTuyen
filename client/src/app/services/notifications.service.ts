@@ -49,7 +49,7 @@ export class NotificationsService {
       notifications: this.http.get<{ data: Notification[] }>(this.baseUrl).pipe(
         map(res => res.data)
       ),
-      courses: this.http.get<{ data: Course[] }>(this.courseUrl).pipe(
+      courses: this.http.get<{ data: Course[] }>(`${this.courseUrl}/all`).pipe(
         map(res => res.data)
       )
     }).pipe(

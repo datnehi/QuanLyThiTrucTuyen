@@ -29,16 +29,14 @@ export class UserService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
-  toggleUserStatus(id: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${id}/toggle-status`, {});
-  }
-
   searchUsers(keyword: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/search?keyword=${keyword}`);
   }
+
   getUserById(id: string): Observable<any> {
-  return this.http.get(`${this.apiUrl}/${id}`);
-}
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
+
   getUserIdFromSession(): string | null {
     const userJson = sessionStorage.getItem('user');
     if (!userJson) return null;

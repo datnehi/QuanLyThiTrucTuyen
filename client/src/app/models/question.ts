@@ -1,6 +1,6 @@
 export interface Question {
-  macauhoi?: string;
-  noidung: string;
-  mamonhoc: string;
-  trangthai?: boolean;
+  maCauHoi?: string;
+  noiDung: string;
+  maMonHoc: string;
+  trangThai?: boolean;
 }

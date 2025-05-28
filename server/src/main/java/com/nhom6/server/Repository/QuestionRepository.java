@@ -11,14 +11,14 @@ import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, String> {
-//    // Tìm câu hỏi theo môn học và trạng thái
-//    List<CauHoi> findByMamonhocAndTrangthai(String mamonhoc, boolean trangthai);
-//
-//    // Tìm câu hỏi theo trạng thái
-//    List<CauHoi> findByTrangthai(boolean trangthai);
-//
-//    // Tìm câu hỏi có mã lớn nhất (sắp xếp giảm dần và lấy đầu tiên)
-//    CauHoi findTopByOrderByMacauhoiDesc();
+    // Tìm câu hỏi theo môn học và trạng thái
+    List<Question> findByMaMonHocAndTrangThai(String mamonhoc, boolean trangthai);
+
+    // Tìm câu hỏi theo trạng thái
+    List<Question> findByTrangThai(boolean trangthai);
+
+    // Tìm câu hỏi có mã lớn nhất (sắp xếp giảm dần và lấy đầu tiên)
+    Question findTopByOrderByMaCauHoiDesc();
 
     @Query(value = "SELECT TOP (:soCau) * FROM cauhoi WHERE maMonHoc = :maMonHoc AND trangThai = 0 ORDER BY NEWID()", nativeQuery = true)
     List<Question> findRandomQuestions(@Param("maMonHoc") String maMonHoc, @Param("soCau") int soCau);

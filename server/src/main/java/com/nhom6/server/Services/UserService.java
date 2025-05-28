@@ -21,10 +21,7 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        return userRepository.findAll();
-    }
 
-    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
@@ -81,14 +78,6 @@ public class UserService {
         User nguoiDung = userRepository.findById(id).orElse(null);
         if (nguoiDung != null) {
             nguoiDung.setTrangThai(true);
-            userRepository.save(nguoiDung);
-        }
-    }
-
-    public void toggleUserStatus(String id) {
-        User nguoiDung = userRepository.findById(id).orElse(null);
-        if (nguoiDung != null) {
-            nguoiDung.setTrangThai(!nguoiDung.isTrangThai());
             userRepository.save(nguoiDung);
         }
     }

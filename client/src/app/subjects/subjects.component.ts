@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { SubjectService } from '../services/subject.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Subject } from '../models/subject';
 import * as bootstrap from 'bootstrap';
+import { CourseService } from '../services/course.service';
+import { Course } from '../models/course';
 
 @Component({
   selector: 'app-subjects',
@@ -30,16 +30,13 @@ export class SubjectsComponent implements OnInit {
 
   // Form thêm môn học
   newSubject = {
-    mamonhoc: '',
-    tenmonhoc: '',
-    giangvien: '',
-    sotinchi: 0
+    maMonHoc: '',
+    tenMonHoc: '',
+    giangVien: '',
+    soTinChi: 0
   };
 
-  constructor(
-    private subjectService: SubjectService,
-    private router: Router
-  ) { }
+  constructor(private courseService: CourseService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadSubjects();
@@ -54,7 +51,7 @@ export class SubjectsComponent implements OnInit {
 
   loadSubjects(): void {
     this.isLoading = true;
-    this.subjectService.getSubjects().subscribe({
+    this.courseService.getSubjects().subscribe({
       next: (data) => {
         this.subjects = data;
         this.filteredSubjects = [...data];
@@ -70,7 +67,7 @@ export class SubjectsComponent implements OnInit {
 
   searchSubjects(): void {
     if (this.searchKeyword.trim()) {
-      this.subjectService.searchSubjects(this.searchKeyword).subscribe({
+      this.courseService.searchSubjects(this.searchKeyword).subscribe({
         next: (data) => {
           this.filteredSubjects = data;
           this.totalItems = data.length;
@@ -87,16 +84,16 @@ export class SubjectsComponent implements OnInit {
     }
   }
 
-  editSubject(mamonhoc: string): void {
-    this.editingSubjectId = mamonhoc;
-    const subject = this.subjects.find(s => s.mamonhoc === mamonhoc);
+  editSubject(maMonHoc: string): void {
+    this.editingSubjectId = maMonHoc;
+    const subject = this.subjects.find(s => s.maMonHoc === maMonHoc);
     if (!subject) return;
 
     this.newSubject = {
-      mamonhoc: subject.mamonhoc,
-      tenmonhoc: subject.tenmonhoc,
-      giangvien: subject.giangvien,
-      sotinchi: subject.sotinchi
+      maMonHoc: subject.maMonHoc,
+      tenMonHoc: subject.tenMonHoc,
+      giangVien: subject.giangVien,
+      soTinChi: subject.soTinChi
     };
 
     const modal = new bootstrap.Modal(document.getElementById('addSubjectModal')!);
@@ -106,12 +103,12 @@ export class SubjectsComponent implements OnInit {
   updateSubject(): void {
     if (!this.editingSubjectId) return;
 
-    if (!this.newSubject.tenmonhoc || this.newSubject.sotinchi <= 0) {
+    if (!this.newSubject.tenMonHoc || this.newSubject.soTinChi <= 0) {
       alert('Vui lòng điền đầy đủ thông tin và số tín chỉ phải lớn hơn 0!');
       return;
     }
 
-    this.subjectService.updateSubject(this.editingSubjectId, this.newSubject).subscribe({
+    this.courseService.updateSubject(this.editingSubjectId, this.newSubject).subscribe({
       next: () => {
         alert('Môn học đã được cập nhật thành công!');
         this.resetForm();
@@ -130,12 +127,12 @@ export class SubjectsComponent implements OnInit {
     if (this.editingSubjectId) {
       this.updateSubject();
     } else {
-      if (!this.newSubject.mamonhoc || !this.newSubject.tenmonhoc || this.newSubject.sotinchi <= 0) {
+      if (!this.newSubject.maMonHoc || !this.newSubject.tenMonHoc || this.newSubject.soTinChi <= 0) {
         alert('Vui lòng điền đầy đủ thông tin bắt buộc (Mã môn học, Tên môn học, Số tín chỉ phải lớn hơn 0)!');
         return;
       }
 
-      this.subjectService.createSubject(this.newSubject).subscribe({
+      this.courseService.createSubject(this.newSubject).subscribe({
         next: () => {
           alert('Môn học đã được thêm thành công!');
           this.resetForm();
@@ -152,7 +149,7 @@ export class SubjectsComponent implements OnInit {
 
   deleteSubject(mamonhoc: string): void {
     if (confirm('Bạn có chắc chắn muốn xóa môn học này?')) {
-      this.subjectService.deleteSubject(mamonhoc).subscribe({
+      this.courseService.deleteSubject(mamonhoc).subscribe({
         next: () => {
           this.loadSubjects();
         },
@@ -166,10 +163,10 @@ export class SubjectsComponent implements OnInit {
   // Cập nhật resetForm()
   resetForm(): void {
     this.newSubject = {
-      mamonhoc: '',
-      tenmonhoc: '',
-      giangvien: '',
-      sotinchi: 0
+      maMonHoc: '',
+      tenMonHoc: '',
+      giangVien: '',
+      soTinChi: 0
     };
     this.editingSubjectId = null;
   }

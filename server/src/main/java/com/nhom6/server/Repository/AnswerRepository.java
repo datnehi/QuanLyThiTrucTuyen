@@ -16,9 +16,11 @@ public interface AnswerRepository extends JpaRepository<Answer, String> {
     List<Answer> findByMaCauHoi(String maCauHoi);
 
     boolean existsByMaCauTraLoiAndLaDapAnTrue(String maCauTraLoi);
-//    @Transactional
-//    @Modifying
-//    @Query("DELETE FROM CauTraLoi c WHERE c.macauhoi = :macauhoi")
-//    void deleteByMacauhoi(@Param("macauhoi") String macauhoi);
-//    CauTraLoi findTopByOrderByMacautraloiDesc();
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Answer c WHERE c.maCauHoi = :maCauHoi")
+    void deleteByMaCauHoi(@Param("maCauHoi") String maCauHoi);
+
+    Answer findTopByOrderByMaCauTraLoiDesc();
 }
