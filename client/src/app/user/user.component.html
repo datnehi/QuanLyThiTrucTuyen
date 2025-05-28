@@ -1,21 +1,16 @@
 <h3 class="block-title mb-2 mb-md-0">Danh sách</h3>
 
 <div class="row mb-4">
-<div class="col-md-6">
-  <div class="input-group">
-    <input
-      type="text"
-      [(ngModel)]="keyword"
-      (keyup.enter)="searchUsers()"
-      class="form-control"
-      placeholder="Tìm kiếm người dùng..."
-    />
+  <div class="col-md-6">
+    <div class="input-group">
+      <input type="text" [(ngModel)]="keyword" (keyup.enter)="searchUsers()" class="form-control"
+        placeholder="Tìm kiếm người dùng..." />
+    </div>
   </div>
-</div>
   <div class="col-md-6 text-end">
-    <button type="button" class="btn btn-primary btn-lg custom-btn" data-bs-toggle="modal" data-bs-target="#addUserModal" style="font-size: 1rem;">
-    <i class="fa fa-fw fa-plus me-1"></i> Thêm người dùng mới
-  </button>
+    <button (click)="openAddUserModal()" class="btn btn-primary btn-lg custom-btn" style="font-size: 1rem;">
+      <i class="fa fa-fw fa-plus me-1"></i> Thêm người dùng mới
+    </button>
   </div>
 </div>
 
@@ -53,8 +48,9 @@
             <a class="btn btn-sm btn-primary rounded-pill px-3 me-1 my-1 show" (click)="editUser(user)">
               <i class="fa fa-wrench opacity-50 me-1"></i>
             </a>
-            <a *ngIf="canDelete(user)" class="btn btn-sm btn-danger rounded-pill px-3 my-1 show" (click)="deleteUser(user.id)">
-               <i class="fa fa-times opacity-50 me-1"></i>
+            <a *ngIf="canDelete(user)" class="btn btn-sm btn-danger rounded-pill px-3 my-1 show"
+              (click)="deleteUser(user.id)">
+              <i class="fa fa-times opacity-50 me-1"></i>
             </a>
           </td>
         </tr>
@@ -64,7 +60,8 @@
 </div>
 
 <!-- Modal Thêm/Sửa Người Dùng -->
-<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-modal="true" role="dialog">
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-modal="true"
+  role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <form (ngSubmit)="onSubmit()" #userForm="ngForm">
@@ -72,7 +69,8 @@
           <h5 class="modal-title" id="addUserModalLabel">
             {{ selectedUser?.id ? 'Chỉnh sửa người dùng' : 'Thêm người dùng mới' }}
           </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"
+            (click)="closeModal()"></button>
         </div>
         <div class="modal-body row g-3">
           <div class="col-md-6">
@@ -108,12 +106,14 @@
           </div>
           <div class="col-md-6">
             <label>Role</label>
-            <input type="text" class="form-control" name="role" [(ngModel)]="formUser.role" />
+            <select class="form-control" name="role" [(ngModel)]="formUser.role">
+              <option>sinhvien</option>
+            </select>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-          <button type="submit" class="btn btn-primary" >
+          <button type="submit" class="btn btn-primary">
             {{ selectedUser?.id ? 'Cập nhật' : 'Thêm mới' }}
           </button>
         </div>

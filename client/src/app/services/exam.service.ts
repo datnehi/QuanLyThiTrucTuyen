@@ -68,7 +68,7 @@ export class ExamService {
       exams: this.http.get<{ data: Exam[] }>(`${this.baseUrl}/sinhvien/${id}`).pipe(
         map(res => res.data)
       ),
-      courses: this.http.get<{ data: Course[] }>(this.courseUrl).pipe(
+      courses: this.http.get<{ data: Course[] }>(`${this.courseUrl}/all`).pipe(
         map(res => res.data)
       )
     }).pipe(

@@ -9,6 +9,7 @@
           <label for="announcement-content" class="form-label">Nội dung thông báo</label>
           <textarea class="form-control" formControlName="noiDung" id="noiDung" style="height: 100px;"
             placeholder="Nhập nội dung thông báo"></textarea>
+            <div *ngIf="notificationForm.get('noiDung')?.touched && notificationForm.get('noiDung')?.invalid" class="text-danger">Không được để trống</div>
         </div>
 
         <div class="mb-4 border rounded p-3">

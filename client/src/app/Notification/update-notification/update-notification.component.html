@@ -1,31 +1,33 @@
-<form *ngIf="notification" #form="ngForm" class="row g-0 flex-md-grow-1 h-100" style="margin: -1.75rem -1.75rem 0px;"
-   (ngSubmit)="update(form)" novalidate>
-<div class="bg-white b-3" style="border-radius: 10px;">
-  <div class="container" style="padding: 20px; padding-top: 10px; padding-bottom: 10px;">
-    <div class="mb-4; ">
-      <h3 class="block-title">Chỉnh sửa thông báo</h3>
-    </div>
-    <div class="block-content">
-      <div class="mb-4">
-        <label for="announcement-content" class="form-label">Nội dung thông báo</label>
-        <textarea class="form-control" id="noiDung" name="noiDung" style="height: 100px;" #noiDung="ngModel"
-          placeholder="Nhập nội dung thông báo" [(ngModel)]="notification.noiDung" required>{{notification.noiDung}}</textarea>
+<form *ngIf="notification" #form="ngForm" (ngSubmit)="update(form)" novalidate>
+  <div class="bg-white b-3" style="border-radius: 10px;">
+    <div class="container" style="padding: 20px; padding-top: 10px; padding-bottom: 10px;">
+      <div class="mb-4; ">
+        <h3 class="block-title">Chỉnh sửa thông báo</h3>
       </div>
-      <div *ngIf="noiDung.invalid && noiDung.touched" class="text-danger">Tên kỳ thi không được để trống!</div>
-      <div class="mb-4 border rounded p-3">
-        <h4 class="mb-3">Thông báo cho</h4>
-        <div>
-          <select disabled="true" class="form-control" id="monHoc" [(ngModel)]="selectedMonHoc" name="monHoc" style="width: 100%;">
-            <option value="" selected>{{ course?.maMonHoc }} - {{ course?.tenMonHoc }}</option>
-          </select>
+      <div class="block-content">
+        <div class="mb-4">
+          <label for="announcement-content" class="form-label">Nội dung thông báo</label>
+          <textarea class="form-control" id="noiDung" name="noiDung" style="height: 100px;" #noiDung="ngModel"
+            placeholder="Nhập nội dung thông báo" [(ngModel)]="notification.noiDung"
+            required>{{notification.noiDung}}</textarea>
+          <div *ngIf="noiDung.invalid && noiDung.touched" class="text-danger">Nội dung thông báo không được để trống!
+          </div>
         </div>
-      </div>
+        <div class="mb-4 border rounded p-3">
+          <h4 class="mb-3">Thông báo cho</h4>
+          <div>
+            <select disabled="true" class="form-control" id="monHoc" [(ngModel)]="selectedMonHoc" name="monHoc"
+              style="width: 100%;">
+              <option value="" selected>{{ course?.maMonHoc }} - {{ course?.tenMonHoc }}</option>
+            </select>
+          </div>
+        </div>
 
-      <div class="mb-4">
-        <button type="submit" class="btn btn-hero btn-primary" id="btn-add-test"><i class="fa fa-fw fa-plus me-1"></i>
-          Cập nhật kì thi</button>
+        <div class="mb-4">
+          <button type="submit" class="btn btn-hero btn-primary" id="btn-add-test"><i class="fa fa-fw fa-plus me-1"></i>
+            Cập nhật kì thi</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </form>

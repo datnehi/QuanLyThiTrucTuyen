@@ -40,7 +40,7 @@ export class QuestionsComponent implements OnInit {
   newQuestion = {
     noiDung: '',
     maMonHoc: '',
-    dapAnList: [] as { noiDung: string, laDapAn: boolean }[],
+    dapAnList: [] as { maCauTraLoi?: string, maCauHoi?: string, noiDung: string, laDapAn: boolean }[],
     correctAnswerIndex: -1
   };
 
@@ -117,6 +117,8 @@ export class QuestionsComponent implements OnInit {
     this.questionService.getAnswersByQuestionId(maCauHoi).subscribe({
       next: (answers) => {
         this.newQuestion.dapAnList = answers.map((a: any) => ({
+          maCauTraLoi: a.maCauTraLoi,
+          maCauHoi: a.maCauHoi,
           noiDung: a.noiDung,
           laDapAn: a.laDapAn
         }));
@@ -158,6 +160,7 @@ export class QuestionsComponent implements OnInit {
       next: () => {
         // Chuẩn bị dữ liệu câu trả lời
         const answers = this.newQuestion.dapAnList.map((answer, index) => ({
+          maCauTraLoi: answer.maCauTraLoi,
           maCauHoi: this.editingQuestionId,
           noiDung: answer.noiDung,
           laDapAn: index === this.newQuestion.correctAnswerIndex
@@ -335,7 +338,7 @@ export class QuestionsComponent implements OnInit {
 
   getSubjectName(maMonHoc: string): string {
     const subject = this.subjects.find(s => s.maMonHoc === maMonHoc);
-    return subject ? subject.name : 'Không xác định';
+    return subject ? subject.tenMonHoc : 'Không xác định';
   }
 
   getTotalPages(): number {

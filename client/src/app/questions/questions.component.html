@@ -60,13 +60,13 @@
 
                             <tr *ngFor="let question of paginatedQuestions">
                                 <td class="text-center fs-sm">
-                                    <a class="fw-semibold">
+                                    <p class="fw-semibold">
                                         <strong>{{question.maCauHoi}}</strong>
-                                    </a>
+                                    </p>
                                 </td>
                                 <td>{{question.noiDung}}</td>
                                 <td class="d-none d-sm-table-cell fs-sm">
-                                    <a class="fw-semibold">{{getSubjectName(question.maMonHoc)}}</a>
+                                    <p class="fw-semibold">{{getSubjectName(question.maMonHoc)}}</p>
                                 </td>
                                 <td class="text-center">
                                     <button class="btn btn-sm btn-alt-secondary"

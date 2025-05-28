@@ -118,13 +118,9 @@ public class QuestionService {
     }
 
     public void updateAnswers(String macauhoi, List<Answer> answers) {
-        // Xóa các câu trả lời cũ
-        answerRepository.deleteByMaCauHoi(macauhoi);
-
-        // Lưu các câu trả lời mới
+        // Lấy số lớn nhất hiện có trong DB
         Answer lastAnswer = answerRepository.findTopByOrderByMaCauTraLoiDesc();
         int lastNumber = 0;
-
         if (lastAnswer != null) {
             try {
                 lastNumber = Integer.parseInt(lastAnswer.getMaCauTraLoi());
@@ -134,12 +130,17 @@ public class QuestionService {
         }
 
         for (Answer answer : answers) {
-            lastNumber++;
-            String newMacautraloi = String.format("%010d", lastNumber);
-            answer.setMaCauTraLoi(newMacautraloi);
+            if (answer.getMaCauTraLoi() == null || answer.getMaCauTraLoi().isEmpty()) {
+                // Tạo mã mới cho câu trả lời chưa có mã
+                lastNumber++;
+                String newMaCauTraLoi = String.format("%010d", lastNumber);
+                answer.setMaCauTraLoi(newMaCauTraLoi);
+            }
+            // Gán lại mã câu hỏi
             answer.setMaCauHoi(macauhoi);
         }
 
+        // Lưu tất cả (update nếu mã có rồi, insert nếu mã mới)
         answerRepository.saveAll(answers);
     }
 }

@@ -75,7 +75,7 @@ export class StudentExamStartComponent {
         clearInterval(interval);
         this.submitExam();
       }
-    }, 1000); // Giảm mỗi giây
+    }, 950); // Giảm mỗi giây
   }
 
 
