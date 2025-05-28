@@ -62,7 +62,9 @@ searchUsers() {
 
   this.searched = true;
 }
-
+  canDelete(user: any): boolean { //ktra ko phải id 1000001 thì trả về true có thể xóa
+  return user.id !== '1000001';
+}
   deleteUser(id: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
