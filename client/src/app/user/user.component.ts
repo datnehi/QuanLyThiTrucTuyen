@@ -18,11 +18,10 @@ import { UserService } from '../services/user.service';
 })
 export class UserComponent implements OnInit {
   nguoiDungList: any[] = [];
-  allActiveUsers: any[] = [];
   apiUrl = 'http://localhost:8080/api/user';
   formUser: any = {};
   selectedUser: any = null;
-  keyword: string = '';
+  searchText: string = '';
   searched: boolean = false;
   userId: string = '';
   modalInstance: any;
@@ -48,35 +47,9 @@ export class UserComponent implements OnInit {
   }
 
   getAllActiveUsers() {
-    this.http.get<any[]>(`${this.apiUrl}/active`).subscribe({
-      next: (data) => {
-        this.allActiveUsers = data;
-        this.nguoiDungList = data;
-      },
-      error: (err) => {
-        console.error('Lỗi khi tải danh sách người dùng active:', err);
-      }
-    });
-  }
-
-  searchUsers() {
-    const trimmedKeyword = this.keyword.trim().toLowerCase();
-
-    if (!trimmedKeyword) {
-      // Nếu bỏ trống, trả về toàn bộ user active
-      this.nguoiDungList = this.allActiveUsers;
-      this.searched = false;
-      return;
-    }
-
-    this.nguoiDungList = this.allActiveUsers.filter(user => {
-      return (user.name && user.name.toLowerCase().includes(trimmedKeyword))
-        || (user.email && user.email.toLowerCase().includes(trimmedKeyword))
-        || (user.soDienThoai && user.soDienThoai.includes(trimmedKeyword)) //vì sdt là số nên k cần phải dùng toLowercase để chuyển đổi iểu chữ
-        || (user.id && user.id.includes(trimmedKeyword));
-    });
-
-    this.searched = true;
+    this.userService.getActiveUsers().subscribe((data) => {
+      this.nguoiDungList = data;
+    })
   }
 
   canDelete(user: any): boolean { //ktra ko phải id 1000001 thì trả về true có thể xóa
@@ -99,6 +72,13 @@ export class UserComponent implements OnInit {
       } else {
         reject('User cancelled');
       }
+    });
+  }
+
+  get filteredUsers() {
+    return this.nguoiDungList.filter(user => {
+      const matchesSearch = user.hoTen?.toLowerCase().includes(this.searchText.toLowerCase());
+      return matchesSearch;
     });
   }
 

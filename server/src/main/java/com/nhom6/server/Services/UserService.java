@@ -21,8 +21,11 @@ public class UserService {
     }
 
     public List<User> getAll() {
-
         return userRepository.findAll();
+    }
+
+    public List<User> getUsersByMaMonHoc(String maMonHoc) {
+        return userRepository.findUsersByMaMonHoc(maMonHoc);
     }
 
     public List<User> getActiveUsers() {
@@ -82,9 +85,6 @@ public class UserService {
         }
     }
 
-    public List<User> searchUsers(String keyword) {
-        return userRepository.findByHoTenContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
-    }
     // Đổi mật khẩu 
     @Transactional
     public User updateUserPassword(String id, String currentPassword, String newPassword) {

@@ -36,6 +36,16 @@ private NotificationRepository notificationRepository;
         }
     }
 
+    public List<Notification> getNotificationsByStudentId(String studentId) {
+        try {
+            return notificationRepository.findNotificationsByStudentId(studentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+
     // Tạo mã thông báo tiếp theo
     private String generateNextMaThongBao() {
         Optional<Notification> lastNotification = notificationRepository.findTopByOrderByMaThongBaoDesc();

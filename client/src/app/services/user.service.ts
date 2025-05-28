@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { NguoiDung } from '../models/nguoidung';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,11 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
+  getUsersByMaMonHoc(maMonHoc: string): Observable<NguoiDung[]> {
+    return this.http.get<{ data: NguoiDung[] }>(`${this.apiUrl}/${maMonHoc}`).pipe(
+      map(res => res.data)
+    );
+  }
 
   getActiveUsers(): Observable<any> {
     return this.http.get(`${this.apiUrl}/active`);

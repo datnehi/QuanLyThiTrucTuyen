@@ -65,6 +65,21 @@ public class NotificationController {
         }
     }
 
+    @GetMapping("/student/{id}")
+    public ResponseEntity<Map<String, Object>> getNotifications(@PathVariable("id") String studentId) {
+        try {
+            List<Notification> notifications = notificationService.getNotificationsByStudentId(studentId);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Tìm kiếm thông báo theo môn học thành công",
+                    "data", notifications
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "message", "Lỗi khi tìm kiếm thông báo theo môn học"
+            ));
+        }
+    }
+
     // Tạo thông báo mới
     @PostMapping
     public ResponseEntity<Map<String, Object>> createNotification(@RequestBody Notification notification) {

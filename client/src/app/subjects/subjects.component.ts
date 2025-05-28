@@ -127,8 +127,8 @@ export class SubjectsComponent implements OnInit {
     if (this.editingSubjectId) {
       this.updateSubject();
     } else {
-      if (!this.newSubject.maMonHoc || !this.newSubject.tenMonHoc || this.newSubject.soTinChi <= 0) {
-        alert('Vui lòng điền đầy đủ thông tin bắt buộc (Mã môn học, Tên môn học, Số tín chỉ phải lớn hơn 0)!');
+      if (!this.newSubject.tenMonHoc || this.newSubject.soTinChi <= 0) {
+        alert('Vui lòng điền đầy đủ thông tin bắt buộc (Tên môn học, Số tín chỉ phải lớn hơn 0)!');
         return;
       }
 

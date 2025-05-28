@@ -121,7 +121,8 @@
             <div class="d-md-flex justify-content-md-between align-items-md-center mb-2">
               <div class="p-1 p-md-2">
                 <h3 class="h4 fw-bold mb-3">
-                  <a [routerLink]="['/student-exams/detail', exam.maKiThi]" routerLinkActive="router-link-active"  class="text-dark link-fx" style="text-decoration: none; cursor: pointer;">{{ exam.tenKiThi }}</a>
+                  <a [routerLink]="['/student-exams/detail', exam.maKiThi]" routerLinkActive="router-link-active"
+                    class="text-dark link-fx" style="text-decoration: none; cursor: pointer;">{{ exam.tenKiThi }}</a>
                 </h3>
                 <p class="fs-sm text-muted mb-0">
                   <i class="fa fa-clock me-1"></i> Diễn ra từ <span>{{ exam.thoiGianBatDau }}</span> đến <span>{{
@@ -148,12 +149,16 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane fade" *ngIf="activeTab === 'so-people'">
-        <!-- <ul>
-          <li *ngFor="let member of groupMembers">
-            <img src="{{ user.avatar || 'img/user.png' }}" alt="" width="30">name
-          </li>
-        </ul> -->
+      <div class="tab-pane fade show" *ngIf="activeTab === 'so-people'">
+        <div *ngFor="let user of users">
+          <div class="d-flex py-2 align-items-center">
+            <div class="flex-shrink-0 mx-3 overlay-container">
+              <img src="{{ user.avatar || 'img/user.png' }}" class="rounded mx-auto d-block"
+                style="height: 50px; width: 50px;">
+            </div>
+            <div class="fw-semibold">{{user.hoTen}}</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

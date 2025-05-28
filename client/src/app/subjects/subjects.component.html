@@ -50,9 +50,9 @@
 
                             <tr *ngFor="let subject of paginatedSubjects">
                                 <td class="fs-sm">
-                                    <a class="fw-semibold">
+                                    <p class="fw-semibold">
                                         <strong>{{subject.maMonHoc}}</strong>
-                                    </a>
+                                    </p>
                                 </td>
                                 <td>{{subject.tenMonHoc}}</td>
                                 <td>{{subject.giangVien}}</td>
@@ -127,11 +127,6 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <div class="mb-3">
-                            <label class="form-label">Mã môn học <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" [(ngModel)]="newSubject.maMonHoc" name="subjectCode"
-                                [disabled]="editingSubjectId !== null" required>
-                        </div>
                         <div class="mb-3">
                             <label class="form-label">Tên môn học <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" [(ngModel)]="newSubject.tenMonHoc"

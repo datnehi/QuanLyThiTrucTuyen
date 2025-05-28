@@ -4,6 +4,8 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HasRoleDirective } from '../directives/has-role.directive';
+import { NotificationsService } from '../services/notifications.service';
+import { Notification } from '../models/notification';
 
 @Component({
   selector: 'app-header',
@@ -18,12 +20,17 @@ import { HasRoleDirective } from '../directives/has-role.directive';
 })
 export class HeaderComponent {
   user: any = null;
+  notifications: Notification[] = [];
 
-  constructor(public accountService: AccountService, private router: Router) {}
+
+  constructor(public accountService: AccountService, private notificationsService: NotificationsService, private router: Router) { }
 
   ngOnInit() {
     this.accountService.userInfo$.subscribe(user => {
       this.user = user;
+    });
+    this.notificationsService.getNotificationbyId(this.user.id).subscribe((data) => {
+      this.notifications = data;
     });
   }
 

@@ -11,6 +11,8 @@ import { Exam } from '../models/exam';
 import { ExamService } from '../services/exam.service';
 import { NotificationsService } from '../services/notifications.service';
 import { Notification } from '../models/notification';
+import { UserService } from '../services/user.service';
+import { NguoiDung } from '../models/nguoidung';
 
 @Component({
   selector: 'app-hocphan',
@@ -33,9 +35,10 @@ export class HocphanComponent {
   selectedMonHoc!: Course;
   exams: Exam[] = [];
   notifications: Notification[] = [];
+  users: any[] = [];
 
   constructor(private accountService: AccountService, private notificationsService: NotificationsService,
-    private phanMonService: PhanmonService, private examService: ExamService) { }
+    private phanMonService: PhanmonService, private examService: ExamService, private userService: UserService) { }
 
   ngOnInit() {
     this.accountService.userInfo$.subscribe(user => {
@@ -89,6 +92,10 @@ export class HocphanComponent {
       this.notificationsService.getNotificationbyMaMonHoc(this.selectedMonHoc?.maMonHoc).subscribe((data) => {
         this.notifications = data;
       });
+      this.userService.getUsersByMaMonHoc(this.selectedMonHoc?.maMonHoc).subscribe((data) => {
+        this.users = data;
+        console.log(this.users)
+      })
     }
   }
 

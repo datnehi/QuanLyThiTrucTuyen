@@ -8,19 +8,19 @@
       <div class="bg-primary rounded-top fw-semibold text-white text-center p-3">
         Thông báo
       </div>
-      <ul class="my-2">
-        <!-- <li>
-          <a class="d-flex text-dark py-2">
-            <div class="flex-grow-1 fs-sm pe-2">
-              <div class="truncate truncate--3">
-                <span class="fw-semibold">Trần Nhật Sinh</span> đã gửi một thông báo đến
-                học phần <span class="fw-semibold">Lập trình hướng đối tượng - Nhóm 1</span>: Nay báo cáo đồ án.
-              </div>
-              <div class="text-muted">08:53 08/05/2023</div>
+      <div class="p-2">
+        <div *ngFor="let noti of notifications"
+          class="block block-content mb-2 bg-white border-start border-2 border-danger rounded">
+          <div class="d-md-flex justify-content-md-between align-items-md-center mb-2">
+            <div class="p-1 p-md-2">
+              <h3 class="h4 fw-bold mb-3">{{ noti.noiDung }}</h3>
+              <p class="fs-sm text-muted mb-0">
+                <i class="fa fa-clock me-1"></i> Thời gian gửi <span>{{ noti.thoiGianTao }}</span>
+              </p>
             </div>
-          </a>
-        </li> -->
-      </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -31,11 +31,13 @@
     </button>
     <ul ngbDropdownMenu class="dropdown-menu-end">
       <li class="text-center">
-        <img src="{{ user.avatar || 'img/user.png' }}" class="rounded mx-auto d-block" style="height: 50px; width: 50px;">
+        <img src="{{ user.avatar || 'img/user.png' }}" class="rounded mx-auto d-block"
+          style="height: 50px; width: 50px;">
         <p style="text-align: center; padding-top: 0.5rem;">{{ user.hoten }}</p>
       </li>
       <li class="dropdown-divider"></li>
-      <li><a class="dropdown-item" routerLink="/users" routerLinkActive="active" ><i class="bi bi-gear p-1"></i> Tài khoản</a></li>
+      <li><a class="dropdown-item" routerLink="/users" routerLinkActive="active"><i class="bi bi-gear p-1"></i> Tài
+          khoản</a></li>
       <li><a class="dropdown-item" (click)="logout()"><i class="bi bi-box-arrow-left p-1"></i> Đăng xuất</a></li>
     </ul>
   </div>

@@ -72,24 +72,18 @@ public class UserController {
         }
     }
 
-    @GetMapping("/accounts")
-    public ResponseEntity<Map<String, Object>> getAllAccounts() {
+    @GetMapping("/{maMonHoc}")
+    public ResponseEntity<Map<String, Object>> getUsers(@PathVariable String maMonHoc) {
         try {
-            List<User> users = userService.getAll();
-            if (users.isEmpty()) {
-                return ResponseEntity
-                        .status(HttpStatus.NO_CONTENT)
-                        .body(Map.of("message", "Không có tài khoản nào"));
-            }
-
+            List<User> users = userService.getUsersByMaMonHoc(maMonHoc);
             return ResponseEntity.ok(Map.of(
-                    "message", "Lấy danh sách tài khoản thành công",
+                    "message", "Lấy danh sách sinh viên thành công",
                     "data", users
             ));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Đã xảy ra lỗi khi lấy danh sách tài khoản"));
+                    .body(Map.of("message", "Đã xảy ra lỗi khi lấy danh sách sinh viên"));
         }
     }
 
@@ -128,13 +122,6 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
-    }
-
-    // Tìm kiếm người dùng theo từ khóa (họ tên hoặc email)
-    @GetMapping("/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestParam String keyword) {
-        List<User> result = userService.searchUsers(keyword);
-        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}/password")

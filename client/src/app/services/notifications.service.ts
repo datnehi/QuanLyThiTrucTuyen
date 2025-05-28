@@ -32,6 +32,12 @@ export class NotificationsService {
     );
   }
 
+  getNotificationbyId(id: string): Observable<Notification[]> {
+    return this.http.get<{ data: Notification[] }>(`${this.baseUrl}/student/${id}`).pipe(
+      map(res => res.data)
+    );
+  }
+
   createNotification(Notification: Notification): Observable<Notification> {
     return this.http.post<Notification>(this.baseUrl, Notification);
   }
